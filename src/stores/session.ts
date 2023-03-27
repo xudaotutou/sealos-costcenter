@@ -1,5 +1,5 @@
-import type { Session } from '@/interfaces/session'
-import { sessionKey } from '@/interfaces/session'
+import type { Session } from '@/types/session'
+import { sessionKey } from '@/types/session'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'

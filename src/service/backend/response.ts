@@ -1,5 +1,5 @@
 import { NextApiResponse } from 'next'
-import { ApiResp } from '@/interfaces/api'
+import { ApiResp } from '@/types/api'
 
 const showStatus = (status: number) => {
   let message = ''

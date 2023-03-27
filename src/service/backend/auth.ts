@@ -1,4 +1,5 @@
 import { IncomingHttpHeaders } from 'http'
+import { K8sApi } from '@/service/backend/kubernetes'
 
 export const authSession = async (header: IncomingHttpHeaders) => {
   try {
@@ -7,7 +8,9 @@ export const authSession = async (header: IncomingHttpHeaders) => {
     }
 
     const kubeconfig = decodeURIComponent(header.authorization)
-    return Promise.resolve(kubeconfig)
+    const kc = K8sApi(kubeconfig)
+
+    return Promise.resolve(kc)
   } catch (err) {
     return Promise.reject('凭证错误')
   }

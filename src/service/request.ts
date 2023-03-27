@@ -1,5 +1,5 @@
 // http.ts
-import { ApiResp } from '@/interfaces/api'
+import { ApiResp } from '@/types/api'
 import useSessionStore from '@/stores/session'
 import axios, {
   AxiosRequestConfig,
