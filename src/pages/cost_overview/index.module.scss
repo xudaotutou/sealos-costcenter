@@ -1,0 +1,24 @@
+.container {
+  table thead tr {
+    background: #f8f8fa;
+  }
+
+  td,
+  th {
+    border: none;
+    text-align: center;
+    &:first-child {
+      text-align: left;
+    }
+    &:last-child {
+      text-align: right;
+    }
+  }
+}
+
+.userCard {
+  width: 100%;
+  height: 155px;
+  background: #868b97;
+  border-radius: 12px;
+}

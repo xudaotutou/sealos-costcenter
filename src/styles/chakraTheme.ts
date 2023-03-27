@@ -3,15 +3,14 @@ import {
   createMultiStyleConfigHelpers,
   defineStyle,
   defineStyleConfig,
-  extendTheme,
-} from '@chakra-ui/react'
-import { Nunito } from '@next/font/google'
+  extendTheme
+} from '@chakra-ui/react';
 
 const Button = defineStyleConfig({
   baseStyle: {
     _active: {
-      transform: 'scale(0.98)',
-    },
+      transform: 'scale(0.98)'
+    }
   },
   sizes: {
     sm: {
@@ -20,7 +19,7 @@ const Button = defineStyleConfig({
       py: 0,
       fontWeight: 'normal',
       height: '26px',
-      borderRadius: '2px',
+      borderRadius: '2px'
     },
     md: {
       fontSize: 'md',
@@ -28,7 +27,7 @@ const Button = defineStyleConfig({
       py: 0,
       height: '34px',
       fontWeight: 'normal',
-      borderRadius: '4px',
+      borderRadius: '4px'
     },
     lg: {
       fontSize: 'lg',
@@ -36,8 +35,8 @@ const Button = defineStyleConfig({
       py: 0,
       height: '42px',
       fontWeight: 'normal',
-      borderRadius: '8px',
-    },
+      borderRadius: '8px'
+    }
   },
   variants: {
     base: {
@@ -46,22 +45,22 @@ const Button = defineStyleConfig({
       px: 6,
       py: 1,
       _hover: {
-        filter: 'brightness(95%)',
+        filter: 'brightness(95%)'
       },
       _disabled: {
-        backgroundColor: 'gray.300 !important',
-      },
-    },
+        backgroundColor: 'gray.300 !important'
+      }
+    }
   },
   defaultProps: {
     size: 'md',
-    colorScheme: 'blue',
-  },
-})
+    colorScheme: 'blue'
+  }
+});
 
 const Input: ComponentStyleConfig = {
   baseStyle: {
-    field: {},
+    field: {}
   },
   variants: {
     outline: {
@@ -71,20 +70,20 @@ const Input: ComponentStyleConfig = {
         borderColor: 'gray.300',
         _focus: {
           backgroundColor: 'transparent',
-          borderColor: 'blue.500',
-        },
-      },
-    },
+          borderColor: 'blue.500'
+        }
+      }
+    }
   },
   defaultProps: {
     size: 'md',
-    variant: 'outline',
-  },
-}
+    variant: 'outline'
+  }
+};
 
 export const theme = extendTheme({
   components: {
     Button,
-    Input,
-  },
-})
+    Input
+  }
+});

@@ -55,7 +55,9 @@ export default function Layout({ children }: any) {
       ) : (
         <Flex className={clsx(styles.backgroundWrap)}>
           <SideBar />
-          <Box flexGrow={1}> {children} </Box>
+          <Box flexGrow={1} overflow="hidden">
+            {children}
+          </Box>
         </Flex>
       )}
     </div>
