@@ -1,8 +1,12 @@
+import Layout from '@/layout'
+import { theme } from '@/styles/chakraTheme'
 import '@/styles/globals.scss'
+import { ChakraProvider } from '@chakra-ui/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { AppProps } from 'next/app'
-import Layout from '@/layout'
-import { ChakraProvider } from '@chakra-ui/react'
+import Router from 'next/router'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,10 +18,15 @@ const queryClient = new QueryClient({
   },
 })
 
+//Binding events.
+Router.events.on('routeChangeStart', () => NProgress.start())
+Router.events.on('routeChangeComplete', () => NProgress.done())
+Router.events.on('routeChangeError', () => NProgress.done())
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <Layout>
           <Component {...pageProps} />
         </Layout>
