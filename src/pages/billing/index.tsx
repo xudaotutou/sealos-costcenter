@@ -18,7 +18,7 @@ import { TableHeaders } from '@/constants/billing';
 
 export default function Billing() {
   return (
-    <Flex flexDirection="column" w="100%" h="100%" bg={'white'} pl="32px">
+    <Flex flexDirection="column" w="100%" h="100%" bg={'white'} pl="32px" pr="46px">
       <Text fontWeight={500} fontSize="20px" mt="32px">
         账单明细
       </Text>
@@ -30,11 +30,11 @@ export default function Billing() {
 
         <Text fontSize={'12px'}>计费周期</Text>
         <Box w={'104px'} h={'32px'} bg="#F4F6F8" mx={'16px'}></Box>
-        <Box ml={'auto'} mr="46px">
+        <Box ml={'auto'}>
           <Input size="sm"></Input>
         </Box>
       </Flex>
-      <TableContainer w="100%" mt="36px" pr="46px" className={styles.container}>
+      <TableContainer w="100%" mt="36px" className={styles.container}>
         <Table variant="simple">
           <Thead>
             <Tr>

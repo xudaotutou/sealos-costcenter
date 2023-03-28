@@ -13,17 +13,18 @@ import {
   Thead,
   Tr
 } from '@chakra-ui/react';
+import UserCard from './components/user';
 import styles from './index.module.scss';
 
 export default function CostOverview() {
   return (
-    <Flex w="100%" h="100%">
-      <Box w="100%" bg={'white'} pt="29px" pl="33px" pr="24px">
+    <Flex h={'100%'}>
+      <Box bg={'white'} pt="29px" pl="33px" pr="24px" overflow={'auto'} borderRadius="12px">
         <Flex flexDirection={'column'}>
           <div>成本总览</div>
           <div>成本趋势</div>
           <div>最近交易</div>
-          <TableContainer w="100%" mt="36px" className={styles.container}>
+          <TableContainer mt="36px" maxW={'886px'} className={styles.container}>
             <Table variant="simple">
               <Thead>
                 <Tr>
@@ -61,9 +62,10 @@ export default function CostOverview() {
         py={'32px'}
         px={'24px'}
         overflowY="auto"
+        borderRadius="12px"
       >
-        <div className={styles.userCard}></div>
-        <Box mt="20px">
+        <UserCard />
+        {/* <Box mt="20px">
           <Text>收支</Text>
           <Select>
             <option value="option1">小时</option>
@@ -82,7 +84,7 @@ export default function CostOverview() {
             <option value="option2">dsa</option>
             <option value="option3">Option 3</option>
           </Select>
-        </Box>
+        </Box> */}
       </Box>
     </Flex>
   );

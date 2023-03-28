@@ -1,5 +1,10 @@
-import styles from './index.module.scss'
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 export default function Index() {
-  return <div className={styles.container}>index</div>
+  const router = useRouter();
+  useEffect(() => {
+    router.push('/cost_overview');
+  }, []);
+  return <div>index</div>;
 }
