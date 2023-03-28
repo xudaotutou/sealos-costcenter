@@ -18,7 +18,7 @@ import styles from './index.module.scss';
 export default function Valuation() {
   return (
     <Flex w="100%" h="100%" bg={'white'} flexDirection="column" alignItems="center">
-      <Text mt="60px" fontSize={'xl'} fontWeight="medium">
+      <Text mt="60px" fontSize={'xl'} fontWeight="medium" color={'black'}>
         计价标准
       </Text>
       <TableContainer maxW="720px" w="100%" mt="36px" className={styles.container}>

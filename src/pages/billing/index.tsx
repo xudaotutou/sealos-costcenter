@@ -1,4 +1,4 @@
-import { MockBillData } from '@/mock/billing';
+import { MockBillingData } from '@/mock/billing';
 import {
   Box,
   Flex,
@@ -23,24 +23,14 @@ export default function Billing() {
         账单明细
       </Text>
       <Flex mt="24px" alignItems={'center'}>
-        <Box>
-          <Text>交易时间</Text>
-        </Box>
-        <Box>
-          <Text>类型</Text>
-        </Box>
+        <Text fontSize={'12px'}>交易时间</Text>
+        <Box w={'310px'} h={'32px'} bg="#F4F6F8" mx={'16px'}></Box>
+        <Text fontSize={'12px'}>类型</Text>
+        <Box w={'104px'} h={'32px'} bg="#F4F6F8" mx={'16px'}></Box>
 
-        <Flex alignItems={'center'}>
-          <Text fontSize={'12px'} w="80px">
-            计费周期
-          </Text>
-          <Select>
-            <option value="option1">小时</option>
-            <option value="option2">dsa</option>
-            <option value="option3">Option 3</option>
-          </Select>
-        </Flex>
-        <Box>
+        <Text fontSize={'12px'}>计费周期</Text>
+        <Box w={'104px'} h={'32px'} bg="#F4F6F8" mx={'16px'}></Box>
+        <Box ml={'auto'} mr="46px">
           <Input size="sm"></Input>
         </Box>
       </Flex>
@@ -54,7 +44,7 @@ export default function Billing() {
             </Tr>
           </Thead>
           <Tbody>
-            {MockBillData?.map((item) => {
+            {MockBillingData?.map((item) => {
               return (
                 <Tr key={item?.order}>
                   <Td>{item?.order}</Td>

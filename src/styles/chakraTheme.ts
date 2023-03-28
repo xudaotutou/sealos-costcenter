@@ -1,10 +1,13 @@
+// import { selectAnatomy } from '@chakra-ui/anatomy';
 import {
   ComponentStyleConfig,
   createMultiStyleConfigHelpers,
-  defineStyle,
   defineStyleConfig,
   extendTheme
 } from '@chakra-ui/react';
+// const { definePartsStyle, defineMultiStyleConfig } = createMultiStyleConfigHelpers(
+//   selectAnatomy.keys
+// );
 
 const Button = defineStyleConfig({
   baseStyle: {
@@ -81,9 +84,24 @@ const Input: ComponentStyleConfig = {
   }
 };
 
+const Select = defineStyleConfig({
+  variants: {
+    filled: {
+      field: {
+        backgroundColor: '#F4F6F8'
+      }
+    }
+  },
+  defaultProps: {
+    size: 'md',
+    variant: 'filled'
+  }
+});
+
 export const theme = extendTheme({
   components: {
     Button,
-    Input
+    Input,
+    Select
   }
 });
