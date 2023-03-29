@@ -40,14 +40,14 @@ request.interceptors.request.use(
 
 // response interceptor
 request.interceptors.response.use(
-  (response: AxiosResponse<ApiResp>) => {
+  (response: AxiosResponse) => {
     const data = response.data as ApiResp;
 
     if (!data.code || data.code < 200 || data.code > 300) {
       return Promise.reject(response);
     }
 
-    return response;
+    return response.data;
   },
   (error) => {
     if (!error) {

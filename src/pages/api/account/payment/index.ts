@@ -1,62 +1,47 @@
-import * as k8s from '@kubernetes/client-node';
+import { generatePaymentCrd, PaymentForm } from '@/constants/payment';
+import { authSession } from '@/service/backend/auth';
+import { ApplyYaml, GetUserDefaultNameSpace } from '@/service/backend/kubernetes';
+import { jsonRes } from '@/service/backend/response';
 import crypto from 'crypto';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { paymentCRDTemplate } from 'mock/user';
-import { ApplyYaml, GetUserDefaultNameSpace, K8sApi } from 'services/backend/kubernetes';
-import { CRDTemplateBuilder } from 'services/backend/wrapper';
-import { BadRequestResp, InternalErrorResp, JsonResp, UnprocessableResp } from 'pages/api/response';
 
 export default async function handler(req: NextApiRequest, resp: NextApiResponse) {
-  if (req.method !== 'POST') {
-    return BadRequestResp(resp);
-  }
-
-  const { kubeconfig, amount } = req.body;
-  // console.log(req.body);
-  if (kubeconfig === '' || amount <= 0) {
-    return UnprocessableResp('kubeconfig or user', resp);
-  }
-
-  const kc = K8sApi(kubeconfig);
-
-  const kube_user = kc.getCurrentUser();
-  if (kube_user === null) {
-    return BadRequestResp(resp);
-  }
-
-  // do payment
-
-  type paymentResp = {
-    payment_name: string;
-    extra?: any;
-  };
-
-  const payment_name = crypto.randomUUID();
-  const namespace = GetUserDefaultNameSpace(kube_user.name);
-  const paymentCRD = CRDTemplateBuilder(paymentCRDTemplate, {
-    payment_name,
-    namespace,
-    amount,
-    kube_user
-  });
-  console.log(paymentCRD);
-
-  // here res is array of length=1
   try {
-    const res = await ApplyYaml(kc, paymentCRD);
-    return JsonResp(
-      {
-        payment_name: payment_name,
-        extra: res[0]
-      } as paymentResp,
-      resp
-    );
-  } catch (err) {
-    // console.log(err);
-    if (err instanceof k8s.HttpError) {
-      return InternalErrorResp(err.body.message, resp);
+    if (req.method !== 'POST') {
+      return jsonRes(resp, { code: 405 });
+    }
+    const { amount } = req.body;
+    const kc = await authSession(req.headers);
+
+    if (!kc || amount <= 0) {
+      return jsonRes(resp, { code: 400 });
     }
 
-    return UnprocessableResp('create payment fail', resp);
+    const kubeUser = kc.getCurrentUser();
+    if (kubeUser === null) {
+      return jsonRes(resp, { code: 401 });
+    }
+
+    // do payment
+    const paymentName = crypto.randomUUID();
+    const namespace = GetUserDefaultNameSpace(kubeUser.name);
+    const form: PaymentForm = {
+      namespace,
+      paymentName,
+      userId: kubeUser.name,
+      amount
+    };
+
+    const paymentCrd = generatePaymentCrd(form);
+    const res = await ApplyYaml(kc, paymentCrd);
+
+    return jsonRes(resp, {
+      data: {
+        paymentName: paymentName,
+        extra: res[0]
+      }
+    });
+  } catch (error) {
+    jsonRes(resp, { code: 500, error });
   }
 }

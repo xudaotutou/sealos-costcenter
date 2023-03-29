@@ -65,26 +65,18 @@ export default function CostOverview() {
         borderRadius="12px"
       >
         <UserCard />
-        {/* <Box mt="20px">
-          <Text>收支</Text>
-          <Select>
-            <option value="option1">小时</option>
-            <option value="option2">dsa</option>
-            <option value="option3">Option 3</option>
-          </Select>
-        </Box>
+        <Flex alignItems={'center'} mt="20px">
+          <Text color={'#747F88'}>收支</Text>
+          <Box ml="auto" bg="#F4F6F8" borderRadius="4px" w="105px" h="32px"></Box>
+        </Flex>
         <Flex justifyContent={'space-around'} mt="20px">
           <Box w={'127px'} h={'146px'} bg={'#F9FAFD'} borderRadius={'8px'}></Box>
           <Box w={'127px'} h={'146px'} bg={'#F9FAFD'} borderRadius={'8px'}></Box>
         </Flex>
-        <Box mt="20px">
-          <Text>成本分布</Text>
-          <Select>
-            <option value="option1">小时</option>
-            <option value="option2">dsa</option>
-            <option value="option3">Option 3</option>
-          </Select>
-        </Box> */}
+        <Flex alignItems={'center'} mt="33px">
+          <Text color={'#747F88'}>成本分布</Text>
+          <Box ml="auto" bg="#F4F6F8" borderRadius="4px" w="105px" h="32px"></Box>
+        </Flex>
       </Box>
     </Flex>
   );

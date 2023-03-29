@@ -16,6 +16,9 @@ const showStatus = (status: number) => {
     case 404:
       message = '请求出错(404)';
       break;
+    case 405:
+      message = '不支持的请求方法';
+      break;
     case 408:
       message = '请求超时(408)';
       break;

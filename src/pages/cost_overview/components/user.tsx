@@ -1,21 +1,21 @@
 /* eslint-disable @next/next/no-img-element */
+import useRecharge from '@/hooks/useRecharge';
 import request from '@/service/request';
 import useSessionStore from '@/stores/session';
 import { formatMoney } from '@/utils/format';
-import { Flex, Text, Box, Button } from '@chakra-ui/react';
+import { Button, Flex, Text } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import styles from './user.module.scss';
 
 export default function UserCard() {
   const session = useSessionStore().getSession();
-
+  const { onOpen, RechargeModal } = useRecharge();
   const { data } = useQuery(['getAccount'], () => request('/api/account/getAmount'));
 
-  let real_balance = data?.data?.data?.balance ?? 0;
-  if (data?.data?.data?.deductionBalance) {
-    real_balance = real_balance - data.data.data.deductionBalance;
+  let real_balance = data?.data?.balance ?? 0;
+  if (data?.data?.deductionBalance) {
+    real_balance = real_balance - data.data.deductionBalance;
   }
-  console.log(real_balance);
 
   return (
     <div className={styles.userCard}>
@@ -40,8 +40,11 @@ export default function UserCard() {
         <Text fontSize="24px" fontWeight="500">
           ¥ {formatMoney(real_balance)}
         </Text>
-        <Button ml="auto">充值</Button>
+        <Button ml="auto" w="78px" h="32px" bg={'white'} color="black" onClick={onOpen}>
+          充值
+        </Button>
       </Flex>
+      <RechargeModal balance={formatMoney(real_balance)} />
     </div>
   );
 }
