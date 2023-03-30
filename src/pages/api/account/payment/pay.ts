@@ -10,12 +10,12 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
     const { id } = req.query;
 
     if (typeof id !== 'string' || id === '') {
-      return jsonRes(resp, { code: 404, message: 'id error' });
+      return jsonRes(resp, { code: 404, message: 'Id cannot be empty' });
     }
 
     const kube_user = kc.getCurrentUser();
     if (kube_user === null) {
-      return jsonRes(resp, { code: 404, message: 'user is null' });
+      return jsonRes(resp, { code: 404, message: 'user not found' });
     }
 
     // get payment crd

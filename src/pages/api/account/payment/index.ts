@@ -14,12 +14,15 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
     const kc = await authSession(req.headers);
 
     if (!kc || amount <= 0) {
-      return jsonRes(resp, { code: 400 });
+      return jsonRes(resp, {
+        code: 400,
+        message: 'Amount cannot be less than 0'
+      });
     }
 
     const kubeUser = kc.getCurrentUser();
     if (kubeUser === null) {
-      return jsonRes(resp, { code: 401 });
+      return jsonRes(resp, { code: 401, message: 'user not found' });
     }
 
     // do payment

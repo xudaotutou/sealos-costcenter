@@ -11,7 +11,8 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-  useDisclosure
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
@@ -27,12 +28,21 @@ function useRecharge() {
   const RechargeModal = (props: RechargeModalProps) => {
     const [amount, setAmount] = useState(0);
     const [paymentName, setPaymentName] = useState('');
+    const toast = useToast();
 
     const createPaymentRes = useMutation(
       () => request.post('/api/account/payment', { amount: amount }),
       {
         onSuccess(data) {
           setPaymentName(data?.data?.paymentName);
+        },
+        onError(err: any) {
+          toast({
+            status: 'error',
+            title: err?.message || '',
+            isClosable: true,
+            position: 'top'
+          });
         }
       }
     );
@@ -90,7 +100,7 @@ function useRecharge() {
               确定
             </Button>
             <Flex flexDirection="column" w="100%" mt="20px" px="37px">
-              {!data?.data?.codeURL ? (
+              {!!data?.data?.codeURL ? (
                 <>
                   <Text color="#7B838B" mb="8px" textAlign="center">
                     微信扫码支付
