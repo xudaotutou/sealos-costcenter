@@ -1,51 +1,38 @@
-import * as k8s from '@kubernetes/client-node';
+import { paymentMeta } from '@/constants/payment';
+import { authSession } from '@/service/backend/auth';
+import { GetCRD, GetUserDefaultNameSpace } from '@/service/backend/kubernetes';
+import { jsonRes } from '@/service/backend/response';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { paymentMeta } from 'mock/user';
-import { GetCRD, GetUserDefaultNameSpace, K8sApi } from 'services/backend/kubernetes';
-import { BadRequestResp, InternalErrorResp, JsonResp, UnprocessableResp } from 'pages/api/response';
 
 export default async function handler(req: NextApiRequest, resp: NextApiResponse) {
-  if (req.method !== 'POST') {
-    return BadRequestResp(resp);
-  }
-
-  const { kubeconfig } = req.body;
-  const { name } = req.query;
-  if (kubeconfig === '' || typeof name !== 'string' || name === '') {
-    return UnprocessableResp('kubeconfig or name', resp);
-  }
-
-  const kc = K8sApi(kubeconfig);
-
-  const kube_user = kc.getCurrentUser();
-  if (kube_user === null) {
-    return BadRequestResp(resp);
-  }
-
-  // get payment crd
-
-  type paymentStatus = {
-    tradeNo: string;
-    codeURL: string;
-    status: string;
-  };
-
-  let paymentM = { ...paymentMeta };
-  paymentM.namespace = GetUserDefaultNameSpace(kube_user.name);
-
   try {
-    const paymentDesc = await GetCRD(kc, paymentM, name);
-    if (paymentDesc !== null && paymentDesc.body !== null && paymentDesc.body.status !== null) {
+    const kc = await authSession(req.headers);
+    const { id } = req.query;
+
+    if (typeof id !== 'string' || id === '') {
+      return jsonRes(resp, { code: 404, message: 'id error' });
+    }
+
+    const kube_user = kc.getCurrentUser();
+    if (kube_user === null) {
+      return jsonRes(resp, { code: 404, message: 'user is null' });
+    }
+
+    // get payment crd
+    type paymentStatus = {
+      tradeNo: string;
+      codeURL: string;
+      status: string;
+    };
+
+    const paymentM = { ...paymentMeta, namespace: GetUserDefaultNameSpace(kube_user.name) };
+    const paymentDesc = await GetCRD(kc, paymentM, id);
+
+    if (paymentDesc?.body?.status) {
       const paymentStatusResp = paymentDesc.body.status as paymentStatus;
-      return JsonResp(paymentStatusResp, resp);
+      return jsonRes(resp, { data: paymentStatusResp });
     }
-  } catch (err) {
-    console.log(err);
-
-    if (err instanceof k8s.HttpError) {
-      return InternalErrorResp(err.body.message, resp);
-    }
+  } catch (error) {
+    jsonRes(resp, { code: 500, error });
   }
-
-  return InternalErrorResp('get payment failed', resp);
 }

@@ -1,10 +1,18 @@
 import * as yaml from 'js-yaml';
+import { CRDMeta } from '@/types/crd';
 
 export type PaymentForm = {
   paymentName: string;
   namespace: string;
   userId: string;
   amount: string;
+};
+
+export const paymentMeta: CRDMeta = {
+  group: 'account.sealos.io',
+  version: 'v1',
+  namespace: 'sealos-system',
+  plural: 'payments'
 };
 
 export type PaymentResp = {
