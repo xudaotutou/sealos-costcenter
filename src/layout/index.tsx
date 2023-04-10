@@ -38,7 +38,7 @@ export default function Layout({ children }: any) {
           {isError ? (
             <Text>
               please go to&nbsp;
-              <Link color="primaryblue.600" href="https://cloud.sealos.io/">
+              <Link color="blue.600" href="https://cloud.sealos.io/">
                 cloud.sealos.io
               </Link>
             </Text>

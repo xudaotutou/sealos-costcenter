@@ -65,6 +65,7 @@ function useRecharge() {
       createPaymentRes.mutate();
     };
 
+    const handleAmount = () => {};
     return (
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
