@@ -1,22 +1,14 @@
 import { TableHeaders } from '@/constants/billing';
 import { MockBillingData } from '@/mock/billing';
-import {
-  Box,
-  Flex,
-  Select,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Th,
-  Thead,
-  Tr
-} from '@chakra-ui/react';
+import request from '@/service/request';
+import { Box, Flex, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
 import UserCard from './components/user';
 import styles from './index.module.scss';
 
 export default function CostOverview() {
+  const { data } = useQuery(['getUserOrders'], () => request('/api/order'));
+
   return (
     <Flex h={'100%'}>
       <Box bg={'white'} pt="29px" pl="33px" pr="24px" overflow={'auto'} borderRadius="12px">

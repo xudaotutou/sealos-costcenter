@@ -9,7 +9,7 @@ import styles from './user.module.scss';
 
 export default function UserCard() {
   const session = useSessionStore().getSession();
-  const { onOpen, RechargeModal } = useRecharge();
+  const { isOpen, onOpen, RechargeModal } = useRecharge();
   const { data } = useQuery(['getAccount'], () => request('/api/account/getAmount'));
 
   let real_balance = data?.data?.balance ?? 0;
@@ -44,7 +44,7 @@ export default function UserCard() {
           充值
         </Button>
       </Flex>
-      <RechargeModal balance={formatMoney(real_balance)} />
+      {isOpen && <RechargeModal balance={formatMoney(real_balance)} />}
     </div>
   );
 }

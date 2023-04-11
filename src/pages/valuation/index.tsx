@@ -1,18 +1,5 @@
 import { MockValuationStandard } from '@/mock/valuation';
-import {
-  Box,
-  Flex,
-  Table,
-  TableCaption,
-  TableContainer,
-  Tbody,
-  Td,
-  Text,
-  Tfoot,
-  Th,
-  Thead,
-  Tr
-} from '@chakra-ui/react';
+import { Flex, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from '@chakra-ui/react';
 import styles from './index.module.scss';
 
 export default function Valuation() {
@@ -21,7 +8,7 @@ export default function Valuation() {
       <Text mt="60px" fontSize={'xl'} fontWeight="medium" color={'black'}>
         计价标准
       </Text>
-      <TableContainer maxW="720px" w="100%" mt="36px" className={styles.container}>
+      <TableContainer maxW="720px" w="100%" mt="36px" px={'12px'} className={styles.container}>
         <Table variant="simple">
           <Thead>
             <Tr>

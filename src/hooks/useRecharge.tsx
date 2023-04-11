@@ -5,7 +5,6 @@ import {
   Flex,
   Input,
   Modal,
-  ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalHeader,
@@ -15,8 +14,8 @@ import {
   useToast
 } from '@chakra-ui/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useCallback, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
+import { useState } from 'react';
 
 type RechargeModalProps = {
   balance: string;
@@ -31,7 +30,7 @@ function useRecharge() {
     const toast = useToast();
 
     const createPaymentRes = useMutation(
-      () => request.post('/api/account/payment', { amount: amount }),
+      () => request.post('/api/account/payment', { amount: amount * 10000 }),
       {
         onSuccess(data) {
           setPaymentName(data?.data?.paymentName);
@@ -65,7 +64,8 @@ function useRecharge() {
       createPaymentRes.mutate();
     };
 
-    const handleAmount = () => {};
+    console.log(!!data?.data?.codeURL);
+
     return (
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -96,8 +96,15 @@ function useRecharge() {
               mt="8px"
               w="215px"
               h="42px"
-            ></Input>
-            <Button size="primary" variant="primary" mt="12px" onClick={() => handleConfirm()}>
+              isDisabled={!!data?.data?.codeURL}
+            />
+            <Button
+              size="primary"
+              variant="primary"
+              mt="12px"
+              onClick={() => handleConfirm()}
+              isDisabled={!!data?.data?.codeURL}
+            >
               确定
             </Button>
             <Flex flexDirection="column" w="100%" mt="20px" px="37px">
@@ -129,8 +136,8 @@ function useRecharge() {
   };
 
   return {
+    isOpen,
     onOpen,
-    onClose,
     RechargeModal
   };
 }

@@ -14,9 +14,12 @@ const Button = defineStyleConfig({
   },
   variants: {
     primary: {
-      backgroundColor: '#3E3B3B',
+      bg: '#3E3B3B',
       _hover: {
-        backgroundColor: '#3E3B3B'
+        bg: '#3E3B3B',
+        _disabled: {
+          bg: '#3E3B3B'
+        }
       },
       color: '#FEFEFE'
     }

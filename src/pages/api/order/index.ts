@@ -3,19 +3,20 @@ import { CRDMeta, GetCRD } from '@/service/backend/kubernetes';
 import { jsonRes } from '@/service/backend/response';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-type accountStatus = {
+type AccountStatus = {
   balance: number;
   deductionBalance: number;
+  chargeList: any[];
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, resp: NextApiResponse) {
   try {
     const kc = await authSession(req.headers);
 
     // get user account payment amount
     const user = kc.getCurrentUser();
     if (user === null) {
-      return jsonRes(res, { code: 401, message: 'user null' });
+      return jsonRes(resp, { code: 401, message: 'user null' });
     }
 
     const account_meta: CRDMeta = {
@@ -26,11 +27,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
 
     const accountDesc = await GetCRD(kc, account_meta, user.name);
-    if (accountDesc !== null && accountDesc.body !== null && accountDesc.body.status !== null) {
-      const accountStatus = accountDesc.body.status as accountStatus;
-      return jsonRes(res, { data: accountStatus });
+    if (accountDesc?.body?.status) {
+      const data = accountDesc?.body?.status as AccountStatus;
+      return jsonRes(resp, { data: data });
     }
   } catch (error) {
-    jsonRes(res, { code: 500, data: error });
+    jsonRes(resp, { code: 500, data: error });
   }
 }
