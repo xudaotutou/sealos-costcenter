@@ -11,12 +11,69 @@ echo '121.41.82.246 apiserver.cluster.local' | sudo tee -a /etc/hosts
 .env.local
 ```
 
-## build and push the image
-
-Just add a field like build tag:1.0.0 to the commit message, and take the string after tag: as the image tag
-
-Execute github actions when there is a build field in the git commit message
+## structure directory
 
 ```
-.github/workflows/release-package.yml
+./src
+├── constants
+│   ├── billing.ts
+│   └── payment.ts
+├── hooks
+│   └── useRecharge.tsx
+├── layout
+│   ├── index.module.scss
+│   ├── index.tsx
+│   └── sidebar.tsx
+├── mock
+│   ├── billing.ts
+│   └── valuation.ts
+├── pages
+│   ├── _app.tsx
+│   ├── _document.tsx
+│   ├── api
+│   │   ├── account
+│   │   │   ├── getAmount.ts
+│   │   │   └── payment
+│   │   │       ├── index.ts
+│   │   │       └── pay.ts
+│   │   └── order
+│   │       └── index.ts
+│   ├── billing
+│   │   ├── index.module.scss
+│   │   └── index.tsx
+│   ├── cost_overview
+│   │   ├── components
+│   │   │   ├── user.module.scss
+│   │   │   └── user.tsx
+│   │   ├── index.module.scss
+│   │   └── index.tsx
+│   ├── index.tsx
+│   └── valuation
+│       ├── index.module.scss
+│       └── index.tsx
+├── service
+│   ├── backend
+│   │   ├── auth.ts
+│   │   ├── kubernetes.ts
+│   │   └── response.ts
+│   └── request.ts
+├── stores
+│   └── session.ts
+├── styles
+│   ├── chakraTheme.ts
+│   └── globals.scss
+├── types
+│   ├── api.ts
+│   ├── billing.ts
+│   ├── crd.ts
+│   ├── session.ts
+│   └── valuation.ts
+└── utils
+    └── format.ts
+```
+
+## build and push the image
+
+```
+.github/workflows/dockerize-web.yml
 ```
