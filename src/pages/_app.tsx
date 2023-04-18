@@ -7,6 +7,7 @@ import type { AppProps } from 'next/app';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import '@/utils/i18n';
 
 const queryClient = new QueryClient({
   defaultOptions: {
