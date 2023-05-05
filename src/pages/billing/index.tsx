@@ -1,20 +1,12 @@
 import { MockBillingData } from '@/mock/billing';
+import { BillingTable } from './components/billingTable';
 import {
   Box,
   Flex,
   Input,
-  Select,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr
 } from '@chakra-ui/react';
 import styles from './index.module.scss';
-import { TableHeaders } from '@/constants/billing';
 
 export default function Billing() {
   return (
@@ -34,7 +26,7 @@ export default function Billing() {
           <Input size="sm"></Input>
         </Box>
       </Flex>
-      <TableContainer w="100%" mt="36px" className={styles.container}>
+      {/* <TableContainer w="100%" mt="36px" className={styles.container}>
         <Table variant="simple">
           <Thead>
             <Tr>
@@ -60,7 +52,8 @@ export default function Billing() {
             })}
           </Tbody>
         </Table>
-      </TableContainer>
+      </TableContainer> */}
+      {MockBillingData && <BillingTable data={MockBillingData}></BillingTable>}
     </Flex>
   );
 }

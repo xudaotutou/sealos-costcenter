@@ -1,4 +1,4 @@
-import { ComponentStyleConfig, defineStyleConfig, extendTheme } from '@chakra-ui/react';
+import { defineStyleConfig, extendTheme } from '@chakra-ui/react';
 
 const Button = defineStyleConfig({
   baseStyle: {
@@ -30,22 +30,68 @@ const Input = defineStyleConfig({});
 
 const Select = defineStyleConfig({
   variants: {
-    filled: {
+    outline: {
       field: {
-        backgroundColor: '#F4F6F8'
+        backgroundColor: '#F4F6F8',
+        borderRadius: '2px',
+        border: '1px solid #DEE0E2'
       }
     }
   },
   defaultProps: {
     size: 'md',
-    variant: 'filled'
+    variant: 'outline'
   }
 });
-
+const Heading = defineStyleConfig({
+  sizes: {
+    sm: {
+      fontsize: '14px',
+      color: '#5A646E',
+      fontStyle: 'normal',
+      fontWeight: '500',
+      lineHeight: '140%'
+    },
+    lg: {
+      fontStyle: 'normal',
+      fontWeight: '500',
+      fontSize: '20px',
+      lineHeight: '150%',
+      color: '#24282C'
+    }
+  }
+});
+const Card = defineStyleConfig({
+  variants: {
+    filled: {
+      container: {
+        height: '146px',
+        width: '145px',
+        borderRadius: '4px',
+        display:'flex',
+        justifyContent:'center',
+        alignItems:'center',
+        backgroundColor:'#FDFDFE',
+      },
+      body:{
+        display:'flex',
+      }
+    }
+  }
+});
 export const theme = extendTheme({
   components: {
     Button,
     Input,
-    Select
-  }
+    Select,
+    Heading,
+    Card
+  },
+  styles: {
+    global: {
+      'html, body': {
+        backgroundColor: '#F5F5F5'
+      },
+    },
+  },
 });
