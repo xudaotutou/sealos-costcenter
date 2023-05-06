@@ -3,7 +3,7 @@ import useRecharge from '@/hooks/useRecharge';
 import request from '@/service/request';
 import useSessionStore from '@/stores/session';
 import { formatMoney } from '@/utils/format';
-import { Button, Flex, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import styles from './user.module.scss';
 
@@ -16,9 +16,11 @@ export default function UserCard() {
   if (data?.data?.deductionBalance) {
     real_balance = real_balance - data.data.deductionBalance;
   }
+  console.log(data?.data)
 
   return (
-    <div className={styles.userCard}>
+    <Flex className={styles.userCard}>
+    <Box zIndex='10' flex={'1'}>
       <Flex alignItems={'center'}>
         <Text>188***dsadasd</Text>
         <Text ml="auto" mr="6px">
@@ -45,6 +47,7 @@ export default function UserCard() {
         </Button>
       </Flex>
       {isOpen && <RechargeModal balance={formatMoney(real_balance)} />}
-    </div>
+    </Box>
+    </Flex>
   );
 }

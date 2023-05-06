@@ -9,6 +9,7 @@ import { SelectYear } from './components/selectYear';
 import { Trend } from './trend';
 import { Buget } from './buget';
 import { Cost } from './cost';
+import { memo } from 'react';
 
 
 export default function CostOverview() {
@@ -16,7 +17,7 @@ export default function CostOverview() {
   // const [year, setYear] = useState(() => 2000);
 
   return <Flex h={'100%'}>
-    <Box bg='white' pt="29px" pl="33px" pr="24px" overflow={'auto'} borderRadius="12px">
+    <Box bg='white' pt="29px" pl="33px" pr="24px" overflow={'auto'} borderRadius="12px" minW={'963px'}>
       <Flex>
         <Flex w={'116px'} justify="space-between" mr='24px'>
           <Img src={bar_icon.src} w={'24px'} h={'24px'}></Img>

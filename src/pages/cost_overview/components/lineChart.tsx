@@ -7,83 +7,77 @@ import {
   VisualMapComponent,
   VisualMapComponentOption,
   MarkLineComponent,
-  MarkLineComponentOption
+  MarkLineComponentOption,
+  DatasetComponent,
+  TooltipComponent
 } from 'echarts/components';
 import { LineChart, LineSeriesOption } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
-import { CanvasRenderer } from 'echarts/renderers';
+import { SVGRenderer } from 'echarts/renderers';
 
 echarts.use([
   GridComponent,
   VisualMapComponent,
+  DatasetComponent,
   MarkLineComponent,
   LineChart,
-  CanvasRenderer,
+  SVGRenderer,
+  TooltipComponent,
   UniversalTransition
 ]);
 
 export default function Trend() {
-const option = {
-    xAxis: {
-      type: 'category',
-      boundaryGap: false
-    },
-    yAxis: {
-      type: 'value',
-      boundaryGap: [0, '30%']
-    },
-    visualMap: {
-      type: 'piecewise',
-      show: false,
-      dimension: 0,
-      seriesIndex: 0,
-      pieces: [
-        {
-          gt: 1,
-          lt: 3,
-          color: 'rgba(0, 0, 180, 0.4)'
-        },
-        {
-          gt: 5,
-          lt: 7,
-          color: 'rgba(0, 0, 180, 0.4)'
-        }
-      ]
+  const source = [
+    ['date', 'value'],
+    ['2019-10-10', 200],
+    ['2019-10-11', 560],
+    ['2019-10-12', 750],
+    ['2019-10-13', 580],
+    ['2019-10-14', 250],
+    ['2019-10-15', 300],
+    ['2019-10-16', 450],
+    ['2019-10-17', 300],
+    ['2019-10-18', 100]
+  ]
+  const option = {
+    xAxis: { type: 'category'},
+    yAxis: {},
+    dataset: {
+      dimensions: [
+        'date',
+        // 可以简写为 string ，表示 dimension name 。
+        'value',
+      ],
+      source
     },
     series: [
       {
         type: 'line',
-        smooth: 0.6,
+        smooth: true,
         symbol: 'none',
         lineStyle: {
-          color: '#5470C6',
-          width: 5
+          color: '#24282C',
+          width: '2.5px',
         },
-        markLine: {
-          symbol: ['none', 'none'],
-          label: { show: false },
-          data: [{ xAxis: 1 }, { xAxis: 3 }, { xAxis: 5 }, { xAxis: 7 }]
+        encode: {
+          // 将 "amount" 列映射到 X 轴。
+          x: 'date',
+          y: 'value'
         },
-        areaStyle: {},
-        data: [
-          ['2019-10-10', 200],
-          ['2019-10-11', 560],
-          ['2019-10-12', 750],
-          ['2019-10-13', 580],
-          ['2019-10-14', 250],
-          ['2019-10-15', 300],
-          ['2019-10-16', 450],
-          ['2019-10-17', 300],
-          ['2019-10-18', 100]
-        ]
+        // tooltip: {
+        //   trigger: 'axis',
+        //   axisPointer: {
+        //     type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+        //   }
+        // },
       }
     ]
   };
-return <ReactEChartsCore
-  echarts={echarts}
-  option={option}
-  notMerge={true}
-  lazyUpdate={true}
-  onChartReady={(e)=>console.log(e)}
-/>
+  return <ReactEChartsCore
+    echarts={echarts}
+    option={option}
+    notMerge={true}
+    lazyUpdate={true}
+    onChartReady={(e) => console.log(e)}
+  />
 }

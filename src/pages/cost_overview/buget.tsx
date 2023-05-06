@@ -3,6 +3,7 @@ import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
 import down_icon from '@/assert/ic_round-trending-down.png'
 import up_icon from '@/assert/ic_round-trending-up.png'
 import { useState } from "react";
+import { SelectMonth } from "./components/selectMonth";
 
 export function Buget() {
   const [_in, setIn] = useState(1200)
@@ -10,9 +11,9 @@ export function Buget() {
   const [out, setOut] = useState(1300)
   const preout = 1000
   return <Flex mt="20px" direction={'column'}>
-    <Flex alignItems={'center'}>
+    <Flex alignItems={'center'} justify="space-between">
       <Heading size='sm'>收支</Heading>
-      {/* <Box ml="auto" bg="#F4F6F8" borderRadius="4px" w="105px" h="32px"></Box> */}
+      <SelectMonth ></SelectMonth>
     </Flex>
     <Flex mt="20px" justify={'space-between'}>
       <Card variant='filled'>
