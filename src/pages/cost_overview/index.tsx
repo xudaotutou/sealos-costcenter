@@ -16,7 +16,9 @@ import useOverviewStore from '@/stores/overview';
 export default function CostOverview() {
   const { updateSource, selectedMonth, selectedWeek, selectedYear, by } = useOverviewStore()
   // const fn = debounce(updateSource, 2000)
-  useEffect(()=>updateSource(), [selectedMonth, selectedWeek, selectedYear, updateSource, by])
+  useEffect(() => {
+    (async () => { updateSource() })()
+  }, [selectedMonth, selectedWeek, selectedYear, updateSource, by])
 
   return <Flex h={'100%'}>
     <Box bg='white' pt="29px" pl="33px" pr="24px" overflow={'auto'} borderRadius="12px" minW={'963px'}>

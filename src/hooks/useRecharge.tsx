@@ -30,7 +30,7 @@ function useRecharge() {
     const toast = useToast();
 
     const createPaymentRes = useMutation(
-      () => request.post('/api/account/payment', { amount: amount * 10000 }),
+      () => request.post('/api/account/payment', { amount: amount * 1000000 }),
       {
         onSuccess(data) {
           setPaymentName(data?.data?.paymentName);

@@ -17,8 +17,6 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
       return jsonRes(resp, { code: 401, message: 'user null' });
     }
     const namespace = 'ns-' + user.name;
-    const body = req.body
-    console.log(body)
     const name = 'prices'
     const crdSchema = {
       apiVersion: `account.sealos.io/v1`,
@@ -40,6 +38,7 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
       await new Promise<void>((resolve) => setTimeout(() => resolve(), 1000));
     } finally {
       const { body } = await GetCRD(kc, meta, name);
+      console.log(body)
       return jsonRes(resp, {
         code: 200,
         data: body

@@ -9,7 +9,6 @@ import { valuationMap } from '@/constants/payment';
 export default function Valuation() {
   // const { t } = useTranslation();  
   const { data: _data } = useQuery(['valuation'], () => request<ValuationData>('/api/price'));
-  console.log(_data?.data.status)
   const data =
     _data?.data.status.billingRecords
       .filter(x => valuationMap.has(x.resourceType))

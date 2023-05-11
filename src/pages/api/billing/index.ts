@@ -32,7 +32,6 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
     // };
     const hash = crypto.createHash('sha256').update(JSON.stringify(spec));
     const name = hash.digest('hex');
-
     const crdSchema = {
       apiVersion: `account.sealos.io/v1`,
       kind: 'BillingRecordQuery',
@@ -49,18 +48,20 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
       plural: 'billingrecordqueries'
     };
     try {
+      console.log('create!!!')
       await ApplyYaml(kc, yaml.dump(crdSchema));
+      console.log('--create--')
       await new Promise<void>((resolve) => setTimeout(() => resolve(), 1000));
     } finally {
       const { body } = await GetCRD(kc, meta, name);
-      // console.log(body)
+      console.log(body)
       return jsonRes(resp, {
         code: 200,
         data: body
       });
     }
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     jsonRes(resp, { code: 500, data: error });
   }
 }

@@ -1,10 +1,6 @@
 import { TableHeaders } from '@/constants/billing';
-import { Billing } from '@/types/billing';
+import { BillingTableItem } from '@/types/billing';
 import {
-  Box,
-  Flex,
-  Input,
-  Select,
   Table,
   TableContainer,
   Tbody,
@@ -14,7 +10,7 @@ import {
   Thead,
   Tr
 } from '@chakra-ui/react';
-export function BillingTable({data}: {data: Billing[]}) {
+export function BillingTable({data}: {data: BillingTableItem[]}) {
   return <TableContainer w="100%" mt="36px">
     <Table variant="simple">
       <Thead>
@@ -33,9 +29,9 @@ export function BillingTable({data}: {data: Billing[]}) {
               <Td>{item.type}</Td>
               <Td>{item.cpu}</Td>
               <Td>{item.memory}</Td>
-              <Td>{item.disk}</Td>
-              <Td>{item.pv}</Td>
-              <Td>{item.price}</Td>
+              <Td>{item.storage}</Td>
+              {/* <Td>{item.pv}</Td> */}
+              <Td>{item.amount}</Td>
             </Tr>
           );
         })}

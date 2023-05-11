@@ -1,7 +1,6 @@
-import { MockBillingData } from '@/mock/billing';
+// import { MockBillingData } from '@/mock/billing';
 import { BillingTable } from './components/billingTable';
 import {
-  Box,
   Button,
   Flex,
   Img,
@@ -10,32 +9,36 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  NumberInput,
-  NumberInputField,
   Popover,
   PopoverContent,
   PopoverTrigger,
   Text,
 } from '@chakra-ui/react';
 import { ChangeEventHandler, useState } from 'react';
-import { format, isAfter, isBefore, isValid, parse } from 'date-fns';
+import { format, formatISO, isAfter, isBefore, isValid, parse } from 'date-fns';
 import { DateRange, DayPicker, SelectRangeEventHandler } from 'react-day-picker';
 import clander_icon from '@/assert/clander.svg'
 import vectorAll_icon from '@/assert/VectorAll.svg'
 import 'react-day-picker/dist/style.css';
 import arrow_icon from "@/assert/Vector.svg"
 import magnifyingGlass_icon from "@/assert/magnifyingGlass.svg"
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import request from '@/service/request';
+import { BillingTableItem, BillingData, BillingSpec, BillingItem } from '@/types/billing';
 export default function Billing() {
 
-  const [selectedRange, setSelectedRange] = useState<DateRange>();
-  const [fromValue, setFromValue] = useState<string>('');
-  const [toValue, setToValue] = useState<string>('');
-  const [selectType, setType] = useState<number>(-1)
-  const listType: { title: string, value: number }[] = [
+  const [selectedRange, setSelectedRange] = useState<DateRange>(() => ({ from: new Date(2022, 1, 1), to: new Date() }));
+  const [fromValue, setFromValue] = useState<string>(format(selectedRange.from || 0, 'y-MM-dd'));
+  const [toValue, setToValue] = useState<string>(format(selectedRange.to || 0, 'y-MM-dd'));
+  const [selectType, setType] = useState<-1 | 0 | 1>(-1)
+  const [searchValue, setSearch] = useState('')
+  const [tableResult, setTableResult] = useState<BillingTableItem[]>([])
+  const listType: { title: string, value: -1 | 0 | 1 }[] = [
     { title: '全部', value: -1 },
     { title: '充值', value: 0 },
     { title: '消费', value: 1 },
   ]
+
   const handleFromChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setFromValue(e.target.value);
     const date = parse(e.target.value, 'y-MM-dd', new Date());
@@ -66,7 +69,7 @@ export default function Billing() {
   const handleRangeSelect: SelectRangeEventHandler = (
     range: DateRange | undefined
   ) => {
-    setSelectedRange(range);
+    setSelectedRange(range!);
     if (range?.from) {
       setFromValue(format(range.from, 'y-MM-dd'));
     } else {
@@ -78,8 +81,50 @@ export default function Billing() {
       setToValue('');
     }
   };
-
-
+  const mutationResult = useMutation(
+    () => {
+      let spec = {} as BillingSpec
+      // if (searchValue.trim() !== '') {
+      //   spec = { orderID: searchValue }
+      // } else {
+      spec = {
+        page: 1,
+        pageSize: 10,
+        type: selectType,
+        startTime:
+          // format(selectedRange.from || 0,'yyyy-MM-dd HH:mm:ss zzz'),
+          formatISO(selectedRange.from || 0, { representation:'complete' }),
+        // '2023-05-01T11:00:00Z',
+        endTime:
+          // format(selectedRange.to || 0,'yyyy-MM-dd HH:mm:ss zzz')
+          formatISO(selectedRange.to || 0, { representation:'complete' }),
+        // '2023-05-15T11:00:00Z',
+        orderID: searchValue.trim()
+      }
+      // }
+      return request<any, { data: BillingData }, { spec: BillingSpec }>('/api/billing', {
+        method: 'POST',
+        data: {
+          spec
+        }
+      })
+    },
+    {
+      onSuccess(data) {
+        console.log(data)
+        setTableResult(data.data.status?.item?.map<BillingTableItem>((item: BillingItem) => ({
+          order: item.order_id,
+          type: listType[item.type + 1].title,
+          cpu: '￥' + item.costs.cpu,
+          memory: '￥' + item.costs.memory,
+          storage: '￥' + item.costs.storage,
+          amount: '￥' + item.amount,
+          transactionHour: item.time
+        })||[])
+        )
+      }
+    }
+  )
   return (
     <Flex flexDirection="column" w="100%" h="100%" bg={'white'} pl="32px" pr="46px">
       <Text fontWeight={500} fontSize="20px" mt="32px">
@@ -136,7 +181,7 @@ export default function Billing() {
         <Box w={'104px'} h={'32px'} bg="#F4F6F8" mx={'16px'}></Box> */}
         <Flex ml={'auto'} mr='16px' border='1px solid #DEE0E2' h='32px' align={'center'} py={'10.3px'} pl={'9.3px'} borderRadius={'2px'}>
           <Img src={magnifyingGlass_icon.src} w={'14px'} mr={'8px'}></Img>
-          <Input variant={'unstyled'} placeholder='订单号'></Input>
+          <Input variant={'unstyled'} placeholder='订单号' value={searchValue} onChange={v => setSearch(v.target.value)}></Input>
         </Flex>
         <Button
           variant={'unstyled'}
@@ -155,9 +200,15 @@ export default function Billing() {
           _hover={{
             opacity: '0.5'
           }}
+          onClick={e => {
+            e.preventDefault()
+            // queryClient.getQueryData(['billing'])
+            mutationResult.mutate()
+          }}
         >搜索</Button>
       </Flex>
-      {MockBillingData && <BillingTable data={MockBillingData}></BillingTable>}
+      {mutationResult.isSuccess && tableResult.length && <BillingTable data={tableResult}></BillingTable>}
+      {mutationResult.isError && <div>retry</div>}
     </Flex>
   );
 }

@@ -5,7 +5,7 @@ export const TableHeaders = [
   'CPU',
   '内存',
   '本地硬盘',
-  'PV',
+  // 'PV',
   '总金额'
 ];
 export const CATEGORY = ['CPU', '内存', '本地硬盘', 'PV'];
