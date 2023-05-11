@@ -1,7 +1,8 @@
 
-import { Heading, Box } from '@chakra-ui/react'
+import { Heading, Box, Flex } from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
 import { memo } from 'react'
+import { SelectMonth } from './components/selectMonth'
 
 const LineChart = dynamic(
   () => import('./components/lineChart'),
@@ -10,7 +11,10 @@ const LineChart = dynamic(
 
 export const Trend = memo(function Trend() {
   return <Box>
-    <Heading size={'sm'}>成本趋势</Heading>
+    <Flex mt='25px' justify={'space-between'} align={'center'}>
+      <Heading size={'sm'}>成本趋势</Heading>
+      <SelectMonth></SelectMonth>
+    </Flex>
     <LineChart></LineChart>
   </Box>
 })

@@ -1,15 +1,52 @@
-import {} from "@/constants/payment";
+import { INIT_YEAR, NOW_YEAR } from "@/constants/payment";
 import useOverviewStore from "@/stores/overview";
 import { memo } from "react";
-import { Select } from "@chakra-ui/react";
-export const SelectYear = memo(function SelectYear({years}:{years:number[]}) {
-  const {selectedYear,setYear} = useOverviewStore(state=>state)
-  return <Select  defaultValue={selectedYear} onChange={(e)=>setYear(+e.target.value)} w='110px' h='32px'>
-    {
-        years.map((item,index)=>{
-        return <option key={index} value={index} >{item}</option>
-      })
-    }
-  
-</Select>
+import { Button, Img, Menu, MenuButton, MenuItem, MenuList, Select } from "@chakra-ui/react";
+import arrow_icon from "@/assert/Vector.svg"
+import dayjs from "dayjs";
+export const SelectYear = memo(function SelectYear() {
+  const { selectedYear, setYear } = useOverviewStore(state => state)
+  const items: number[] = Array.from({
+    length: NOW_YEAR - INIT_YEAR + 1,
+  },
+    (_, offset) => INIT_YEAR + offset)
+
+  return <Menu>{({ isOpen }) => <>
+    <MenuButton as={Button} rightIcon={<Img src={arrow_icon.src} transition={'all'} transform={isOpen ? 'rotate(-180deg)' : 'rotate(0)'}></Img>}
+      w='110px'
+      shadow={'0px 0px 4px 0px #A8DBFF'}
+      h='32px'
+      bg={'#F6F8F9'}
+      _expanded={{
+        background: '#F8FAFB',
+        border: `1px solid #36ADEF`
+      }}
+      fontStyle='normal'
+      fontWeight='400'
+      fontSize='12px'
+      lineHeight='140%'
+      _hover={{
+        background: '#F8FAFB',
+        border: `1px solid #36ADEF`
+      }}
+      borderRadius={'2px'}
+    >
+      {selectedYear}
+    </MenuButton>
+    <MenuList p={'6px'} boxSizing='border-box' minW={'110px'} shadow={'0px 0px 1px 0px #798D9F40, 0px 2px 4px 0px #A1A7B340'
+    }>
+      {items.map((year, idx) => (<MenuItem key={year} onClick={() => {
+        setYear(year)
+      }
+      }
+       color={year === selectedYear ? '#0884DD' : '#5A646E'} 
+       h='30px'
+       bg={year === selectedYear ? '#F4F6F8' : '#FDFDFE'} >
+        {year}
+      </MenuItem>))}
+      {/* <MenuItem>helkl</MenuItem> */}
+    </MenuList>
+  </>}
+
+  </Menu>
 })

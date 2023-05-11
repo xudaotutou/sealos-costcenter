@@ -16,12 +16,12 @@ export default function UserCard() {
   if (data?.data?.deductionBalance) {
     real_balance = real_balance - data.data.deductionBalance;
   }
-  console.log(data?.data)
+  // console.log(data?.data)
 
   return (
-    <Flex className={styles.userCard}>
-    <Box zIndex='10' flex={'1'}>
-      <Flex alignItems={'center'}>
+    <Flex className={styles.userCard} boxShadow={'0 4px #BCBFC3,0 8px #DFE2E6'}>
+    <Box zIndex='10' flex={'1'} >
+      <Flex alignItems={'center'} >
         <Text>188***dsadasd</Text>
         <Text ml="auto" mr="6px">
           {session?.user?.name}

@@ -1,30 +1,30 @@
 import { defineStyleConfig, extendTheme } from '@chakra-ui/react';
 
-const Button = defineStyleConfig({
-  baseStyle: {
-    borderRadius: '4px'
-  },
-  sizes: {
-    sm: {},
-    md: {},
-    primary: {
-      width: '215px',
-      height: '36px'
-    }
-  },
-  variants: {
-    primary: {
-      bg: '#3E3B3B',
-      _hover: {
-        bg: '#3E3B3B',
-        _disabled: {
-          bg: '#3E3B3B'
-        }
-      },
-      color: '#FEFEFE'
-    }
-  }
-});
+// const Button = defineStyleConfig({
+//   baseStyle: {
+//     borderRadius: '4px'
+//   },
+//   sizes: {
+//     sm: {},
+//     md: {},
+//     primary: {
+//       width: '215px',
+//       height: '36px'
+//     }
+//   },
+//   variants: {
+//     primary: {
+//       bg: '#3E3B3B',
+//       _hover: {
+//         bg: '#3E3B3B',
+//         _disabled: {
+//           bg: '#3E3B3B'
+//         }
+//       },
+//       color: '#FEFEFE'
+//     }
+//   }
+// });
 
 const Input = defineStyleConfig({});
 
@@ -81,7 +81,7 @@ const Card = defineStyleConfig({
 });
 export const theme = extendTheme({
   components: {
-    Button,
+    // Button,
     Input,
     Select,
     Heading,
@@ -94,4 +94,9 @@ export const theme = extendTheme({
       },
     },
   },
+  fonts: {
+    '*':`'PingFang SC'`,
+    div:`'PingFang SC'`,
+    button:`'PingFang SC'`
+  }
 });

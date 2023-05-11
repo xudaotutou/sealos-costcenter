@@ -9,12 +9,14 @@ import { SelectYear } from './components/selectYear';
 import { Trend } from './trend';
 import { Buget } from './buget';
 import { Cost } from './cost';
-import { memo } from 'react';
+import { memo, useCallback, useEffect } from 'react';
+import useOverviewStore from '@/stores/overview';
 
 
 export default function CostOverview() {
-  // const { data } = useQuery(['getUserOrders'], () => request('/api/order'));
-  // const [year, setYear] = useState(() => 2000);
+  const { updateSource, selectedMonth, selectedWeek, selectedYear, by } = useOverviewStore()
+  // const fn = debounce(updateSource, 2000)
+  useEffect(()=>updateSource(), [selectedMonth, selectedWeek, selectedYear, updateSource, by])
 
   return <Flex h={'100%'}>
     <Box bg='white' pt="29px" pl="33px" pr="24px" overflow={'auto'} borderRadius="12px" minW={'963px'}>
@@ -23,8 +25,7 @@ export default function CostOverview() {
           <Img src={bar_icon.src} w={'24px'} h={'24px'}></Img>
           <Heading size='lg'>成本总览</Heading>
         </Flex>
-        <SelectYear years={[2022,2023]} ></SelectYear>
-        {/* <SelectMonth></SelectMonth> */}
+        <SelectYear></SelectYear>
       </Flex>
       <Flex flexDirection={'column'}>
         <Trend></Trend>

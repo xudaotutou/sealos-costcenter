@@ -7,7 +7,7 @@ export const formatTime = (
   return dayjs(time).format(format)
 }
 
-// 1¥=10000
+// 1¥=1000000
 export const formatMoney = (money: number) => {
-  return (money / 10000).toFixed(2)
+  return (money / 1000000).toFixed(2)
 }

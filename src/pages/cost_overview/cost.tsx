@@ -13,4 +13,4 @@ export const Cost = memo(function Cost() {
     </Flex>
     <Chart></Chart>
   </Flex>
-})
+}) 

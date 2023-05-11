@@ -20,9 +20,9 @@ request.interceptors.request.use(
       _headers['Authorization'] = encodeURIComponent(session?.kubeconfig || '');
     }
 
-    if (process.env.NODE_ENV === 'development') {
-      _headers['Authorization'] = encodeURIComponent(process.env.NEXT_PUBLIC_MOCK_KUBECONFIG || '');
-    }
+    // if (process.env.NODE_ENV === 'development') {
+    //   _headers['Authorization'] = encodeURIComponent(process.env.NEXT_PUBLIC_MOCK_KUBECONFIG || '');
+    // }
 
     if (!config.headers || config.headers['Content-Type'] === '') {
       _headers['Content-Type'] = 'application/json';

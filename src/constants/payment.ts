@@ -48,8 +48,15 @@ export const generatePaymentCrd = (form: PaymentForm) => {
 
 export const MONTHS = dayjs.months();
 // years mock data
-export const YEARS = [2020,2022];
-export const CURRENT_MONTH = "本月"
+export const INIT_YEAR = 2022;
+export const CURRENT_MONTH = '本月';
 export const NOW_YEAR = dayjs().year();
 export const NOW_MONTH = dayjs().month();
-export const NOW_DAY = dayjs().day();
+export const NOW_WEEK = 0;
+
+export const valuationMap = new Map([
+  ['cpu', { unit: 'mCore' }],
+  ['memory', { unit: 'MiB' }],
+  ['storage', { unit: 'MiB' }],
+  ['disk', { unit: 'MiB' }]
+]);
