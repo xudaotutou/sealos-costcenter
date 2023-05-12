@@ -27,6 +27,7 @@ import magnifyingGlass_icon from "@/assert/magnifyingGlass.svg"
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import request from '@/service/request';
 import { BillingTableItem, BillingData, BillingSpec, BillingItem } from '@/types/billing';
+import { LIST_TYPE } from '@/constants/billing';
 export default function Billing() {
 
   const [selectedRange, setSelectedRange] = useState<DateRange>(() => ({ from: new Date(2022, 1, 1), to: new Date() }));
@@ -38,11 +39,7 @@ export default function Billing() {
   const [totalPage, setTotalPage] = useState(1)
   const [currentPage, setcurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
-  const listType: { title: string, value: -1 | 0 | 1 }[] = [
-    { title: '全部', value: -1 },
-    { title: '充值', value: 0 },
-    { title: '消费', value: 1 },
-  ]
+
 
   const handleFromChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setFromValue(e.target.value);
@@ -116,7 +113,7 @@ export default function Billing() {
         console.log(data)
         setTableResult(data.data.status?.item?.map<BillingTableItem>((item: BillingItem) => ({
           order: item.order_id,
-          type: listType[item.type + 1].title,
+          type: LIST_TYPE[item.type + 1].title,
           cpu: '￥' + item.costs.cpu,
           memory: '￥' + item.costs.memory,
           storage: '￥' + item.costs.storage,
@@ -180,9 +177,9 @@ export default function Billing() {
             fontWeight='400'
             fontSize='12px'
             borderRadius='2px'
-          >{listType[selectType + 1].title}</MenuButton>
+          >{LIST_TYPE[selectType + 1].title}</MenuButton>
           <MenuList maxW={'110px'} w='110px'>
-            {listType.map(v => <MenuItem key={v.value} onClick={() => setType(v.value)}>{v.title}</MenuItem>)}
+            {LIST_TYPE.map(v => <MenuItem key={v.value} onClick={() => setType(v.value)}>{v.title}</MenuItem>)}
           </MenuList>
         </Menu>
         {/* <Text fontSize={'12px'}>计费周期</Text>

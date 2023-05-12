@@ -15,6 +15,7 @@ import {
   startOfMonth
 } from 'date-fns';
 import { INITAL_SOURCE } from '@/constants/billing';
+import { formatMoney } from '@/utils/format';
 export enum By {
   month,
   week
@@ -28,6 +29,7 @@ type OverviewState = {
   storage: number;
   memory: number;
   by: By;
+  billingData:BillingData;
   items: BillingData['status']['item'];
   setMonth: (month: number) => void;
   setYear: (year: number) => void;
@@ -49,7 +51,8 @@ const useOverviewStore = create<OverviewState>()(
         storage: -1,
         memory: -1,
         items: [],
-        source: [['name', 'line', 'pie']],
+        billingData:{} as any,
+        source: INITAL_SOURCE as any,
         setWeek: (week) => set({ selectedWeek: week }),
         setMonth: (month) => set({ selectedMonth: month }),
         setYear: (year) => set({ selectedYear: year }),
@@ -182,7 +185,7 @@ const useOverviewStore = create<OverviewState>()(
           };
           console.log('update source');
           set((state) => {
-            state.source = INITAL_SOURCE;
+            state.source = INITAL_SOURCE as any;
           });
           if (data.status.pageLength === 0) {
             return;
@@ -194,6 +197,7 @@ const useOverviewStore = create<OverviewState>()(
             state.memory = deductionAmount.memory;
             state.items = data.status.item;
             console.log(state);
+            state.billingData = structuredClone(data)
             state.source.push(
               // ...data.status.item.flatMap((item) => [
               //   [format(parseISO(item.time),'MM-dd'), 'cpu', (item.costs.cpu / 1000000)],
@@ -223,6 +227,13 @@ const useOverviewStore = create<OverviewState>()(
 
                   return pre;
                 }, [])
+                .map((x) => [
+                  x[0],
+                  formatMoney(x[1]),
+                  formatMoney(x[2]),
+                  formatMoney(x[3]),
+                  formatMoney(x[4])
+                ])
             );
           });
         }

@@ -11,20 +11,23 @@ import { Buget } from '../../components/cost_overview/buget';
 import { Cost } from '../../components/cost_overview/cost';
 import { memo, useCallback, useEffect } from 'react';
 import useOverviewStore from '@/stores/overview';
+import { LIST_TYPE } from '@/constants/billing';
+import { BillingTableItem, BillingItem } from '@/types/billing';
+import { formatMoney } from '@/utils/format';
 
 
 export default function CostOverview() {
   const { updateSource, selectedMonth, selectedWeek, selectedYear, by } = useOverviewStore()
   useEffect(() => {
-    let timer:ReturnType<typeof setTimeout> 
+    let timer: ReturnType<typeof setTimeout>
     timer = setTimeout(() => {
       updateSource()
     }, 1000);
-    return ()=>{
+    return () => {
       clearTimeout(timer)
     }
   }, [selectedMonth, selectedWeek, selectedYear, by])
-
+  const billingdata = useOverviewStore(state => state.billingData)
   return <Flex h={'100%'}>
     <Box bg='white' pt="29px" pl="33px" pr="24px" overflow={'auto'} borderRadius="12px" minW={'963px'}>
       <Flex>
@@ -38,7 +41,18 @@ export default function CostOverview() {
         <Trend></Trend>
         <Box>
           <Heading size={'sm'}>最近交易</Heading>
-          <BillingTable data={[]}></BillingTable>
+          <BillingTable data={billingdata.status.item
+            .map<BillingTableItem>((item: BillingItem) => ({
+              order: item.order_id,
+              type: LIST_TYPE[item.type + 1].title,
+              cpu: '￥' + formatMoney(item.costs.cpu),
+              memory: '￥' + formatMoney(item.costs.memory),
+              storage: '￥' + formatMoney(item.costs.storage),
+              amount: '￥' + formatMoney(item.amount),
+              transactionHour: item.time
+            }))
+            .filter((v, i) => i < 5)
+          }></BillingTable>
         </Box>
       </Flex>
     </Box>
@@ -56,5 +70,5 @@ export default function CostOverview() {
       <Buget></Buget>
       <Cost></Cost>
     </Box>
-  </Flex>;
+  </Flex>
 }

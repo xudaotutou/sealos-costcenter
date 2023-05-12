@@ -8,9 +8,10 @@ import ReactEChartsCore from 'echarts-for-react/lib/core';
 import { PieChart } from 'echarts/charts';
 import { LabelLayout } from 'echarts/features';
 import { SVGRenderer } from 'echarts/renderers';
-import { CATEGORY } from '@/constants/billing';
-import { useId } from 'react';
+import { CATEGORY, INITAL_SOURCE } from '@/constants/billing';
 import useOverviewStore from '@/stores/overview';
+import { formatMoney } from '@/utils/format';
+import { useMemo } from 'react';
 
 echarts.use([
   // TooltipComponent,
@@ -22,8 +23,17 @@ echarts.use([
 ]);
 
 export default function CostChart() {
-  const source = CATEGORY.map((x, i) => [x, ((i + 1) * 173) % 37])
-  source.unshift(['name', 'cost'])
+  // const source = CATEGORY.map((x, i) => [x, ((i + 1) * 173) % 37])
+  const cpu = useOverviewStore(state => state.cpu)
+  const memory = useOverviewStore(state => state.memory)
+  const storage = useOverviewStore(state => state.storage)
+  // source.unshift(['name', 'cost'])
+  const source = useMemo(() => [
+    ['name', 'cost'],
+    ['cpu', formatMoney(cpu)],
+    ['memory', formatMoney(memory)],
+    ['storage', formatMoney(storage)]
+  ] as const, [cpu, memory, storage])
   console.log(source)
   // const source = useOverviewStore(state=>state.source)
   const option = {
@@ -33,13 +43,15 @@ export default function CostChart() {
       top: '50%',
       right: 0,
       bottom: 0,
-      icon:'circle',
+      icon: 'circle',
     },
     grid: {
       left: 0,
     },
+
     dataset: {
-      source
+      dimensions: source[0],
+      source,
     },
     color: ['#7B838B', '#485058', '#24282C', '#BDC1C5'],
     series: [{
@@ -52,8 +64,8 @@ export default function CostChart() {
         show: false,
         position: 'center',
       },
-      left:'left',
-      
+      left: 'left',
+
       emphasis: {
         scale: true,
         label: {
@@ -77,7 +89,7 @@ export default function CostChart() {
       itemStyle: {
         borderWidth: 1,
         borderColor: "#fff",
-        left:0,
+        left: 0,
       }
     }]
     // ]

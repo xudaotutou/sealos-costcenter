@@ -30,25 +30,17 @@ echarts.use([
 ]);
 
 export default function Trend() {
-  // const source = [
-  //   ['date', 'value'],
-  //   ['2019-10-10', 200],
-  //   ['2019-10-11', 560],
-  //   ['2019-10-12', 750],
-  //   ['2019-10-13', 580],
-  //   ['2019-10-14', 250],
-  //   ['2019-10-15', 300],
-  //   ['2019-10-16', 450],
-  //   ['2019-10-17', 300],
-  //   ['2019-10-18', 100]
-  // ]
   const source = useOverviewStore(data => data.source)
   const option = {
     xAxis: { type: 'category' },
-    yAxis: { name: 'amount', type: 'value' },
+    yAxis: { name: 'amount', type: 'value',boundaryGap: false },
     dataset: {
       dimensions: INITAL_SOURCE[0],
       source
+    },
+    color:['#24282C'],
+    grid:{
+      show: false
     },
     legend:{},
     tooltip: {
@@ -59,51 +51,67 @@ export default function Trend() {
       }
     },
     series: [
-      {
-        type: 'line',
-        smooth: true,
-        // symbol: 'none',
-        // lineStyle: {
-        //   color: '#24282C',
-        //   width: '2.5px',
-        // },
+      // {
+      //   type: 'line',
+      //   smooth: true,
+      //   // symbol: 'none',
+      //   // lineStyle: {
+      //   //   color: '#24282C',
+      //   //   width: '2.5px',
+      //   // },
         
+      //   showSymbol: false,
+      //   datasetIndex: 0,
+      //   encode: {
+      //     // 将 "amount" 列映射到 y 轴。
+      //     x: 'date',
+      //     y: 'cpu',
+      //   },
+      // },
+      // {
+      //   type: 'line',
+      //   smooth: true,
+      //   // symbol: 'none',
+      //   // lineStyle: {
+      //   //   color: '#24282C',
+      //   //   width: '2.5px',
+      //   // },
+      //   datasetIndex: 0,
+      //   showSymbol: false,
+      //   encode: {
+      //     // 将 "amount" 列映射到 y 轴。
+      //     x: 'date',
+      //     y: 'memory',
+      //   },
+      // },
+      // {
+      //   type: 'line',
+      //   smooth: true,
+      //   showSymbol: false,
+      //   // symbol: 'none',
+      //   // lineStyle: {
+      //   //   color: '#24282C',
+      //   //   width: '2.5px',
+      //   // },
+      //   datasetIndex: 0,
+      //   encode: {
+      //     // 将 "amount" 列映射到 y 轴。
+      //     x: 'date',
+      //     y: 'storage',
+      //   },
+      // },
+      {
+        type: 'line',
+        smooth: true,
         showSymbol: false,
-        datasetIndex: 0,
-        encode: {
-          // 将 "amount" 列映射到 y 轴。
-          x: 'date',
-          y: 'cpu',
-        },
-      },
-      {
-        type: 'line',
-        smooth: true,
-        // symbol: 'none',
         // lineStyle: {
         //   color: '#24282C',
-        //   width: '2.5px',
         // },
         datasetIndex: 0,
         encode: {
           // 将 "amount" 列映射到 y 轴。
           x: 'date',
-          y: 'memory',
-        },
-      },
-      {
-        type: 'line',
-        smooth: true,
-        // symbol: 'none',
-        // lineStyle: {
-        //   color: '#24282C',
-        //   width: '2.5px',
-        // },
-        datasetIndex: 0,
-        encode: {
-          // 将 "amount" 列映射到 y 轴。
-          x: 'date',
-          y: 'storage',
+          y: 'amount',
         },
       }
     ]
