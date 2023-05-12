@@ -1,24 +1,29 @@
 
 import { Box, Flex, Heading, Img, Text, } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
-import { BillingTable } from '@/pages/billing/components/billingTable';
-import { SelectMonth } from './components/selectMonth';
-import UserCard from './components/user';
+import { BillingTable } from '@/components/billing/billingTable';
+import { SelectMonth } from '../../components/cost_overview/components/selectMonth';
+import UserCard from '../../components/cost_overview/components/user';
 import bar_icon from '@/assert/bar_chart_4_bars.png'
-import { SelectYear } from './components/selectYear';
-import { Trend } from './trend';
-import { Buget } from './buget';
-import { Cost } from './cost';
+import { SelectYear } from '../../components/cost_overview/components/selectYear';
+import { Trend } from '../../components/cost_overview/trend';
+import { Buget } from '../../components/cost_overview/buget';
+import { Cost } from '../../components/cost_overview/cost';
 import { memo, useCallback, useEffect } from 'react';
 import useOverviewStore from '@/stores/overview';
 
 
 export default function CostOverview() {
   const { updateSource, selectedMonth, selectedWeek, selectedYear, by } = useOverviewStore()
-  // const fn = debounce(updateSource, 2000)
   useEffect(() => {
-    (async () => { updateSource() })()
-  }, [selectedMonth, selectedWeek, selectedYear, updateSource, by])
+    let timer:ReturnType<typeof setTimeout> 
+    timer = setTimeout(() => {
+      updateSource()
+    }, 1000);
+    return ()=>{
+      clearTimeout(timer)
+    }
+  }, [selectedMonth, selectedWeek, selectedYear, by])
 
   return <Flex h={'100%'}>
     <Box bg='white' pt="29px" pl="33px" pr="24px" overflow={'auto'} borderRadius="12px" minW={'963px'}>

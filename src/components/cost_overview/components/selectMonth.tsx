@@ -53,7 +53,6 @@ export const SelectMonth = memo(function SelectMonth() {
         shadow={'0px 0px 1px 0px #798D9F40, 0px 2px 4px 0px #A1A7B340'}
         border={'none'}
       >
-        {/* <PopoverBody flexDirection={'column'}>  */}
         {items.map((v, idx) => (<Popover key={v.item} placement='left'  >
           <PopoverTrigger>
             <Button color={idx === by ? '#0884DD' : '#5A646E'}
@@ -98,17 +97,6 @@ export const SelectMonth = memo(function SelectMonth() {
             </NumberInput>
           </PopoverContent>
         </Popover>))}
-        {/* <Popover>
-          <PopoverTrigger>
-            <Button>Sub-Popover 1</Button>
-          </PopoverTrigger>
-          <PopoverContent>
-            <PopoverBody>
-              This is a sub-popover.
-            </PopoverBody>
-          </PopoverContent>
-        </Popover> */}
-        {/* </PopoverBody> */}
       </PopoverContent >
     </Popover >
   );

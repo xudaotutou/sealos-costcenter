@@ -1,6 +1,6 @@
-import { Billing } from '@/types/billing';
+import { BillingItem } from '@/types/billing';
 
-export const MockBillingData: Billing[] = [
+export const MockBillingData: BillingItem[] = [
   // {
   //   order: '423536623760264',
   //   transactionHour: '2023-02-22 17:00:00',

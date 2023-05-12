@@ -8,4 +8,5 @@ export const TableHeaders = [
   // 'PV',
   '总金额'
 ];
-export const CATEGORY = ['CPU', '内存', '本地硬盘', 'PV'];
+export const CATEGORY = ['CPU', '内存', '本地硬盘'];
+export const INITAL_SOURCE = [['date', 'cpu', 'memory', 'storage','amount']] as const

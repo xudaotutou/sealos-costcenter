@@ -1,5 +1,5 @@
 // import { MockBillingData } from '@/mock/billing';
-import { BillingTable } from './components/billingTable';
+import { BillingTable } from '../../components/billing/billingTable';
 import {
   Button,
   Flex,
@@ -89,9 +89,6 @@ export default function Billing() {
   const mutationResult = useMutation(
     () => {
       let spec = {} as BillingSpec
-      // if (searchValue.trim() !== '') {
-      //   spec = { orderID: searchValue }
-      // } else {
       spec = {
         page: currentPage,
         pageSize: pageSize,
@@ -144,6 +141,7 @@ export default function Billing() {
           border={'1px solid #DEE0E2'}
           borderRadius='2px'>
           <Input
+            isDisabled={mutationResult.isLoading}
             variant={'unstyled'}
             value={fromValue}
             onChange={handleFromChange}
@@ -151,13 +149,14 @@ export default function Billing() {
           />
           <span>-</span>
           <Input
+            isDisabled={mutationResult.isLoading}
             variant={'unstyled'}
             value={toValue}
             onChange={handleToChange}
           />
           <Popover >
             <PopoverTrigger>
-              <Button display={'flex'} variant={'unstyled'} w='24px' justifyContent={'space-between'}>
+              <Button display={'flex'} variant={'unstyled'} w='24px' justifyContent={'space-between'} isDisabled={mutationResult.isLoading}>
                 <Img src={clander_icon.src}></Img>
                 <Img src={vectorAll_icon.src}></Img>
               </Button>
@@ -174,6 +173,7 @@ export default function Billing() {
         <Text fontSize={'12px'} mr={'12px'}>类型</Text>
         <Menu >
           <MenuButton
+            disabled={mutationResult.isLoading}
             border='1px solid #DEE0E2'
             w={'110px'} h={'32px'} bg="#F4F6F8" mr={'32px'}
             fontStyle='normal'
@@ -189,9 +189,12 @@ export default function Billing() {
         <Box w={'104px'} h={'32px'} bg="#F4F6F8" mx={'16px'}></Box> */}
         <Flex ml={'auto'} mr='16px' border='1px solid #DEE0E2' h='32px' align={'center'} py={'10.3px'} pl={'9.3px'} borderRadius={'2px'}>
           <Img src={magnifyingGlass_icon.src} w={'14px'} mr={'8px'}></Img>
-          <Input variant={'unstyled'} placeholder='订单号' value={searchValue} onChange={v => setSearch(v.target.value)}></Input>
+          <Input
+            isDisabled={mutationResult.isLoading}
+            variant={'unstyled'} placeholder='订单号' value={searchValue} onChange={v => setSearch(v.target.value)}></Input>
         </Flex>
         <Button
+          isDisabled={mutationResult.isLoading}
           variant={'unstyled'}
 
           display='flex'
