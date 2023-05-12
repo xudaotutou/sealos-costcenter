@@ -12,15 +12,17 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Spinner,
   Text,
 } from '@chakra-ui/react';
-import { ChangeEventHandler, useState } from 'react';
+import { ChangeEventHandler, useEffect, useState } from 'react';
 import { format, formatISO, isAfter, isBefore, isValid, parse } from 'date-fns';
 import { DateRange, DayPicker, SelectRangeEventHandler } from 'react-day-picker';
 import clander_icon from '@/assert/clander.svg'
 import vectorAll_icon from '@/assert/VectorAll.svg'
 import 'react-day-picker/dist/style.css';
 import arrow_icon from "@/assert/Vector.svg"
+import arrow_left_icon from "@/assert/toleft.svg"
 import magnifyingGlass_icon from "@/assert/magnifyingGlass.svg"
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import request from '@/service/request';
@@ -33,6 +35,9 @@ export default function Billing() {
   const [selectType, setType] = useState<-1 | 0 | 1>(-1)
   const [searchValue, setSearch] = useState('')
   const [tableResult, setTableResult] = useState<BillingTableItem[]>([])
+  const [totalPage, setTotalPage] = useState(1)
+  const [currentPage, setcurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
   const listType: { title: string, value: -1 | 0 | 1 }[] = [
     { title: '全部', value: -1 },
     { title: '充值', value: 0 },
@@ -88,16 +93,16 @@ export default function Billing() {
       //   spec = { orderID: searchValue }
       // } else {
       spec = {
-        page: 1,
-        pageSize: 10,
+        page: currentPage,
+        pageSize: pageSize,
         type: selectType,
         startTime:
           // format(selectedRange.from || 0,'yyyy-MM-dd HH:mm:ss zzz'),
-          formatISO(selectedRange.from || 0, { representation:'complete' }),
+          formatISO(selectedRange.from || 0, { representation: 'complete' }),
         // '2023-05-01T11:00:00Z',
         endTime:
           // format(selectedRange.to || 0,'yyyy-MM-dd HH:mm:ss zzz')
-          formatISO(selectedRange.to || 0, { representation:'complete' }),
+          formatISO(selectedRange.to || 0, { representation: 'complete' }),
         // '2023-05-15T11:00:00Z',
         orderID: searchValue.trim()
       }
@@ -120,13 +125,16 @@ export default function Billing() {
           storage: '￥' + item.costs.storage,
           amount: '￥' + item.amount,
           transactionHour: item.time
-        })||[])
+        }) || [])
         )
+        setTotalPage(data.data.status.pageLength)
       }
     }
   )
+  useEffect(() => mutationResult.mutate(), [])
+  // mutationResult.mutate()
   return (
-    <Flex flexDirection="column" w="100%" h="100%" bg={'white'} pl="32px" pr="46px">
+    <Flex flexDirection="column" w="100%" h="100%" bg={'white'} pl="32px" pr="46px" >
       <Text fontWeight={500} fontSize="20px" mt="32px">
         账单明细
       </Text>
@@ -207,8 +215,56 @@ export default function Billing() {
           }}
         >搜索</Button>
       </Flex>
-      {mutationResult.isSuccess && tableResult.length && <BillingTable data={tableResult}></BillingTable>}
-      {mutationResult.isError && <div>retry</div>}
+      {mutationResult.isSuccess ? <>
+        <BillingTable data={tableResult}></BillingTable>
+        <Flex w='361px' h='32px' ml='auto' align={'center'} mt={'20px'}>
+          <Flex mr={'16px'}>总数:{totalPage * pageSize}</Flex>
+          <Flex gap={'8px'}>
+            <Button variant={'switchPage'} isDisabled={currentPage === 1}
+              onClick={e => {
+                e.preventDefault()
+                setcurrentPage(1)
+                mutationResult.mutateAsync()
+              }}
+            ><Img w='6px' h='6px' src={arrow_left_icon.src}
+            ></Img></Button>
+            <Button variant={'switchPage'} isDisabled={currentPage === 1}
+              onClick={e => {
+                e.preventDefault()
+                setcurrentPage(currentPage - 1)
+                mutationResult.mutateAsync()
+              }}><Img src={arrow_icon.src} transform={'rotate(-90deg)'}></Img></Button>
+            <Text >{currentPage}</Text>/
+            <Text >{totalPage}</Text>
+            <Button variant={'switchPage'} isDisabled={currentPage === totalPage}
+              onClick={e => {
+                e.preventDefault()
+                setcurrentPage(currentPage + 1)
+                mutationResult.mutateAsync()
+              }}
+            ><Img src={arrow_icon.src} transform={'rotate(90deg)'}></Img></Button>
+            <Button variant={'switchPage'} isDisabled={currentPage === totalPage}
+              onClick={e => {
+                e.preventDefault()
+                setcurrentPage(totalPage)
+                mutationResult.mutateAsync()
+              }}><Img w='6px' h='6px' src={arrow_left_icon.src} transform={'rotate(180deg)'}></Img></Button>
+          </Flex>
+          <Text>{pageSize} / 页</Text>
+        </Flex>
+      </> : (
+        <Flex direction={'column'} w='full' align={'center'} flex={'1'} h={'0'} justify={'center'}>
+          {mutationResult.isError && <div>retry</div>}
+          {mutationResult.isLoading && <Spinner
+            thickness='4px'
+            speed='0.65s'
+            emptyColor='gray.200'
+            color='blue.500'
+            size='xl'
+          >loading</Spinner>}
+        </Flex>
+      )}
+
     </Flex>
   );
 }

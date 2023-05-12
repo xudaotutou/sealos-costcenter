@@ -1,30 +1,43 @@
 import { defineStyleConfig, extendTheme } from '@chakra-ui/react';
 
-// const Button = defineStyleConfig({
-//   baseStyle: {
-//     borderRadius: '4px'
-//   },
-//   sizes: {
-//     sm: {},
-//     md: {},
-//     primary: {
-//       width: '215px',
-//       height: '36px'
-//     }
-//   },
-//   variants: {
-//     primary: {
-//       bg: '#3E3B3B',
-//       _hover: {
-//         bg: '#3E3B3B',
-//         _disabled: {
-//           bg: '#3E3B3B'
-//         }
-//       },
-//       color: '#FEFEFE'
-//     }
-//   }
-// });
+const Button = defineStyleConfig({
+  baseStyle: {
+    borderRadius: '4px'
+  },
+  sizes: {
+    primary: {
+      width: '215px',
+      height: '36px'
+    }
+  },
+  variants: {
+    primary: {
+      bg: '#3E3B3B',
+      _hover: {
+        bg: '#3E3B3B',
+        _disabled: {
+          bg: '#3E3B3B'
+        }
+      },
+      color: '#FEFEFE'
+    },
+    switchPage: {
+      width: '24px',
+      height: '24px',
+      background: '#F1F4F6',
+      opacity: '0.5',
+      borderRadius: '9999px',
+      color:'#262A32',
+      flexGrow: '0',
+      _hover:{
+        opacity:'1'
+      },
+      _disabled:{
+        color:'828289'
+      }
+    }
+  }
+});
 
 const Input = defineStyleConfig({});
 
@@ -68,20 +81,20 @@ const Card = defineStyleConfig({
         height: '146px',
         width: '145px',
         borderRadius: '4px',
-        display:'flex',
-        justifyContent:'center',
-        alignItems:'center',
-        backgroundColor:'#FDFDFE',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#FDFDFE'
       },
-      body:{
-        display:'flex',
+      body: {
+        display: 'flex'
       }
     }
   }
 });
 export const theme = extendTheme({
   components: {
-    // Button,
+    Button,
     Input,
     Select,
     Heading,
@@ -91,12 +104,12 @@ export const theme = extendTheme({
     global: {
       'html, body': {
         backgroundColor: '#F5F5F5'
-      },
-    },
+      }
+    }
   },
   fonts: {
-    '*':`'PingFang SC'`,
-    div:`'PingFang SC'`,
-    button:`'PingFang SC'`
+    '*': `'PingFang SC'`,
+    div: `'PingFang SC'`,
+    button: `'PingFang SC'`
   }
 });
