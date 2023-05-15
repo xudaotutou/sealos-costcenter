@@ -54,7 +54,9 @@ export default function Trend() {
       backgroundColor: 'transparent',
       padding: '0px',
 
-      formatter: function (params, ticket, callback) {
+      formatter: function (params: {
+        [x: string]: any; value: any[]; 
+}[], ticket: any, callback: any) {
 
         var res = `<p style="color:#5A646E;">${params[0].name}</p>
         <p style="font-weight: 500;font-size: 14px;color:#24282C;">总消费 : ￥${params[0].value[4]}</p>`;
