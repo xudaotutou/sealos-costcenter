@@ -29,7 +29,9 @@ export const SelectMonth = memo(function SelectMonth() {
           fontWeight='400'
           fontSize='12px'
           lineHeight='140%'
-          shadow={'0px 0px 4px 0px #A8DBFF'}
+          // bgColor={'#F6F8F9'}
+          // shadow={'0px 0px 4px 0px #A8DBFF'}
+          border={'1px solid #DEE0E2'}
           bg={'#F6F8F9'}
           _expanded={{
             background: '#F8FAFB',

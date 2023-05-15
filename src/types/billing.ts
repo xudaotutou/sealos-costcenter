@@ -11,7 +11,7 @@ type Two = HowDigital<'22'>;
 export type BillingTableItem = {
   order: string;
   transactionHour: string;
-  type: string;
+  type: number;
   cpu: string;
   memory: string;
   storage: string;

@@ -1,23 +1,23 @@
 import * as echarts from 'echarts/core';
 import {
-  // TooltipComponent,
+  TooltipComponent,
   LegendComponent,
   DatasetComponent
 } from 'echarts/components';
 import ReactEChartsCore from 'echarts-for-react/lib/core';
 import { PieChart } from 'echarts/charts';
 import { LabelLayout } from 'echarts/features';
-import { SVGRenderer } from 'echarts/renderers';
-import { CATEGORY, INITAL_SOURCE } from '@/constants/billing';
+import { CanvasRenderer, SVGRenderer } from 'echarts/renderers';
 import useOverviewStore from '@/stores/overview';
 import { formatMoney } from '@/utils/format';
 import { useMemo } from 'react';
 
 echarts.use([
-  // TooltipComponent,
+  TooltipComponent,
   LegendComponent,
   PieChart,
-  SVGRenderer,
+  // SVGRenderer,
+  CanvasRenderer,
   LabelLayout,
   DatasetComponent
 ]);
@@ -37,7 +37,7 @@ export default function CostChart() {
   console.log(source)
   // const source = useOverviewStore(state=>state.source)
   const option = {
-    // roseType: 'radius',
+    roseType: 'radius',
     legend: {
       orient: 'vertical',
       top: '50%',
@@ -46,7 +46,7 @@ export default function CostChart() {
       icon: 'circle',
     },
     grid: {
-      left: 0,
+      left: '0%',
     },
 
     dataset: {
@@ -57,17 +57,23 @@ export default function CostChart() {
     series: [{
       type: 'pie',
       name: 'Cost From',
-      radius: ['40%', '70%'],
+      radius: ['30%', '50%'],
       avoidLabelOverlap: false,
-      // selectedMode: 'single',
+      center: ['30%', '50%'],
+      selectedMode: 'single',
       label: {
         show: false,
         position: 'center',
       },
       left: 'left',
-
+      // tooltip: {
+      //   trigger: 'item',
+      //   formatter: function (params) {
+      //     return params.name + ' : ' + params.value;
+      //   }
+      // },
       emphasis: {
-        scale: true,
+        // scale: true,
         label: {
           show: true,
           formatter: '￥{@cost}\n支出',
@@ -79,6 +85,9 @@ export default function CostChart() {
           // textalign: 'center',
         }
       },
+      emptyCircleStyle: {
+        borderCap:'ronud'
+      }, 
       labelLine: {
         show: false
       },
