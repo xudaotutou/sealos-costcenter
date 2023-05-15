@@ -55,8 +55,8 @@ export const NOW_MONTH = dayjs().month();
 export const NOW_WEEK = 0;
 
 export const valuationMap = new Map([
-  ['cpu', { unit: 'mCore' }],
-  ['memory', { unit: 'MiB' }],
-  ['storage', { unit: 'MiB' }],
-  ['disk', { unit: 'MiB' }]
+  ['cpu', { unit: 'Core', scale: 1000, bg: '#33BABB' }],
+  ['memory', { unit: 'GiB', scale: 1024, bg: '#36ADEF' }],
+  ['storage', { unit: 'GiB', scale: 1024, bg: '#8172D8' }]
+  // ['disk', { unit: 'MiB' }]
 ]);

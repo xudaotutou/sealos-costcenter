@@ -33,7 +33,7 @@ export default function Layout({ children }: any) {
   }, [isLodaing, setSession]);
 
   return (
-    <div className={clsx(styles.desktopContainer)}>
+    <Box className={clsx(styles.desktopContainer)} minW={'1500px'} minH={'680px'}>
       {isLodaing ? (
         <Flex w={'100%'} h={'100%'} alignItems={'center'} justifyContent={'center'}>
           {isError ? (
@@ -61,6 +61,6 @@ export default function Layout({ children }: any) {
           </Box>
         </Flex>
       )}
-    </div>
+    </Box>
   );
 }

@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import styles from './index.module.scss';
-// import { useTranslation } from 'react-i18next';
 import bar_icon from '../assert/bar_chart_4_bars.png'
 import letter_icon from '../assert/format_letter_spacing_standard.png'
 import receipt_icon from '../assert/receipt_long.png'
@@ -19,7 +18,6 @@ type Menu = {
 export default function SideBar() {
   const router = useRouter();
   // const { t, i18n } = useTranslation();
-  const [activeMenu, setActiveMenu] = useState('CostOverview');
   const menus: Menu[] = [
     {
       id: 'CostOverview',
@@ -43,7 +41,7 @@ export default function SideBar() {
       icon:letter_icon
     }
   ];
-
+  console.log(router.route)
   return (
     <Flex flexDirection="column" justifyContent="cneter" alignItems="stretch" w={28}>
       {/* <Text
@@ -62,7 +60,7 @@ export default function SideBar() {
             alignItems={"center"}
             // justifyContent={"space-between"}
             onClick={() => {
-              setActiveMenu(item.id);
+              // setActiveMenu(item.id);
               router.push(item.url);
             }}
             as="button"
@@ -79,7 +77,7 @@ export default function SideBar() {
                 alt="icon of module"
               />
             </Flex>
-            <Text className={clsx(styles.baseText, activeMenu === item.id && styles.activeText)}>
+            <Text className={clsx(styles.baseText, router.route === item.url && styles.activeText)}>
               {item.value}
             </Text>
           </Flex>

@@ -32,22 +32,42 @@ echarts.use([
 export default function Trend() {
   const source = useOverviewStore(data => data.source)
   const option = {
-    xAxis: { type: 'category' },
-    yAxis: { name: 'amount', type: 'value',boundaryGap: false },
+    xAxis: { type: 'category',
+    boundaryGap: false,
+   },
+    yAxis: { name: '元', type: 'value', boundaryGap: false },
     dataset: {
       dimensions: INITAL_SOURCE[0],
       source
     },
-    color:['#24282C'],
-    grid:{
-      show: false
+    color: ['#24282C'],
+    grid: {
+      // show: false
     },
-    legend:{},
+    legend: {},
     tooltip: {
       trigger: 'axis',
 
       axisPointer: {
         type: 'line' // 'shadow' as default; can also be 'line' or 'shadow'
+      },
+      backgroundColor: 'transparent',
+      padding: '0px',
+
+      formatter: function (params, ticket, callback) {
+
+        var res = `<p style="color:#5A646E;">${params[0].name}</p>
+        <p style="font-weight: 500;font-size: 14px;color:#24282C;">总消费 : ￥${params[0].value[4]}</p>`;
+        const resDom = document.createElement('div');
+        resDom.innerHTML = res
+        resDom.setAttribute('style', `   
+        background: rgba(238, 241, 248, 0.5);
+        width: 162px;
+        height: 79px;
+        padding: 16px;
+        backdrop-filter: blur(11.5px);bborder-radius: 4px;`)
+        // res += '自定义文本';
+        return resDom;
       }
     },
     series: [
@@ -59,7 +79,7 @@ export default function Trend() {
       //   //   color: '#24282C',
       //   //   width: '2.5px',
       //   // },
-        
+
       //   showSymbol: false,
       //   datasetIndex: 0,
       //   encode: {
@@ -114,14 +134,13 @@ export default function Trend() {
           y: 'amount',
         },
       }
-    ]
+    ],
+
   };
-  console.log(source)
   return <ReactEChartsCore
     echarts={echarts}
     option={option}
     notMerge={true}
     lazyUpdate={true}
-    onChartReady={(e) => console.log(e)}
   />
 }

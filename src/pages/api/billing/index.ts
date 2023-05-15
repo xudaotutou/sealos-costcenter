@@ -6,7 +6,7 @@ import { ApplyYaml } from '@/service/backend/kubernetes';
 import * as yaml from 'js-yaml';
 import crypto from 'crypto';
 import dayjs from 'dayjs';
-import type { BillingSpec } from '@/types/billing';
+import type { BillingData, BillingSpec } from '@/types/billing';
 export default async function handler(req: NextApiRequest, resp: NextApiResponse) {
   try {
     const kc = await authSession(req.headers);
@@ -54,7 +54,10 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
       await new Promise<void>((resolve) => setTimeout(() => resolve(), 1000));
     } finally {
       const { body } = await GetCRD(kc, meta, name);
-      console.log(body)
+      
+      if(!('item' in (body as BillingData).status)) {
+        (body as BillingData).status.item = []
+      }
       return jsonRes(resp, {
         code: 200,
         data: body

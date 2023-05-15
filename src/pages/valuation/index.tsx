@@ -7,16 +7,19 @@ import request from '@/service/request';
 import { ValuationData } from '@/types/valuation';
 import { valuationMap } from '@/constants/payment';
 export default function Valuation() {
-  // const { t } = useTranslation();  
   const { data: _data } = useQuery(['valuation'], () => request<ValuationData>('/api/price'));
   const data =
     _data?.data.status.billingRecords
       .filter(x => valuationMap.has(x.resourceType))
-      .map(x => ({
-        title: x.resourceType,
-        price: [1, 24, 168, 4032, 1471680].map(v => v * x.price /1000000),
-        unit: valuationMap.get(x.resourceType)?.unit
-      }))
+      .map(x => {
+        const props = valuationMap.get(x.resourceType)!
+        return ({
+          title: x.resourceType,
+          price: [1, 24, 168, 4032, 1471680].map(v => v * x.price / 1000000 * (props.scale || 1)),
+          unit: props.unit,
+          bg: props.bg
+        })
+      })
   const cycle = ['天', '周', '月', '年']
   return (
     <Flex w="100%" h="100%" bg={'white'} flexDirection="column" alignItems="center" p={'24px'}>
@@ -28,7 +31,10 @@ export default function Valuation() {
       <Flex gap={'24px'}>
         {data?.map((item) => <Flex direction={"column"} key={item.title} justify="space-evenly" align={"center"} boxSizing='border-box' width='240px' height='339px' background='#F1F4F6' borderWidth={'1px'} borderColor='#EFF0F1' borderRadius='4px'>
           {/* <Flex  direction={"column"}> */}
-          <Text>{item.title}</Text>
+          <Flex align={'center'}>
+            <Box borderRadius='2px' bg={item.bg} w={'16px'} h={'16px'} mr={'8px'}></Box>
+            <Text fontSize={'16px'}>{item.title}</Text>
+          </Flex>
           <Heading w='127px' h='63px' display={'flex'} justifyContent="center" alignContent={'center'}>￥{item.price[0]}</Heading>
           <Text ml="4px">{item.unit}/小时</Text>
           <Box>

@@ -16,7 +16,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { ChangeEventHandler, useEffect, useState } from 'react';
-import { format, formatISO, isAfter, isBefore, isValid, parse } from 'date-fns';
+import { format, formatISO, isAfter, isBefore, isValid, parse, parseISO } from 'date-fns';
 import { DateRange, DayPicker, SelectRangeEventHandler } from 'react-day-picker';
 import clander_icon from '@/assert/clander.svg'
 import vectorAll_icon from '@/assert/VectorAll.svg'
@@ -28,6 +28,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import request from '@/service/request';
 import { BillingTableItem, BillingData, BillingSpec, BillingItem } from '@/types/billing';
 import { LIST_TYPE } from '@/constants/billing';
+import { formatMoney } from '@/utils/format';
 export default function Billing() {
 
   const [selectedRange, setSelectedRange] = useState<DateRange>(() => ({ from: new Date(2022, 1, 1), to: new Date() }));
@@ -113,12 +114,12 @@ export default function Billing() {
         console.log(data)
         setTableResult(data.data.status?.item?.map<BillingTableItem>((item: BillingItem) => ({
           order: item.order_id,
-          type: LIST_TYPE[item.type + 1].title,
-          cpu: '￥' + item.costs.cpu,
-          memory: '￥' + item.costs.memory,
-          storage: '￥' + item.costs.storage,
-          amount: '￥' + item.amount,
-          transactionHour: item.time
+          type: item.type,
+          cpu: '￥' + formatMoney(item.costs.cpu),
+          memory: '￥' + formatMoney(item.costs.memory),
+          storage: '￥' + formatMoney(item.costs.storage),
+          amount: '￥' + formatMoney(item.amount),
+          transactionHour: format(parseISO(item.time),'MM-dd hh:mm')
         }) || [])
         )
         setTotalPage(data.data.status.pageLength)
@@ -126,7 +127,6 @@ export default function Billing() {
     }
   )
   useEffect(() => mutationResult.mutate(), [])
-  // mutationResult.mutate()
   return (
     <Flex flexDirection="column" w="100%" h="100%" bg={'white'} pl="32px" pr="46px" >
       <Text fontWeight={500} fontSize="20px" mt="32px">
@@ -210,7 +210,6 @@ export default function Billing() {
           }}
           onClick={e => {
             e.preventDefault()
-            // queryClient.getQueryData(['billing'])
             mutationResult.mutate()
           }}
         >搜索</Button>

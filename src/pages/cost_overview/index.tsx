@@ -1,8 +1,6 @@
 
 import { Box, Flex, Heading, Img, Text, } from '@chakra-ui/react';
-import { useQuery } from '@tanstack/react-query';
 import { BillingTable } from '@/components/billing/billingTable';
-import { SelectMonth } from '../../components/cost_overview/components/selectMonth';
 import UserCard from '../../components/cost_overview/components/user';
 import bar_icon from '@/assert/bar_chart_4_bars.png'
 import { SelectYear } from '../../components/cost_overview/components/selectYear';
@@ -14,6 +12,7 @@ import useOverviewStore from '@/stores/overview';
 import { LIST_TYPE } from '@/constants/billing';
 import { BillingTableItem, BillingItem } from '@/types/billing';
 import { formatMoney } from '@/utils/format';
+import { format, parseISO } from 'date-fns';
 
 
 export default function CostOverview() {
@@ -27,7 +26,7 @@ export default function CostOverview() {
       clearTimeout(timer)
     }
   }, [selectedMonth, selectedWeek, selectedYear, by])
-  const billingdata = useOverviewStore(state => state.billingData)
+  const billingItems = useOverviewStore(state => state.items)
   return <Flex h={'100%'}>
     <Box bg='white' pt="29px" pl="33px" pr="24px" overflow={'auto'} borderRadius="12px" minW={'963px'}>
       <Flex>
@@ -41,17 +40,18 @@ export default function CostOverview() {
         <Trend></Trend>
         <Box>
           <Heading size={'sm'}>最近交易</Heading>
-          <BillingTable data={billingdata.status.item
+          <BillingTable data={
+            billingItems
             .map<BillingTableItem>((item: BillingItem) => ({
               order: item.order_id,
-              type: LIST_TYPE[item.type + 1].title,
+              type: item.type,
               cpu: '￥' + formatMoney(item.costs.cpu),
               memory: '￥' + formatMoney(item.costs.memory),
               storage: '￥' + formatMoney(item.costs.storage),
               amount: '￥' + formatMoney(item.amount),
-              transactionHour: item.time
+              transactionHour: format(parseISO(item.time), 'MM-dd HH:mm')
             }))
-            .filter((v, i) => i < 5)
+            .filter((v, i) => i < 5) || []
           }></BillingTable>
         </Box>
       </Flex>
