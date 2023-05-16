@@ -4,9 +4,6 @@ import { jsonRes } from '@/service/backend/response';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { ApplyYaml } from '@/service/backend/kubernetes';
 import * as yaml from 'js-yaml';
-import crypto from 'crypto';
-import dayjs from 'dayjs';
-import type { BillingSpec } from '@/types/billing';
 export default async function handler(req: NextApiRequest, resp: NextApiResponse) {
   try {
     const kc = await authSession(req.headers);
@@ -45,7 +42,6 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
       });
     }
   } catch (error) {
-    // console.log(error);
     jsonRes(resp, { code: 500, data: error });
   }
 }

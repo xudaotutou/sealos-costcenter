@@ -214,6 +214,7 @@ const useOverviewStore = create<OverviewState>()(
             state.items = data.status.item;
             // console.log(state);
             // state.billingData = structuredClone(data)
+            // 扣费source
             state.source.push(
               // ...data.status.item.flatMap((item) => [
               //   [format(parseISO(item.time),'MM-dd'), 'cpu', (item.costs.cpu / 1000000)],
@@ -221,7 +222,7 @@ const useOverviewStore = create<OverviewState>()(
               //   [format(parseISO(item.time),'MM-dd'), 'storage', (item.costs.storage/1000000)]
               // ])
               ...data.status.item
-                .filter((item) => getTime(parseISO(item.time)) >= getTime(start))
+                .filter((item) => item.type === 0 && getTime(parseISO(item.time)) >= getTime(start))
                 .map<[string, number, number, number, number]>((item) => [
                   format(parseISO(item.time), 'MM-dd'),
                   item.costs.cpu,
@@ -251,6 +252,7 @@ const useOverviewStore = create<OverviewState>()(
                   formatMoney(x[3]),
                   formatMoney(x[4])
                 ])
+                .reverse()
             );
             state.preItems = data.status.item.filter(item=>getTime(parseISO(item.time)) < getTime(pre))
             //     const [preIn, preOut] = data.status.item

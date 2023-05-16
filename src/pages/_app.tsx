@@ -5,9 +5,9 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { AppProps } from 'next/app';
 import Fonts from '@/styles/fonts';
-import Router from 'next/router';
-import NProgress from 'nprogress';
-import 'nprogress/nprogress.css';
+// import Router from 'next/router';
+// import NProgress from 'nprogress';
+// import 'nprogress/nprogress.css';
 // import '@/utils/i18n';
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,14 +25,19 @@ const queryClient = new QueryClient({
 // Router.events.on('routeChangeError', () => NProgress.done());
 
 export default function App({ Component, pageProps }: AppProps) {
+  // const aliveScopeProps = useMemo(() => ({ timeout: 300 }), []);
   return (
+
     <QueryClientProvider client={queryClient}>
       <ChakraProvider theme={theme}>
         <Fonts></Fonts>
-          <Layout>
+        <Layout>
+          {/* <AliveScope {...aliveScopeProps}> */}
             <Component {...pageProps} />
-          </Layout>
+          {/* </AliveScope > */}
+        </Layout>
       </ChakraProvider>
     </QueryClientProvider>
+
   );
 }

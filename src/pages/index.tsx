@@ -8,5 +8,5 @@ export default function Index() {
     router.push('/cost_overview');
   }, [router]);
 
-  return <div>index</div>;
+  return <div></div>;
 }

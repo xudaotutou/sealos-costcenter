@@ -27,7 +27,7 @@ RUN \
 # Rebuild the source code only when needed
 FROM node:current-alpine AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Next.js collects completely anonymous telemetry data about general usage.
@@ -35,7 +35,10 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN npm install -g pnpm && pnpm run build
+RUN npm config set registry https://registry.npmmirror.com/
+RUN npm install -g pnpm 
+RUN pnpm install
+RUN pnpm run build
 
 # Production image, copy all the files and run next
 FROM node:current-alpine AS runner

@@ -41,7 +41,7 @@ export function Buget() {
       <Card variant='filled'>
         <CardBody alignItems={'center'} flexDirection="column">
           <Flex bg={'#24282C'} w='31.75px' h='28.7px' justify={'center'} align="center"><Img src={down_icon.src}></Img></Flex>
-          <Text fontSize={'12px'}>支出</Text>
+          <Text fontSize={'12px'}>扣费</Text>
           <Text fontWeight='500' fontSize='16px' mt={'8px'}>￥{formatMoney(out)}</Text>
           {
             preIn > 0 ? <Text fontWeight='400' fontSize='10px' color='#5A646E' mt={'4px'}>据上月{preIn > _in ? `减少${((preIn - _in) / preIn * 100).toFixed(2)}%` : `增长${((_in - preIn) / preIn * 100).toFixed(2)}`}%</Text>
@@ -52,7 +52,7 @@ export function Buget() {
       <Card variant='filled'>
         <CardBody alignItems={'center'} flexDirection="column">
           <Flex bg={'#24282C'} w='31.75px' h='28.7px' justify={'center'} align="center"><Img src={up_icon.src}></Img></Flex>
-          <Text fontSize={'12px'}>收入</Text>
+          <Text fontSize={'12px'}>充值</Text>
           <Text fontWeight='500' fontSize='16px' mt={'8px'}>￥{formatMoney(_in)}</Text>
           {
             preOut > 0 ? <Text fontWeight='400' fontSize='10px' color='#5A646E' mt={'4px'}>据上月{preOut > out ? `减少${((preOut - out) / preOut * 100).toFixed(2)}%` : `增长${((out - preOut) / preOut * 100).toFixed(2)}`}%</Text>

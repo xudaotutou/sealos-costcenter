@@ -5,7 +5,6 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { ApplyYaml } from '@/service/backend/kubernetes';
 import * as yaml from 'js-yaml';
 import crypto from 'crypto';
-import dayjs from 'dayjs';
 import type { BillingData, BillingSpec } from '@/types/billing';
 export default async function handler(req: NextApiRequest, resp: NextApiResponse) {
   try {

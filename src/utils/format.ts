@@ -9,5 +9,5 @@ export const formatTime = (
 
 // 1¥=1000000
 export const formatMoney = (money: number) => {
-  return (money / 1000000).toFixed(2)
+  return (money / 1000000).toFixed(6)
 }

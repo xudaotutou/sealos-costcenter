@@ -3,6 +3,7 @@ import { BillingTable } from '../../components/billing/billingTable';
 import {
   Button,
   Flex,
+  Heading,
   Img,
   Input,
   Menu,
@@ -29,6 +30,7 @@ import request from '@/service/request';
 import { BillingTableItem, BillingData, BillingSpec, BillingItem } from '@/types/billing';
 import { LIST_TYPE } from '@/constants/billing';
 import { formatMoney } from '@/utils/format';
+import KeepAlive from 'react-activation';
 export default function Billing() {
 
   const [selectedRange, setSelectedRange] = useState<DateRange>(() => ({ from: new Date(2022, 1, 1), to: new Date() }));
@@ -36,54 +38,12 @@ export default function Billing() {
   const [toValue, setToValue] = useState<string>(format(selectedRange.to || 0, 'y-MM-dd'));
   const [selectType, setType] = useState<-1 | 0 | 1>(-1)
   const [searchValue, setSearch] = useState('')
-  const [tableResult, setTableResult] = useState<BillingTableItem[]>([])
+  const [tableResult, setTableResult] = useState<BillingItem[]>([])
   const [totalPage, setTotalPage] = useState(1)
   const [currentPage, setcurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
 
 
-  const handleFromChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setFromValue(e.target.value);
-    const date = parse(e.target.value, 'y-MM-dd', new Date());
-    if (!isValid(date)) {
-      return setSelectedRange({ from: undefined, to: undefined });
-    }
-    if (selectedRange?.to && isAfter(date, selectedRange.to)) {
-      setSelectedRange({ from: selectedRange.to, to: date });
-    } else {
-      setSelectedRange({ from: date, to: selectedRange?.to });
-    }
-  };
-
-  const handleToChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setToValue(e.target.value);
-    const date = parse(e.target.value, 'y-MM-dd', new Date());
-
-    if (!isValid(date)) {
-      return setSelectedRange({ from: selectedRange?.from, to: undefined });
-    }
-    if (selectedRange?.from && isBefore(date, selectedRange.from)) {
-      setSelectedRange({ from: date, to: selectedRange.from });
-    } else {
-      setSelectedRange({ from: selectedRange?.from, to: date });
-    }
-  };
-
-  const handleRangeSelect: SelectRangeEventHandler = (
-    range: DateRange | undefined
-  ) => {
-    setSelectedRange(range!);
-    if (range?.from) {
-      setFromValue(format(range.from, 'y-MM-dd'));
-    } else {
-      setFromValue('');
-    }
-    if (range?.to) {
-      setToValue(format(range.to, 'y-MM-dd'));
-    } else {
-      setToValue('');
-    }
-  };
   const mutationResult = useMutation(
     () => {
       let spec = {} as BillingSpec
@@ -112,26 +72,64 @@ export default function Billing() {
     {
       onSuccess(data) {
         console.log(data)
-        setTableResult(data.data.status?.item?.map<BillingTableItem>((item: BillingItem) => ({
-          order: item.order_id,
-          type: item.type,
-          cpu: '￥' + formatMoney(item.costs.cpu),
-          memory: '￥' + formatMoney(item.costs.memory),
-          storage: '￥' + formatMoney(item.costs.storage),
-          amount: '￥' + formatMoney(item.amount),
-          transactionHour: format(parseISO(item.time),'MM-dd hh:mm')
-        }) || [])
-        )
+        setTableResult(data.data.status?.item || [])
         setTotalPage(data.data.status.pageLength)
       }
     }
   )
+
+  const handleFromChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setFromValue(e.target.value);
+    const date = parse(e.target.value, 'y-MM-dd', new Date());
+    if (!isValid(date)) {
+      return setSelectedRange({ from: undefined, to: undefined });
+    }
+    if (selectedRange?.to && isAfter(date, selectedRange.to)) {
+      setSelectedRange({ from: selectedRange.to, to: date });
+    } else {
+      setSelectedRange({ from: date, to: selectedRange?.to });
+    }
+    mutationResult.mutate()
+  };
+
+  const handleToChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setToValue(e.target.value);
+    const date = parse(e.target.value, 'y-MM-dd', new Date());
+
+    if (!isValid(date)) {
+      return setSelectedRange({ from: selectedRange?.from, to: undefined });
+    }
+    if (selectedRange?.from && isBefore(date, selectedRange.from)) {
+      setSelectedRange({ from: date, to: selectedRange.from });
+    } else {
+      setSelectedRange({ from: selectedRange?.from, to: date });
+    }
+    mutationResult.mutate()
+  };
+
+  const handleRangeSelect: SelectRangeEventHandler = (
+    range: DateRange | undefined
+  ) => {
+    setSelectedRange(range!);
+    if (range?.from) {
+      setFromValue(format(range.from, 'y-MM-dd'));
+    } else {
+      setFromValue('');
+    }
+    if (range?.to) {
+      setToValue(format(range.to, 'y-MM-dd'));
+    } else {
+      setToValue('');
+    }
+    mutationResult.mutate()
+  };
   useEffect(() => mutationResult.mutate(), [])
   return (
-    <Flex flexDirection="column" w="100%" h="100%" bg={'white'} pl="32px" pr="46px" >
-      <Text fontWeight={500} fontSize="20px" mt="32px">
-        账单明细
-      </Text>
+    <Flex flexDirection="column" w="100%" h="100%" bg={'white'} p='24px'>
+      <Flex w={'116px'} justify="space-between" mr='24px' >
+          <Img src={ clander_icon.src} w={'24px'} h={'24px'} color={'#24282C'}></Img>
+          <Heading size='lg'>账单明细</Heading>
+        </Flex>
       <Flex mt="24px" alignItems={'center'}>
         <Text fontSize={'12px'} mr={'12px'}>交易时间</Text>
         <Flex w={'310px'} h={'32px'} bg="#F6F8F9" mr={'32px'} gap={'12px'} align={'center'} px={'6px'} justify={'space-between'}
@@ -179,7 +177,10 @@ export default function Billing() {
             borderRadius='2px'
           >{LIST_TYPE[selectType + 1].title}</MenuButton>
           <MenuList maxW={'110px'} w='110px'>
-            {LIST_TYPE.map(v => <MenuItem key={v.value} onClick={() => setType(v.value)}>{v.title}</MenuItem>)}
+            {LIST_TYPE.map(v => <MenuItem key={v.value} onClick={() => { 
+              setType(v.value) 
+              mutationResult.mutate()
+            }}>{v.title}</MenuItem>)}
           </MenuList>
         </Menu>
         {/* <Text fontSize={'12px'}>计费周期</Text>

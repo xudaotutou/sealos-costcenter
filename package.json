@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "docker":"docker build . -t"
   },
   "dependencies": {
     "@chakra-ui/anatomy": "^2.1.1",

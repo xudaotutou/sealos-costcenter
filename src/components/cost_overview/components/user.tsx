@@ -22,7 +22,8 @@ export default function UserCard() {
     <Flex className={styles.userCard} boxShadow={'0 4px #BCBFC3,0 8px #DFE2E6'}>
     <Box zIndex='10' flex={'1'} >
       <Flex alignItems={'center'} >
-        <Text>188***dsadasd</Text>
+        {/* 应该是手机号 */}
+        <Text></Text>
         <Text ml="auto" mr="6px">
           {session?.user?.name}
         </Text>
