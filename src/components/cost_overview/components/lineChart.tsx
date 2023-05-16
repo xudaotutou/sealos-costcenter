@@ -16,6 +16,7 @@ import { UniversalTransition } from 'echarts/features';
 import { SVGRenderer, CanvasRenderer } from 'echarts/renderers';
 import useOverviewStore from '@/stores/overview';
 import { INITAL_SOURCE } from '@/constants/billing';
+import { format } from 'date-fns';
 
 echarts.use([
   GridComponent,
@@ -32,9 +33,11 @@ echarts.use([
 export default function Trend() {
   const source = useOverviewStore(data => data.source)
   const option = {
-    xAxis: { type: 'category',
-    boundaryGap: false,
-   },
+    xAxis: { 
+      type: 'time',
+      boundaryGap: false,
+      minInterval: 1000 * 60 * 60 * 24,
+    },
     yAxis: { name: '元', type: 'value', boundaryGap: false },
     dataset: {
       dimensions: INITAL_SOURCE[0],
@@ -51,11 +54,8 @@ export default function Trend() {
       backgroundColor: 'transparent',
       padding: '0px',
 
-      formatter: function (params: {
-        [x: string]: any; value: any[]; 
-}[], ticket: any, callback: any) {
-
-        var res = `<p style="color:#5A646E;">${params[0].name}</p>
+      formatter: function (params: any) {
+        var res = `<p style="color:#5A646E;">${params[0].axisValueLabel}</p>
         <p style="font-weight: 500;font-size: 14px;color:#24282C;">总消费 : ￥${params[0].value[4]}</p>`;
         const resDom = document.createElement('div');
         resDom.innerHTML = res
@@ -65,7 +65,6 @@ export default function Trend() {
         height: 79px;
         padding: 16px;
         backdrop-filter: blur(11.5px);bborder-radius: 4px;`)
-        // res += '自定义文本';
         return resDom;
       }
     },

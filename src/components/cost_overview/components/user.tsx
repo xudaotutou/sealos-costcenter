@@ -47,7 +47,7 @@ export default function UserCard() {
           充值
         </Button>
       </Flex>
-      {isOpen && <RechargeModal balance={formatMoney(real_balance)} />}
+      {isOpen && <RechargeModal balance={'¥'+ formatMoney(real_balance)} />}
     </Box>
     </Flex>
   );

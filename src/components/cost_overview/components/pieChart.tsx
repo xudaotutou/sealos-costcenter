@@ -30,9 +30,9 @@ export default function CostChart() {
   // source.unshift(['name', 'cost'])
   const source = useMemo(() => [
     ['name', 'cost'],
-    ['cpu', formatMoney(cpu, true).toFixed(2)],
-    ['memory', formatMoney(memory, true).toFixed(2)],
-    ['storage', formatMoney(storage, true).toFixed(2)]
+    ['cpu', formatMoney(cpu).toFixed(2)],
+    ['memory', formatMoney(memory).toFixed(2)],
+    ['storage', formatMoney(storage).toFixed(2)]
   ] as const, [cpu, memory, storage])
   console.log(source)
   // const source = useOverviewStore(state=>state.source)
@@ -78,8 +78,8 @@ export default function CostChart() {
         }
       },
       emptyCircleStyle: {
-        borderCap:'ronud'
-      }, 
+        borderCap: 'ronud'
+      },
       labelLine: {
         show: false
       },

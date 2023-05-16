@@ -6,20 +6,20 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     apiVersion: 'app.sealos.io/v1',
     kind: 'App',
     metadata: {
-      name: 'cost center'
+      name: 'cost-center'
     },
     spec: {
-      name: 'cost center',
-      icon: req.headers.host + '/favicon.ico',
-      type: 'iframe'
-    },
-    data: {
-      url: req.headers.host,
-    },
-    icon: req.headers.host + '/favicon.ico',
-    menuData: {
-      nameColor: 'text-black',
+      name: 'cost-center',
+      type: 'iframe',
+      data: {
+        url: 'https://'+ req.headers.host,
+      },
+      icon: 'https://' + req.headers.host + '/favicon.ico',
+      menuData: {
+        nameColor: 'text-black',
+      }
     }
+
   };
   const yamlData = yaml.dump(data);
   res.setHeader('Content-Type', 'application/x-yaml');
