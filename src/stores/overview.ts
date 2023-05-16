@@ -247,10 +247,10 @@ const useOverviewStore = create<OverviewState>()(
                 }, [])
                 .map((x) => [
                   x[0],
-                  formatMoney(x[1]),
-                  formatMoney(x[2]),
-                  formatMoney(x[3]),
-                  formatMoney(x[4])
+                  formatMoney(x[1], true),
+                  formatMoney(x[2], true),
+                  formatMoney(x[3], true),
+                  formatMoney(x[4], true)
                 ])
                 .reverse()
             );

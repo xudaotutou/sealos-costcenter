@@ -1,8 +1,8 @@
 import { TableHeaders } from '@/constants/billing';
-import { BillingItem, BillingTableItem } from '@/types/billing';
+import { BillingItem } from '@/types/billing';
 import lineDown from '@/assert/lineDown.svg'
+import lineUp from '@/assert/lineUp.svg'
 import {
-  Box,
   Flex,
   Img,
   Table,
@@ -15,6 +15,7 @@ import {
   Tr
 } from '@chakra-ui/react';
 import { format, parseISO } from 'date-fns';
+import { formatMoney } from '@/utils/format';
 export function BillingTable({ data }: { data: BillingItem[] }) {
   console.log(data)
   return <TableContainer w="100%" mt="36px">
@@ -32,27 +33,17 @@ export function BillingTable({ data }: { data: BillingItem[] }) {
             <Tr key={item.order_id} fontSize={'12px'}>
               <Td >{item.order_id}</Td>
               <Td>{format(parseISO(item.time), 'MM-dd HH:mm')}</Td>
-              <Td>{item.type === 0 ?
-                <Flex w={'66px'} h={'28px'} bg='#EBF7FD' borderRadius='24px' color='#0884DD' align={'center'} justify={'space-evenly'}>
-                  <Img src={lineDown.src} w='13.14px'></Img>
-                  <Text>支出</Text>
+              <Td>
+                <Flex w={'66px'} h={'28px'} bg={!item.type ? '#EBF7FD': '#E6F6F6'} borderRadius='24px' color={!item.type ? '#0884DD' : '#00A9A6'} align={'center'} justify={'space-evenly'}>
+                  <Img src={!item.type ? lineDown.src : lineUp.src} w='13.14px' ></Img>
+                  <Text>{!item.type ? '扣费' : '充值'}</Text>
                 </Flex>
-                : <Flex w={'66px'} h={'28px'} bg='#E6F6F6' borderRadius='24px' color='#00A9A6' align={'center'} justify={'space-evenly'}>
-                  <Img src={lineDown.src} w='13.14px' rotate={'180deg'}>
-                    <Text>支出</Text>
-                  </Img>
-                </Flex>
-              }</Td>
-              {
-                item.type === 0 ? <>
+                </Td>
 
-                  <Td>{item.costs.cpu}</Td>
-                  <Td>{item.costs.memory}</Td>
-                  <Td>{item.costs.storage}</Td></>
-                  : <><Td>-</Td><Td>-</Td><Td>-</Td></>
-              }
-              {/* <Td>{item.pv}</Td> */}
-              <Td>{item.amount}</Td>
+              <Td>{!item.type ? formatMoney(item.costs.cpu) : '-'}</Td>
+              <Td>{!item.type ? formatMoney(item.costs.memory) :'-'}</Td>
+              <Td>{!item.type ? formatMoney(item.costs.storage) :'-'}</Td>
+              <Td>{formatMoney(item.amount)}</Td>
             </Tr>
           );
         })}

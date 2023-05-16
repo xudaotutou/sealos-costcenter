@@ -10,18 +10,15 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     },
     spec: {
       name: 'cost center',
-      icon: '',
+      icon: req.headers.host + '/favicon.ico',
       type: 'iframe'
     },
     data: {
       url: req.headers.host,
-      desc: ''
     },
     icon: req.headers.host + '/favicon.ico',
     menuData: {
       nameColor: 'text-black',
-      helpDropDown: '',
-      helpDocs: ''
     }
   };
   const yamlData = yaml.dump(data);

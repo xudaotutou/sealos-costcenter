@@ -8,16 +8,6 @@ type HowDigital<T extends string, Ret extends string = ''> = T extends ''
 type Four = HowDigital<'1111'>;
 type Two = HowDigital<'22'>;
 // type TransactionHour = `${Four}-${Four}-${Two} ${Two}:${Two}:${Two}`
-export type BillingTableItem = {
-  order: string;
-  transactionHour: string;
-  type: number;
-  cpu: string;
-  memory: string;
-  storage: string;
-  // pv: string;
-  amount: string;
-};
 
 export type BillingSpec =
   | {

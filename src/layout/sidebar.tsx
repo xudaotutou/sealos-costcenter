@@ -1,11 +1,13 @@
 import { Box, Flex, Text, Img } from '@chakra-ui/react';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
 import styles from './index.module.scss';
-import bar_icon from '../assert/bar_chart_4_bars.png'
-import letter_icon from '../assert/format_letter_spacing_standard.png'
-import receipt_icon from '../assert/receipt_long.png'
+import bar_a_icon from '@/assert/bar_chart_4_bars.png'
+import bar_icon from '@/assert/bar_chart_4_bars.svg'
+import letter_icon from '@/assert/format_letter_spacing_standard.png'
+import letter_a_icon from '@/assert/format_letter_spacing_standard.svg'
+import receipt_icon from '@/assert/receipt_long.png'
+import receipt_a_icon from '@/assert/receipt_long_black.png'
 import type { StaticImageData } from 'next/image';
 
 type Menu = {
@@ -13,6 +15,7 @@ type Menu = {
   url: string;
   value: string;
   icon: StaticImageData;
+  aicon: StaticImageData;
 };
 
 export default function SideBar() {
@@ -23,22 +26,25 @@ export default function SideBar() {
       id: 'CostOverview',
       url: '/cost_overview',
       // value: t('SideBar.CostOverview'),
-      value:'成本总览',
-      icon:bar_icon
+      value: '成本总览',
+      icon: bar_icon,
+      aicon: bar_a_icon
     },
     {
       id: 'BillingDetails',
       url: '/billing',
       // value: String(t('SideBar.BillingDetails')),
-      value:'账单明细',
-      icon:receipt_icon
+      value: '账单明细',
+      icon: receipt_icon,
+      aicon: receipt_a_icon
     },
     {
       id: 'ValuationStandard',
       url: '/valuation',
       // value: String(t('SideBar.ValuationStandard')),
-      value:'计价标准',
-      icon:letter_icon
+      value: '计价标准',
+      icon: letter_icon,
+      aicon: letter_a_icon
     }
   ];
   console.log(router.route)
@@ -64,15 +70,15 @@ export default function SideBar() {
               router.push(item.url);
             }}
             as="button"
-          > 
-          <Flex
-            h={4}
-            w={4}
-            mr='10.4px'
-            alignItems={'center'}
           >
+            <Flex
+              h={4}
+              w={4}
+              mr='10.4px'
+              alignItems={'center'}
+            >
               <Img
-                src={item.icon.src}
+                src={router.route == item.url ? item.aicon.src : item.aicon.src}
                 width={3}
                 alt="icon of module"
               />

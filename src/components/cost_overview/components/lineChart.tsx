@@ -41,9 +41,6 @@ export default function Trend() {
       source
     },
     color: ['#24282C'],
-    grid: {
-      // show: false
-    },
     legend: {},
     tooltip: {
       trigger: 'axis',
@@ -139,6 +136,7 @@ export default function Trend() {
     ],
 
   };
+  // console.log(source)
   return <ReactEChartsCore
     echarts={echarts}
     option={option}

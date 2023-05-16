@@ -30,9 +30,9 @@ export default function CostChart() {
   // source.unshift(['name', 'cost'])
   const source = useMemo(() => [
     ['name', 'cost'],
-    ['cpu', formatMoney(cpu)],
-    ['memory', formatMoney(memory)],
-    ['storage', formatMoney(storage)]
+    ['cpu', formatMoney(cpu, true).toFixed(2)],
+    ['memory', formatMoney(memory, true).toFixed(2)],
+    ['storage', formatMoney(storage, true).toFixed(2)]
   ] as const, [cpu, memory, storage])
   console.log(source)
   // const source = useOverviewStore(state=>state.source)
@@ -66,12 +66,6 @@ export default function CostChart() {
         position: 'center',
       },
       left: 'left',
-      // tooltip: {
-      //   trigger: 'item',
-      //   formatter: function (params) {
-      //     return params.name + ' : ' + params.value;
-      //   }
-      // },
       emphasis: {
         // scale: true,
         label: {
@@ -81,8 +75,6 @@ export default function CostChart() {
           color: '#5A646E',
           fontSize: 20,
           fontFamily: 'Inter',
-          // lineHeight: '17px',
-          // textalign: 'center',
         }
       },
       emptyCircleStyle: {

@@ -20,6 +20,7 @@ import { ChangeEventHandler, useEffect, useState } from 'react';
 import { format, formatISO, isAfter, isBefore, isValid, parse, parseISO } from 'date-fns';
 import { DateRange, DayPicker, SelectRangeEventHandler } from 'react-day-picker';
 import clander_icon from '@/assert/clander.svg'
+import receipt_icon from '@/assert/receipt_long_black.png'
 import vectorAll_icon from '@/assert/VectorAll.svg'
 import 'react-day-picker/dist/style.css';
 import arrow_icon from "@/assert/Vector.svg"
@@ -27,10 +28,8 @@ import arrow_left_icon from "@/assert/toleft.svg"
 import magnifyingGlass_icon from "@/assert/magnifyingGlass.svg"
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import request from '@/service/request';
-import { BillingTableItem, BillingData, BillingSpec, BillingItem } from '@/types/billing';
+import { BillingData, BillingSpec, BillingItem } from '@/types/billing';
 import { LIST_TYPE } from '@/constants/billing';
-import { formatMoney } from '@/utils/format';
-import KeepAlive from 'react-activation';
 export default function Billing() {
 
   const [selectedRange, setSelectedRange] = useState<DateRange>(() => ({ from: new Date(2022, 1, 1), to: new Date() }));
@@ -71,7 +70,7 @@ export default function Billing() {
     },
     {
       onSuccess(data) {
-        console.log(data)
+        console.log(data.data)
         setTableResult(data.data.status?.item || [])
         setTotalPage(data.data.status.pageLength)
       }
@@ -127,9 +126,9 @@ export default function Billing() {
   return (
     <Flex flexDirection="column" w="100%" h="100%" bg={'white'} p='24px'>
       <Flex w={'116px'} justify="space-between" mr='24px' >
-          <Img src={ clander_icon.src} w={'24px'} h={'24px'} color={'#24282C'}></Img>
-          <Heading size='lg'>账单明细</Heading>
-        </Flex>
+        <Img src={receipt_icon.src} w={'24px'} h={'24px'} dropShadow={'#24282C'}></Img>
+        <Heading size='lg'>账单明细</Heading>
+      </Flex>
       <Flex mt="24px" alignItems={'center'}>
         <Text fontSize={'12px'} mr={'12px'}>交易时间</Text>
         <Flex w={'310px'} h={'32px'} bg="#F6F8F9" mr={'32px'} gap={'12px'} align={'center'} px={'6px'} justify={'space-between'}
@@ -177,8 +176,8 @@ export default function Billing() {
             borderRadius='2px'
           >{LIST_TYPE[selectType + 1].title}</MenuButton>
           <MenuList maxW={'110px'} w='110px'>
-            {LIST_TYPE.map(v => <MenuItem key={v.value} onClick={() => { 
-              setType(v.value) 
+            {LIST_TYPE.map(v => <MenuItem key={v.value} onClick={() => {
+              setType(v.value)
               mutationResult.mutate()
             }}>{v.title}</MenuItem>)}
           </MenuList>
@@ -217,8 +216,9 @@ export default function Billing() {
       </Flex>
       {mutationResult.isSuccess ? <>
         <BillingTable data={tableResult}></BillingTable>
-        <Flex w='361px' h='32px' ml='auto' align={'center'} mt={'20px'}>
-          <Flex mr={'16px'}>总数:{totalPage * pageSize}</Flex>
+        <Flex w='370px' h='32px' ml='auto' align={'center'} mt={'20px'}>
+          <Text>总数:</Text>
+          <Flex w='40px'>{totalPage * pageSize}</Flex>
           <Flex gap={'8px'}>
             <Button variant={'switchPage'} isDisabled={currentPage === 1}
               onClick={e => {
@@ -226,9 +226,11 @@ export default function Billing() {
                 setcurrentPage(1)
                 mutationResult.mutateAsync()
               }}
+              w='24px' h='24px'
             ><Img w='6px' h='6px' src={arrow_left_icon.src}
             ></Img></Button>
             <Button variant={'switchPage'} isDisabled={currentPage === 1}
+              w='24px' h='24px'
               onClick={e => {
                 e.preventDefault()
                 setcurrentPage(currentPage - 1)
@@ -242,15 +244,18 @@ export default function Billing() {
                 setcurrentPage(currentPage + 1)
                 mutationResult.mutateAsync()
               }}
+              w='24px' h='24px'
             ><Img src={arrow_icon.src} transform={'rotate(90deg)'}></Img></Button>
             <Button variant={'switchPage'} isDisabled={currentPage === totalPage}
+              w='24px' h='24px'
               onClick={e => {
                 e.preventDefault()
                 setcurrentPage(totalPage)
                 mutationResult.mutateAsync()
               }}><Img w='6px' h='6px' src={arrow_left_icon.src} transform={'rotate(180deg)'}></Img></Button>
           </Flex>
-          <Text>{pageSize} / 页</Text>
+          <Text>{pageSize}</Text>
+          <Text>/ 页</Text>
         </Flex>
       </> : (
         <Flex direction={'column'} w='full' align={'center'} flex={'1'} h={'0'} justify={'center'}>
