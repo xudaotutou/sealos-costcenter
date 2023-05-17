@@ -129,93 +129,99 @@ export default function Billing() {
         <Img src={receipt_icon.src} w={'24px'} h={'24px'} dropShadow={'#24282C'}></Img>
         <Heading size='lg'>账单明细</Heading>
       </Flex>
-      <Flex mt="24px" alignItems={'center'}>
-        <Text fontSize={'12px'} mr={'12px'}>交易时间</Text>
-        <Flex w={'310px'} h={'32px'} bg="#F6F8F9" mr={'32px'} gap={'12px'} align={'center'} px={'6px'} justify={'space-between'}
-          border={'1px solid #DEE0E2'}
-          borderRadius='2px'>
-          <Input
-            isDisabled={mutationResult.isLoading}
-            variant={'unstyled'}
-            value={fromValue}
-            onChange={handleFromChange}
-          // type='date'
-          />
-          <span>-</span>
-          <Input
-            isDisabled={mutationResult.isLoading}
-            variant={'unstyled'}
-            value={toValue}
-            onChange={handleToChange}
-          />
-          <Popover >
-            <PopoverTrigger>
-              <Button display={'flex'} variant={'unstyled'} w='24px' justifyContent={'space-between'} isDisabled={mutationResult.isLoading}>
-                <Img src={clander_icon.src}></Img>
-                <Img src={vectorAll_icon.src}></Img>
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent>
-              <DayPicker
-                mode="range"
-                selected={selectedRange}
-                onSelect={handleRangeSelect}
-              />
-            </PopoverContent>
-          </Popover>
+      <Flex mt="24px" alignItems={'center'} flexWrap={'wrap'}>
+        <Flex align={'center'} my={'24px'}>
+          <Text fontSize={'12px'} mr={'12px'}>交易时间</Text>
+          <Flex w={'310px'} h={'32px'} bg="#F6F8F9" mr={'32px'} gap={'12px'} align={'center'} px={'6px'} justify={'space-between'}
+            border={'1px solid #DEE0E2'}
+            borderRadius='2px'>
+            <Input
+              isDisabled={mutationResult.isLoading}
+              variant={'unstyled'}
+              value={fromValue}
+              onChange={handleFromChange}
+            // type='date'
+            />
+            <span>-</span>
+            <Input
+              isDisabled={mutationResult.isLoading}
+              variant={'unstyled'}
+              value={toValue}
+              onChange={handleToChange}
+            />
+            <Popover >
+              <PopoverTrigger>
+                <Button display={'flex'} variant={'unstyled'} w='24px' justifyContent={'space-between'} isDisabled={mutationResult.isLoading}>
+                  <Img src={clander_icon.src}></Img>
+                  <Img src={vectorAll_icon.src}></Img>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <DayPicker
+                  mode="range"
+                  selected={selectedRange}
+                  onSelect={handleRangeSelect}
+                />
+              </PopoverContent>
+            </Popover>
+          </Flex>
         </Flex>
-        <Text fontSize={'12px'} mr={'12px'}>类型</Text>
-        <Menu >
-          <MenuButton
-            disabled={mutationResult.isLoading}
-            border='1px solid #DEE0E2'
-            w={'110px'} h={'32px'} bg="#F4F6F8" mr={'32px'}
-            fontStyle='normal'
-            fontWeight='400'
-            fontSize='12px'
-            borderRadius='2px'
-          >{LIST_TYPE[selectType + 1].title}</MenuButton>
-          <MenuList maxW={'110px'} w='110px'>
-            {LIST_TYPE.map(v => <MenuItem key={v.value} onClick={() => {
-              setType(v.value)
-              mutationResult.mutate()
-            }}>{v.title}</MenuItem>)}
-          </MenuList>
-        </Menu>
+        <Flex align={'center'}>
+          <Text fontSize={'12px'} mr={'12px'}>类型</Text>
+          <Menu >
+            <MenuButton
+              disabled={mutationResult.isLoading}
+              border='1px solid #DEE0E2'
+              w={'110px'} h={'32px'} bg="#F4F6F8" mr={'32px'}
+              fontStyle='normal'
+              fontWeight='400'
+              fontSize='12px'
+              borderRadius='2px'
+            >{LIST_TYPE[selectType + 1].title}</MenuButton>
+            <MenuList maxW={'110px'} w='110px'>
+              {LIST_TYPE.map(v => <MenuItem key={v.value} onClick={() => {
+                setType(v.value)
+                mutationResult.mutate()
+              }}>{v.title}</MenuItem>)}
+            </MenuList>
+          </Menu>
+        </Flex>
         {/* <Text fontSize={'12px'}>计费周期</Text>
         <Box w={'104px'} h={'32px'} bg="#F4F6F8" mx={'16px'}></Box> */}
-        <Flex ml={'auto'} mr='16px' border='1px solid #DEE0E2' h='32px' align={'center'} py={'10.3px'} pl={'9.3px'} borderRadius={'2px'}>
-          <Img src={magnifyingGlass_icon.src} w={'14px'} mr={'8px'}></Img>
-          <Input
+        <Flex align={'center'} ml={'auto'}>
+          <Flex mr='16px' border='1px solid #DEE0E2' h='32px' align={'center'} py={'10.3px'} pl={'9.3px'} borderRadius={'2px'}>
+            <Img src={magnifyingGlass_icon.src} w={'14px'} mr={'8px'}></Img>
+            <Input
+              isDisabled={mutationResult.isLoading}
+              variant={'unstyled'} placeholder='订单号' value={searchValue} onChange={v => setSearch(v.target.value)}></Input>
+          </Flex>
+          <Button
             isDisabled={mutationResult.isLoading}
-            variant={'unstyled'} placeholder='订单号' value={searchValue} onChange={v => setSearch(v.target.value)}></Input>
+            variant={'unstyled'}
+
+            display='flex'
+            justifyContent={'center'}
+            alignContent={'center'}
+
+            width='88px'
+            height='32px'
+            bg='#24282C'
+            borderRadius='4px'
+            color={'white'}
+            fontWeight='500'
+            fontSize='14px'
+            _hover={{
+              opacity: '0.5'
+            }}
+            onClick={e => {
+              e.preventDefault()
+              mutationResult.mutate()
+            }}
+          >搜索</Button>
         </Flex>
-        <Button
-          isDisabled={mutationResult.isLoading}
-          variant={'unstyled'}
-
-          display='flex'
-          justifyContent={'center'}
-          alignContent={'center'}
-
-          width='88px'
-          height='32px'
-          bg='#24282C'
-          borderRadius='4px'
-          color={'white'}
-          fontWeight='500'
-          fontSize='14px'
-          _hover={{
-            opacity: '0.5'
-          }}
-          onClick={e => {
-            e.preventDefault()
-            mutationResult.mutate()
-          }}
-        >搜索</Button>
       </Flex>
       {mutationResult.isSuccess ? <>
-        <BillingTable data={tableResult}></BillingTable>
+        <BillingTable data={tableResult.filter(x => selectType === -1 || x.type === selectType)}></BillingTable>
         <Flex w='370px' h='32px' ml='auto' align={'center'} mt={'20px'}>
           <Text>总数:</Text>
           <Flex w='40px'>{totalPage * pageSize}</Flex>
@@ -260,13 +266,13 @@ export default function Billing() {
       </> : (
         <Flex direction={'column'} w='full' align={'center'} flex={'1'} h={'0'} justify={'center'}>
           {mutationResult.isError && <div>retry</div>}
-          {mutationResult.isLoading && <Spinner
+          {/* {mutationResult.isLoading && <Spinner
             thickness='4px'
             speed='0.65s'
             emptyColor='gray.200'
             color='blue.500'
             size='xl'
-          >loading</Spinner>}
+          >loading</Spinner>} */}
         </Flex>
       )}
 

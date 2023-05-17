@@ -5,16 +5,14 @@ import { NOW_MONTH, NOW_WEEK, NOW_YEAR } from '@/constants/payment';
 import request from '@/service/request';
 import { BillingData, BillingItem, BillingSpec } from '@/types/billing';
 import {
-  addDays,
   addMonths,
   addWeeks,
-  format,
   formatISO,
+  getDay,
   getTime,
-  getUnixTime,
-  parse,
+  isAfter,
   parseISO,
-  startOfMonth,
+  subDays,
   subMonths,
   subWeeks
 } from 'date-fns';
@@ -52,7 +50,7 @@ type OverviewState = {
 
 const useOverviewStore = create<OverviewState>()(
   devtools(
-    persist(
+    // persist(
       immer((set, get) => ({
         selectedMonth: NOW_MONTH,
         selectedYear: NOW_YEAR,
@@ -70,20 +68,20 @@ const useOverviewStore = create<OverviewState>()(
         setSource: (source) => set({ source: source }),
         swithBy: (target: By) => set({ by: target }),
         updateSource: async () => {
-          // console.log(startOfMonth())
-          let start = addWeeks(
-            new Date(get().selectedYear, get().selectedMonth),
-            get().selectedWeek
-          );
+          let start = new Date(get().selectedYear, get().selectedMonth)
+
           let end: Date;
           let pre: Date;
           if (get().by === By.month) {
             end = addMonths(start, 1);
             pre = subMonths(start, 1);
           } else {
+            // 保证是第一个周的周日
+            start = addWeeks(subDays(start, getDay(start)),get().selectedWeek)
             end = addWeeks(start, 1);
             pre = subWeeks(start, 1);
           }
+          console.log(pre, start, end)
           // addDays(get().by===By.month ? )
           const spec: BillingSpec = {
             startTime: formatISO(start, { representation: 'complete' }),
@@ -100,6 +98,11 @@ const useOverviewStore = create<OverviewState>()(
 
           set((state) => {
             state.source = INITAL_SOURCE as any;
+            state.items = [];
+            state.preItems = [];
+            state.cpu = 0
+            state.storage = 0
+            state.memory = 0
           });
           if (data.status.pageLength === 0) {
             return;
@@ -113,7 +116,7 @@ const useOverviewStore = create<OverviewState>()(
             // 扣费source
             state.source.push(
               ...data.status.item
-                .filter((item) => item.type === 0 && getTime(parseISO(item.time)) >= getTime(start))
+                .filter((item) => item.type === 0 && isAfter(parseISO(item.time), start))
                 .map<[number, number, number, number, number]>((item) => [
                   getTime(parseISO(item.time)),
                   item.costs.cpu,
@@ -149,9 +152,9 @@ const useOverviewStore = create<OverviewState>()(
 
           });
         }
-      })),
-      { name: 'overview_store' }
-    )
+      }))
+      // { name: 'overview_store' }
+    // )
   )
 );
 

@@ -16,39 +16,38 @@ export default function UserCard() {
   if (data?.data?.deductionBalance) {
     real_balance = real_balance - data.data.deductionBalance;
   }
-  // console.log(data?.data)
 
   return (
-    <Flex className={styles.userCard} boxShadow={'0 4px #BCBFC3,0 8px #DFE2E6'}>
-    <Box zIndex='10' flex={'1'} >
-      <Flex alignItems={'center'} >
-        {/* 应该是手机号 */}
-        <Text></Text>
-        <Text ml="auto" mr="6px">
-          {session?.user?.name}
-        </Text>
+    <Flex className={styles.userCard} boxShadow={'0 4px #BCBFC3,0 8px #DFE2E6'} aspectRatio={'2/1'} m={'12px'} shrink={[1,1,1,0]}>
+      <Box zIndex='10' flex={'1'} >
+        <Flex alignItems={'center'} >
+          {/* 应该是手机号 */}
+          <Text></Text>
+          <Text ml="auto" mr="6px">
+            {session?.user?.name}
+          </Text>
 
-        <img
-          src={session?.user?.avatar || ''}
-          alt="user"
-          width={90}
-          height={90}
-          className={styles.avatar}
-        />
-      </Flex>
-      <Text fontSize="12px" fontWeight="400" mt="30px">
-        当前余额
-      </Text>
-      <Flex alignItems="center">
-        <Text fontSize="24px" fontWeight="500">
-          ¥ {formatMoney(real_balance)}
+          <img
+            src={session?.user?.avatar || ''}
+            alt="user"
+            width={90}
+            height={90}
+            className={styles.avatar}
+          />
+        </Flex>
+        <Text fontSize="12px" fontWeight="400" mt="30px">
+          当前余额
         </Text>
-        <Button ml="auto" w="78px" h="32px" bg={'white'} color="black" onClick={onOpen}>
-          充值
-        </Button>
-      </Flex>
-      {isOpen && <RechargeModal balance={'¥'+ formatMoney(real_balance)} />}
-    </Box>
+        <Flex alignItems="center">
+          <Text fontSize="24px" fontWeight="500">
+            ¥ {formatMoney(real_balance)}
+          </Text>
+          <Button ml="auto" w="78px" h="32px" bg={'white'} color="black" onClick={onOpen}>
+            充值
+          </Button>
+        </Flex>
+        {isOpen && <RechargeModal balance={'' + formatMoney(real_balance)} />}
+      </Box>
     </Flex>
   );
 }

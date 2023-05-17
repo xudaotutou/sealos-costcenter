@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { QRCodeSVG } from 'qrcode.react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type RechargeModalProps = {
   balance: string;
@@ -30,7 +30,7 @@ function useRecharge() {
     const toast = useToast();
 
     const createPaymentRes = useMutation(
-      () => request.post('/api/account/payment', { amount: amount * 1000000 }),
+      () => request.post('/api/account/payment', { amount: amount * 10000 }),
       {
         onSuccess(data) {
           setPaymentName(data?.data?.paymentName);
@@ -59,12 +59,14 @@ function useRecharge() {
         enabled: paymentName !== ''
       }
     );
-
+    useEffect(()=>{
+      if(data?.data.status === 'SUCCESS'){
+        onClose()
+      }
+    },[data?.data.status])
     const handleConfirm = () => {
       createPaymentRes.mutate();
     };
-
-    console.log(!!data?.data?.codeURL);
 
     return (
       <Modal isOpen={isOpen} onClose={onClose}>

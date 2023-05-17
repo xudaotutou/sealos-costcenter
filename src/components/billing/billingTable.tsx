@@ -17,7 +17,7 @@ import {
 import { format, parseISO } from 'date-fns';
 import { formatMoney } from '@/utils/format';
 export function BillingTable({ data }: { data: BillingItem[] }) {
-  console.log(data)
+  
   return <TableContainer w="100%" mt="36px">
     <Table variant="simple">
       <Thead>

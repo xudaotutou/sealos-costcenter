@@ -1,7 +1,5 @@
 import { Box, Flex, Text, Img } from '@chakra-ui/react';
-import clsx from 'clsx';
 import { useRouter } from 'next/router';
-import styles from './index.module.scss';
 import bar_a_icon from '@/assert/bar_chart_4_bars.png'
 import bar_icon from '@/assert/bar_chart_4_bars.svg'
 import letter_icon from '@/assert/format_letter_spacing_standard.png'
@@ -47,9 +45,8 @@ export default function SideBar() {
       aicon: letter_a_icon
     }
   ];
-  console.log(router.route)
   return (
-    <Flex flexDirection="column" justifyContent="cneter" alignItems="stretch" w={28}>
+    <Flex flexDirection="column">
       {/* <Text
         cursor={'pointer'}
         fontSize={'12px'}
@@ -61,20 +58,17 @@ export default function SideBar() {
         return (
           <Flex
             key={item.value}
-            mt={6}
-            p={2}
+            // mt={'37px'}
+
+            p={'16px'}
             alignItems={"center"}
-            // justifyContent={"space-between"}
             onClick={() => {
-              // setActiveMenu(item.id);
               router.push(item.url);
             }}
             as="button"
           >
             <Flex
               h={4}
-              w={4}
-              mr='10.4px'
               alignItems={'center'}
             >
               <Img
@@ -83,7 +77,12 @@ export default function SideBar() {
                 alt="icon of module"
               />
             </Flex>
-            <Text className={clsx(styles.baseText, router.route === item.url && styles.activeText)}>
+            <Text color={router.route === item.url ? '#000000' : '#7B838B'} ml='10px' my='18px' display={[
+              'none',
+              'none',
+              'none',
+              'flex'              
+            ]}>
               {item.value}
             </Text>
           </Flex>

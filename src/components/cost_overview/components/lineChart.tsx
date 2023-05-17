@@ -36,8 +36,10 @@ export default function Trend() {
     xAxis: { 
       type: 'time',
       boundaryGap: false,
-      minInterval: 1000 * 60 * 60 * 24,
+      minInterval: 1000 * 60 * 60,
+      // splitNumber: 10,
     },
+    
     yAxis: { name: '元', type: 'value', boundaryGap: false },
     dataset: {
       dimensions: INITAL_SOURCE[0],
@@ -141,5 +143,6 @@ export default function Trend() {
     option={option}
     notMerge={true}
     lazyUpdate={true}
+    style={{ height: '300px', width: '100%' }}
   />
 }

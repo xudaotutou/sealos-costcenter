@@ -33,7 +33,7 @@ export default function Layout({ children }: any) {
   }, [isLodaing, setSession]);
 
   return (
-    <Box className={clsx(styles.desktopContainer)} minW={'1500px'} minH={'680px'}>
+    <Flex className={clsx(styles.desktopContainer)} alignItems={'center'} justifyContent={'center'}>
       {isLodaing ? (
         <Flex w={'100%'} h={'100%'} alignItems={'center'} justifyContent={'center'}>
           {isError ? (
@@ -43,24 +43,24 @@ export default function Layout({ children }: any) {
                 cloud.sealos.io
               </Link>
             </Text>
-          ) : (
-            <Spinner
-              thickness="4px"
-              speed="0.65s"
-              emptyColor="gray.200"
-              color="primaryblue.600"
-              size="xl"
-            />
+          ) : (<></>
+            // <Spinner
+            //   thickness="4px"
+            //   speed="0.65s"
+            //   emptyColor="gray.200"
+            //   color="primaryblue.600"
+            //   size="xl"
+            // />
           )}
         </Flex>
       ) : (
-        <Flex className={clsx(styles.backgroundWrap)}>
+        <Flex className={clsx(styles.backgroundWrap)} justify={'center'}>
           <SideBar />
           <Box flexGrow={1} borderRadius="12px" overflow={'hidden'} w={0}>
             {children}
           </Box>
         </Flex>
       )}
-    </Box>
+    </Flex>
   );
 }

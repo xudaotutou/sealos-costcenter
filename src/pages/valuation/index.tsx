@@ -7,10 +7,10 @@ import { useQuery } from '@tanstack/react-query';
 import request from '@/service/request';
 import { ValuationData } from '@/types/valuation';
 import { valuationMap } from '@/constants/payment';
+import { useMemo } from 'react';
 export default function Valuation() {
-  const { data: _data } = useQuery(['valuation'], () => request<ValuationData>('/api/price'));
-  const data =
-    _data?.data.status.billingRecords
+  const { data: _data, isSuccess } = useQuery(['valuation'], () => request<ValuationData>('/api/price'));
+  const data = useMemo(()=>_data?.data.status.billingRecords
       .filter(x => valuationMap.has(x.resourceType))
       .map(x => {
         const props = valuationMap.get(x.resourceType)!
@@ -20,17 +20,17 @@ export default function Valuation() {
           unit: props.unit,
           bg: props.bg
         })
-      })
+      }), [_data])
   const cycle = ['天', '周', '月', '年']
   return (
     // <KeepAlive cacheKey='VALUATION'>
-    <Flex w="100%" h="100%" bg={'white'} flexDirection="column" alignItems="center" p={'24px'}>
+    <Flex w="100%" h="100%" bg={'white'} flexDirection="column" alignItems="center" p={'24px'} overflowY={'auto'}>
 
       <Flex w={'116px'} justify="space-between" mr='24px' alignSelf={'flex-start'} mb='80px'>
         <Img src={letter_icon.src} w={'24px'} h={'24px'}></Img>
         <Heading size='lg'>计价标准</Heading>
       </Flex>
-      <Flex gap={'24px'}>
+      <Flex gap={'24px'} flexWrap={'wrap'}>
         {data?.map((item) => <Flex direction={"column"} key={item.title} justify="space-evenly" align={"center"} boxSizing='border-box' width='240px' height='339px' background='#F1F4F6' borderWidth={'1px'} borderColor='#EFF0F1' borderRadius='4px'>
           {/* <Flex  direction={"column"}> */}
           <Flex align={'center'}>

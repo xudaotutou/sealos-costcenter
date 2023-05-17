@@ -100,7 +100,12 @@ export default function CostChart() {
     option={option}
     notMerge={true}
     lazyUpdate={true}
-    onChartReady={(e) => console.log(e)}
+    style={{
+      // height: '100%',
+      aspectRatio: '5/3',
+      width: '100%',
+      flex: 1,
+    }}
   />
 }
 
