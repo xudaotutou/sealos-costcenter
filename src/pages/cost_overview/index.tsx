@@ -3,49 +3,51 @@ import { Box, Flex, Heading, Img, Text, } from '@chakra-ui/react';
 import { BillingTable } from '@/components/billing/billingTable';
 import UserCard from '../../components/cost_overview/components/user';
 import bar_icon from '@/assert/bar_chart_4_bars.png'
-import { SelectYear } from '../../components/cost_overview/components/selectYear';
+// import { SelectYear } from '../../components/cost_overview/components/selectYear';
 import { Trend } from '../../components/cost_overview/trend';
 import { Buget } from '../../components/cost_overview/buget';
 import { Cost } from '../../components/cost_overview/cost';
 import { useEffect } from 'react';
 import useOverviewStore from '@/stores/overview';
-
+import SelectRange from '@/components/billing/selectDateRange';
 
 function CostOverview() {
-  const { updateSource, selectedMonth, selectedWeek, selectedYear, by, items: billingItems } = useOverviewStore()
+  const { updateSource, items: billingItems, startTime, endTime } = useOverviewStore()
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>
     timer = setTimeout(() => {
       updateSource()
-      console.log(billingItems)
     }, 1000);
     return () => {
       clearTimeout(timer)
     }
-  }, [selectedMonth, selectedWeek, selectedYear, by])
+  }, [startTime, endTime])
   // const billingItems = useOverviewStore(state => state.items)
   return <Flex h={'100%'}>
     <Flex bg='white' p="28px" borderRadius="12px" direction='column'
       flexGrow={'1'}
       flex={'1'}
       overflowY={'auto'}
+
     >
-      <Flex>
+      <Flex wrap={'wrap'}>
         <Flex
           w={'116px'}
+          mb={'24px'}
           justify="space-between" mr='24px'>
           <Img src={bar_icon.src} w={'24px'} h={'24px'}></Img>
           <Heading size='lg'>成本总览</Heading>
         </Flex>
-        <SelectYear></SelectYear>
+        <Box mb={'24px'}>
+          <SelectRange isDisabled={false}></SelectRange>
+        </Box>
       </Flex>
 
-      <Flex flexDirection={'column'}
-      ><Box
-        borderRadius="12px"
-        mt={'24px'}
-        display={['block', 'block', 'block', 'none']}
-      >
+      <Flex flexDirection={'column'}>
+        <Box
+          borderRadius="12px"
+          display={['block', 'block', 'block', 'none']}
+        >
           <Flex direction={['column', 'column', 'row', 'row']} justify={'space-between'} >
             <Box alignSelf={'center'}><UserCard />
             </Box>
@@ -54,15 +56,15 @@ function CostOverview() {
           <Cost></Cost>
         </Box>
         <Trend></Trend>
-        <Box>
+        <Flex direction={'column'} h={'0'} flex={1}>
           <Heading size={'sm'}>最近交易</Heading>
-          <Box w={'100%'} overflow={'scroll'}>
+          <Box overflowX={'auto'}>
             <BillingTable data={
               billingItems
-                .filter((v, i) => i < 5) || []
+                .filter((v, i) => i < 3) || []
             }></BillingTable>
           </Box>
-        </Box>
+        </Flex>
       </Flex>
     </Flex>
     <Flex
@@ -73,7 +75,6 @@ function CostOverview() {
       px={'24px'}
       overflowY="auto"
       overflowX={'hidden'}
-      // borderRadius="12px"
       display={['none', 'none', 'none', 'flex']}
       direction={'column'}
       justify={'space-evenly'}

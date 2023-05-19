@@ -3,7 +3,7 @@ import useRecharge from '@/hooks/useRecharge';
 import request from '@/service/request';
 import useSessionStore from '@/stores/session';
 import { formatMoney } from '@/utils/format';
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Img, Text } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import styles from './user.module.scss';
 
@@ -18,20 +18,21 @@ export default function UserCard() {
   }
 
   return (
-    <Flex className={styles.userCard} boxShadow={'0 4px #BCBFC3,0 8px #DFE2E6'} aspectRatio={'2/1'} m={'12px'} shrink={[1,1,1,0]}>
-      <Box zIndex='10' flex={'1'} >
+    <Flex className={styles.userCard} boxShadow={'0 4px #BCBFC3,0 8px #DFE2E6'} aspectRatio={'2/1'} mb={'12px'} shrink={[1,1,1,0]}>
+      <Box zIndex='2' flex={'1'} >
         <Flex alignItems={'center'} >
-          {/* 应该是手机号 */}
-          <Text></Text>
-          <Text ml="auto" mr="6px">
+          
+          {/* <Text></Text> */}
+          <Text>
             {session?.user?.name}
           </Text>
 
-          <img
+          <Img
+            ml='auto'
             src={session?.user?.avatar || ''}
             alt="user"
-            width={90}
-            height={90}
+            width={'36px'}
+            height={'36px'}
             className={styles.avatar}
           />
         </Flex>

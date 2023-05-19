@@ -13,28 +13,111 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Spinner,
   Text,
 } from '@chakra-ui/react';
-import { ChangeEventHandler, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { format, formatISO, isAfter, isBefore, isValid, parse, parseISO } from 'date-fns';
 import { DateRange, DayPicker, SelectRangeEventHandler } from 'react-day-picker';
 import clander_icon from '@/assert/clander.svg'
 import receipt_icon from '@/assert/receipt_long_black.png'
 import vectorAll_icon from '@/assert/VectorAll.svg'
-import 'react-day-picker/dist/style.css';
 import arrow_icon from "@/assert/Vector.svg"
 import arrow_left_icon from "@/assert/toleft.svg"
 import magnifyingGlass_icon from "@/assert/magnifyingGlass.svg"
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation} from '@tanstack/react-query';
 import request from '@/service/request';
 import { BillingData, BillingSpec, BillingItem } from '@/types/billing';
 import { LIST_TYPE } from '@/constants/billing';
-export default function Billing() {
+import SelectRange from '@/components/billing/selectDateRange';
+import useOverviewStore from '@/stores/overview';
+// import useOverviewStore from '@/stores/overview';
+// function SelectRange({isDisabled}:{isDisabled:boolean}) {
+//   const startTime = useOverviewStore(state=>state.startTime)
+//   const endTime = useOverviewStore(state=>state.endTime)
+//   const [selectedRange, setSelectedRange] = useState<DateRange>(() => ({ from: startTime, to: endTime }));
+//   const [fromValue, setFromValue] = useState<string>(format(selectedRange.from || 0, 'y-MM-dd'));
+//   const [toValue, setToValue] = useState<string>(format(selectedRange.to || 0, 'y-MM-dd'));
+//   const handleFromChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+//     setFromValue(e.target.value);
+//     const date = parse(e.target.value, 'y-MM-dd', new Date());
+//     if (!isValid(date)) {
+//       return setSelectedRange({ from: undefined, to: undefined });
+//     }
+//     if (selectedRange?.to && isAfter(date, selectedRange.to)) {
+//       setSelectedRange({ from: selectedRange.to, to: date });
+//     } else {
+//       setSelectedRange({ from: date, to: selectedRange?.to });
+//     }
+//     // mutationResult.mutate()
+//   };
 
-  const [selectedRange, setSelectedRange] = useState<DateRange>(() => ({ from: new Date(2022, 1, 1), to: new Date() }));
-  const [fromValue, setFromValue] = useState<string>(format(selectedRange.from || 0, 'y-MM-dd'));
-  const [toValue, setToValue] = useState<string>(format(selectedRange.to || 0, 'y-MM-dd'));
+//   const handleToChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+//     setToValue(e.target.value);
+//     const date = parse(e.target.value, 'y-MM-dd', new Date());
+
+//     if (!isValid(date)) {
+//       return setSelectedRange({ from: selectedRange?.from, to: undefined });
+//     }
+//     if (selectedRange?.from && isBefore(date, selectedRange.from)) {
+//       setSelectedRange({ from: date, to: selectedRange.from });
+//     } else {
+//       setSelectedRange({ from: selectedRange?.from, to: date });
+//     }
+//     mutationResult.mutate()
+//   };
+
+//   const handleRangeSelect: SelectRangeEventHandler = (
+//     range: DateRange | undefined
+//   ) => {
+//     setSelectedRange(range!);
+//     if (range?.from) {
+//       setFromValue(format(range.from, 'y-MM-dd'));
+//     } else {
+//       setFromValue('');
+//     }
+//     if (range?.to) {
+//       setToValue(format(range.to, 'y-MM-dd'));
+//     } else {
+//       setToValue('');
+//     }
+//     // mutationResult.mutate()
+//   };
+//   return <Flex w={'310px'} h={'32px'} bg="#F6F8F9" mr={'32px'} gap={'12px'} align={'center'} px={'6px'} justify={'space-between'}
+//     border={'1px solid #DEE0E2'}
+//     borderRadius='2px'>
+//     <Input
+//       isDisabled={isDisabled}
+//       variant={'unstyled'}
+//       value={fromValue}
+//       onChange={handleFromChange}
+//     />
+//     <span>-</span>
+//     <Input
+//       isDisabled={isDisabled}
+//       variant={'unstyled'}
+//       value={toValue}
+//       onChange={handleToChange}
+//     />
+//     <Popover >
+//       <PopoverTrigger>
+//         <Button display={'flex'} variant={'unstyled'} w='24px' justifyContent={'space-between'} isDisabled={isDisabled}>
+//           <Img src={clander_icon.src}></Img>
+//           <Img src={vectorAll_icon.src}></Img>
+//         </Button>
+//       </PopoverTrigger>
+//       <PopoverContent>
+//         <DayPicker
+//           mode="range"
+//           selected={selectedRange}
+//           onSelect={handleRangeSelect}
+//         />
+//       </PopoverContent>
+//     </Popover>
+//   </Flex>
+// }
+export default function Billing() {
+  const startTime = useOverviewStore(state => state.startTime)
+  const endTime = useOverviewStore(state => state.endTime)
   const [selectType, setType] = useState<-1 | 0 | 1>(-1)
   const [searchValue, setSearch] = useState('')
   const [tableResult, setTableResult] = useState<BillingItem[]>([])
@@ -49,18 +132,15 @@ export default function Billing() {
       spec = {
         page: currentPage,
         pageSize: pageSize,
-        type: selectType,
+        type: -1,
         startTime:
-          // format(selectedRange.from || 0,'yyyy-MM-dd HH:mm:ss zzz'),
-          formatISO(selectedRange.from || 0, { representation: 'complete' }),
-        // '2023-05-01T11:00:00Z',
+          formatISO(startTime, { representation: 'complete' }),
+          // startTime,
         endTime:
-          // format(selectedRange.to || 0,'yyyy-MM-dd HH:mm:ss zzz')
-          formatISO(selectedRange.to || 0, { representation: 'complete' }),
-        // '2023-05-15T11:00:00Z',
+          formatISO(endTime, { representation: 'complete' }),
+          // endTime,
         orderID: searchValue.trim()
       }
-      // }
       return request<any, { data: BillingData }, { spec: BillingSpec }>('/api/billing', {
         method: 'POST',
         data: {
@@ -70,103 +150,35 @@ export default function Billing() {
     },
     {
       onSuccess(data) {
-        console.log(data.data)
         setTableResult(data.data.status?.item || [])
         setTotalPage(data.data.status.pageLength)
       }
     }
   )
 
-  const handleFromChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setFromValue(e.target.value);
-    const date = parse(e.target.value, 'y-MM-dd', new Date());
-    if (!isValid(date)) {
-      return setSelectedRange({ from: undefined, to: undefined });
-    }
-    if (selectedRange?.to && isAfter(date, selectedRange.to)) {
-      setSelectedRange({ from: selectedRange.to, to: date });
-    } else {
-      setSelectedRange({ from: date, to: selectedRange?.to });
-    }
-    mutationResult.mutate()
-  };
-
-  const handleToChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setToValue(e.target.value);
-    const date = parse(e.target.value, 'y-MM-dd', new Date());
-
-    if (!isValid(date)) {
-      return setSelectedRange({ from: selectedRange?.from, to: undefined });
-    }
-    if (selectedRange?.from && isBefore(date, selectedRange.from)) {
-      setSelectedRange({ from: date, to: selectedRange.from });
-    } else {
-      setSelectedRange({ from: selectedRange?.from, to: date });
-    }
-    mutationResult.mutate()
-  };
-
-  const handleRangeSelect: SelectRangeEventHandler = (
-    range: DateRange | undefined
-  ) => {
-    setSelectedRange(range!);
-    if (range?.from) {
-      setFromValue(format(range.from, 'y-MM-dd'));
-    } else {
-      setFromValue('');
-    }
-    if (range?.to) {
-      setToValue(format(range.to, 'y-MM-dd'));
-    } else {
-      setToValue('');
-    }
-    mutationResult.mutate()
-  };
   useEffect(() => mutationResult.mutate(), [])
+  useEffect(() => {
+
+    let timer: ReturnType<typeof setTimeout>
+    timer = setTimeout(() => {
+      !searchValue && mutationResult.mutate()
+    }, 1000);
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [startTime, endTime,searchValue])
   return (
     <Flex flexDirection="column" w="100%" h="100%" bg={'white'} p='24px'>
-      <Flex w={'116px'} justify="space-between" mr='24px' >
+      <Flex w={'116px'} justify="space-between" mr='24px'>
         <Img src={receipt_icon.src} w={'24px'} h={'24px'} dropShadow={'#24282C'}></Img>
         <Heading size='lg'>账单明细</Heading>
       </Flex>
       <Flex mt="24px" alignItems={'center'} flexWrap={'wrap'}>
-        <Flex align={'center'} my={'24px'}>
+        <Flex align={'center'} mb={'24px'}>
           <Text fontSize={'12px'} mr={'12px'}>交易时间</Text>
-          <Flex w={'310px'} h={'32px'} bg="#F6F8F9" mr={'32px'} gap={'12px'} align={'center'} px={'6px'} justify={'space-between'}
-            border={'1px solid #DEE0E2'}
-            borderRadius='2px'>
-            <Input
-              isDisabled={mutationResult.isLoading}
-              variant={'unstyled'}
-              value={fromValue}
-              onChange={handleFromChange}
-            // type='date'
-            />
-            <span>-</span>
-            <Input
-              isDisabled={mutationResult.isLoading}
-              variant={'unstyled'}
-              value={toValue}
-              onChange={handleToChange}
-            />
-            <Popover >
-              <PopoverTrigger>
-                <Button display={'flex'} variant={'unstyled'} w='24px' justifyContent={'space-between'} isDisabled={mutationResult.isLoading}>
-                  <Img src={clander_icon.src}></Img>
-                  <Img src={vectorAll_icon.src}></Img>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent>
-                <DayPicker
-                  mode="range"
-                  selected={selectedRange}
-                  onSelect={handleRangeSelect}
-                />
-              </PopoverContent>
-            </Popover>
-          </Flex>
+          <SelectRange isDisabled={mutationResult.isLoading}></SelectRange>
         </Flex>
-        <Flex align={'center'}>
+        <Flex align={'center'} mb={'24px'}>
           <Text fontSize={'12px'} mr={'12px'}>类型</Text>
           <Menu >
             <MenuButton
@@ -181,14 +193,13 @@ export default function Billing() {
             <MenuList maxW={'110px'} w='110px'>
               {LIST_TYPE.map(v => <MenuItem key={v.value} onClick={() => {
                 setType(v.value)
-                mutationResult.mutate()
               }}>{v.title}</MenuItem>)}
             </MenuList>
           </Menu>
         </Flex>
         {/* <Text fontSize={'12px'}>计费周期</Text>
         <Box w={'104px'} h={'32px'} bg="#F4F6F8" mx={'16px'}></Box> */}
-        <Flex align={'center'} ml={'auto'}>
+        <Flex align={'center'} ml={'auto'} mb={'24px'}>
           <Flex mr='16px' border='1px solid #DEE0E2' h='32px' align={'center'} py={'10.3px'} pl={'9.3px'} borderRadius={'2px'}>
             <Img src={magnifyingGlass_icon.src} w={'14px'} mr={'8px'}></Img>
             <Input
@@ -221,7 +232,7 @@ export default function Billing() {
         </Flex>
       </Flex>
       {mutationResult.isSuccess ? <>
-        <BillingTable data={tableResult.filter(x => selectType === -1 || x.type === selectType)}></BillingTable>
+        <BillingTable data={tableResult.filter(x => !!searchValue || selectType === -1 || x.type === selectType)}></BillingTable>
         <Flex w='370px' h='32px' ml='auto' align={'center'} mt={'20px'}>
           <Text>总数:</Text>
           <Flex w='40px'>{totalPage * pageSize}</Flex>
@@ -266,13 +277,6 @@ export default function Billing() {
       </> : (
         <Flex direction={'column'} w='full' align={'center'} flex={'1'} h={'0'} justify={'center'}>
           {mutationResult.isError && <div>retry</div>}
-          {/* {mutationResult.isLoading && <Spinner
-            thickness='4px'
-            speed='0.65s'
-            emptyColor='gray.200'
-            color='blue.500'
-            size='xl'
-          >loading</Spinner>} */}
         </Flex>
       )}
 

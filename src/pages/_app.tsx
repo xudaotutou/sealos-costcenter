@@ -8,6 +8,9 @@ import Fonts from '@/styles/fonts';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import 'react-day-picker/dist/style.css';
+// import './selectDateRange.css'
+
 // import '@/utils/i18n';
 const queryClient = new QueryClient({
   defaultOptions: {

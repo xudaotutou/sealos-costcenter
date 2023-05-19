@@ -35,7 +35,7 @@ export function Buget() {
   return <Flex direction={'column'}>
     <Flex alignItems={'center'} justify="space-between">
       <Heading size='sm'>收支</Heading>
-      <SelectMonth ></SelectMonth>
+      {/* <SelectMonth ></SelectMonth> */}
     </Flex>
     <Flex mt="20px" justify={'space-evenly'}>
       <Card variant='filled'>

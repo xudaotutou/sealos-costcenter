@@ -16,26 +16,21 @@ echarts.use([
   TooltipComponent,
   LegendComponent,
   PieChart,
-  // SVGRenderer,
   CanvasRenderer,
   LabelLayout,
   DatasetComponent
 ]);
 
 export default function CostChart() {
-  // const source = CATEGORY.map((x, i) => [x, ((i + 1) * 173) % 37])
   const cpu = useOverviewStore(state => state.cpu)
   const memory = useOverviewStore(state => state.memory)
   const storage = useOverviewStore(state => state.storage)
-  // source.unshift(['name', 'cost'])
   const source = useMemo(() => [
     ['name', 'cost'],
     ['cpu', formatMoney(cpu).toFixed(2)],
     ['memory', formatMoney(memory).toFixed(2)],
     ['storage', formatMoney(storage).toFixed(2)]
   ] as const, [cpu, memory, storage])
-  console.log(source)
-  // const source = useOverviewStore(state=>state.source)
   const option = {
     roseType: 'radius',
     legend: {
@@ -45,10 +40,6 @@ export default function CostChart() {
       bottom: 0,
       icon: 'circle',
     },
-    grid: {
-      left: '0%',
-    },
-
     dataset: {
       dimensions: source[0],
       source,
@@ -101,7 +92,6 @@ export default function CostChart() {
     notMerge={true}
     lazyUpdate={true}
     style={{
-      // height: '100%',
       aspectRatio: '5/3',
       width: '100%',
       flex: 1,

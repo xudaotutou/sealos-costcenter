@@ -3,20 +3,16 @@ import ReactEChartsCore from 'echarts-for-react/lib/core';
 import * as echarts from 'echarts/core';
 import {
   GridComponent,
-  GridComponentOption,
   VisualMapComponent,
-  VisualMapComponentOption,
   MarkLineComponent,
-  MarkLineComponentOption,
   DatasetComponent,
   TooltipComponent
 } from 'echarts/components';
-import { LineChart, LineSeriesOption } from 'echarts/charts';
+import { LineChart } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
-import { SVGRenderer, CanvasRenderer } from 'echarts/renderers';
+import {  CanvasRenderer } from 'echarts/renderers';
 import useOverviewStore from '@/stores/overview';
 import { INITAL_SOURCE } from '@/constants/billing';
-import { format } from 'date-fns';
 
 echarts.use([
   GridComponent,
@@ -24,7 +20,6 @@ echarts.use([
   DatasetComponent,
   MarkLineComponent,
   LineChart,
-  // SVGRenderer,
   CanvasRenderer,
   TooltipComponent,
   UniversalTransition
@@ -37,7 +32,6 @@ export default function Trend() {
       type: 'time',
       boundaryGap: false,
       minInterval: 1000 * 60 * 60,
-      // splitNumber: 10,
     },
     
     yAxis: { name: '元', type: 'value', boundaryGap: false },
@@ -46,12 +40,12 @@ export default function Trend() {
       source
     },
     color: ['#24282C'],
-    legend: {},
+    // legend: {},
     tooltip: {
       trigger: 'axis',
 
       axisPointer: {
-        type: 'line' // 'shadow' as default; can also be 'line' or 'shadow'
+        type: 'line' 
       },
       backgroundColor: 'transparent',
       padding: '0px',
@@ -66,7 +60,8 @@ export default function Trend() {
         width: 162px;
         height: 79px;
         padding: 16px;
-        backdrop-filter: blur(11.5px);bborder-radius: 4px;`)
+        backdrop-filter: blur(11.5px);
+        border-radius: 4px;`)
         return resDom;
       }
     },
@@ -124,9 +119,6 @@ export default function Trend() {
         type: 'line',
         smooth: true,
         showSymbol: false,
-        // lineStyle: {
-        //   color: '#24282C',
-        // },
         datasetIndex: 0,
         encode: {
           // 将 "amount" 列映射到 y 轴。
@@ -137,12 +129,11 @@ export default function Trend() {
     ],
 
   };
-  // console.log(source)
   return <ReactEChartsCore
     echarts={echarts}
     option={option}
     notMerge={true}
     lazyUpdate={true}
-    style={{ height: '300px', width: '100%' }}
+    style={{ height: '280px', width: '100%', flex: 1}}
   />
 }

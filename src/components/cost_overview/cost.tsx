@@ -9,7 +9,7 @@ export const Cost = memo(function Cost() {
   return <Flex direction={'column'}>
     <Flex alignItems={'center'} justify={"space-between"}>
       <Text color={'#747F88'}>成本分布</Text>
-      <SelectMonth></SelectMonth>
+      {/* <SelectMonth></SelectMonth> */}
     </Flex>
     <Chart></Chart>
   </Flex>

@@ -62,3 +62,16 @@ iframe {
 ::-webkit-scrollbar-corner {
   background-color: transparent;
 }
+
+div.rdp {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: black;
+  --rdp-background-color: #F4F6F8;
+  /* Switch to dark colors for dark themes */
+  // --rdp-accent-color-dark: #3003e1;
+  // --rdp-background-color-dark: #180270;
+  /* Outline border for focused elements */
+  --rdp-outline: 2px solid var(--rdp-accent-color);
+  /* Outline border for focused and selected elements */
+  --rdp-outline-selected: 2px solid rgba(0, 0, 0, 0.75);
+}
