@@ -25,7 +25,7 @@ function CostOverview() {
   }, [startTime, endTime])
   // const billingItems = useOverviewStore(state => state.items)
   return <Flex h={'100%'}>
-    <Flex bg='white' p="28px" borderRadius="12px" direction='column'
+    <Flex bg='white' p="24px" borderRadius="12px" direction='column'
       flexGrow={'1'}
       flex={'1'}
       overflowY={'auto'}

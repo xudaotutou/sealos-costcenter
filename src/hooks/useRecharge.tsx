@@ -25,7 +25,7 @@ function useRecharge() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const RechargeModal = (props: RechargeModalProps) => {
-    const [amount, setAmount] = useState(0);
+    const [amount, setAmount] = useState(1);
     const [paymentName, setPaymentName] = useState('');
     const toast = useToast();
 
@@ -46,7 +46,7 @@ function useRecharge() {
       }
     );
 
-    const { data, isSuccess, isError } = useQuery(
+    const { data, isSuccess, isError} = useQuery(
       ['query-charge-res'],
       () =>
         request('/api/account/payment/pay', {
@@ -98,14 +98,14 @@ function useRecharge() {
               mt="8px"
               w="215px"
               h="42px"
-              isDisabled={!!data?.data?.codeURL}
+              isDisabled={!!data?.data?.codeURL|| createPaymentRes.isLoading}
             />
             <Button
               size="primary"
               variant="primary"
               mt="12px"
               onClick={() => handleConfirm()}
-              isDisabled={!!data?.data?.codeURL}
+              isDisabled={!!data?.data?.codeURL|| createPaymentRes.isLoading}
             >
               确定
             </Button>

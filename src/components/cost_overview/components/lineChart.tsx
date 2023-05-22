@@ -108,12 +108,12 @@ line-height: 150%;
         resDom.innerHTML = res
         resDom.setAttribute('style', `
            
-        // background: rgba(238, 241, 248, 0.3);
+        background: rgba(238, 241, 248, 0.9);
         
         width: 162px;
         height: 79px;
         padding: 16px;
-        backdrop-filter: blur(11.5px);
+        // backdrop-filter: blur(11.5px);
         border: 1px solid rgba(205, 213, 218, 1);
         border-radius: 4px;`)
         return resDom;

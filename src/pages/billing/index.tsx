@@ -28,7 +28,7 @@ import magnifyingGlass_icon from "@/assert/magnifyingGlass.svg"
 import { useMutation } from '@tanstack/react-query';
 import request from '@/service/request';
 import { BillingData, BillingSpec, BillingItem } from '@/types/billing';
-import { LIST_TYPE } from '@/constants/billing';
+import { LIST_TYPE} from '@/constants/billing';
 import SelectRange from '@/components/billing/selectDateRange';
 import useOverviewStore from '@/stores/overview';
 // import useOverviewStore from '@/stores/overview';
@@ -181,7 +181,7 @@ export default function Billing() {
         </Flex>
         <Flex align={'center'} mb={'24px'}>
           <Text fontSize={'12px'} mr={'12px'}>类型</Text>
-          <Menu >
+          {/* <Menu >
             <MenuButton
               disabled={mutationResult.isLoading}
               border='1px solid #DEE0E2'
@@ -196,8 +196,65 @@ export default function Billing() {
                 setType(v.value)
               }}>{v.title}</MenuItem>)}
             </MenuList>
-          </Menu>
+          </Menu> */}
+                  <Popover>
+          <PopoverTrigger>
+            <Button
+              w='110px'
+              h='32px'
+              fontStyle='normal'
+              fontWeight='400'
+              fontSize='12px'
+              lineHeight='140%'
+              // bgColor={'#F6F8F9'}
+              // shadow={'0px 0px 4px 0px #A8DBFF'}
+              border={'1px solid #DEE0E2'}
+              bg={'#F6F8F9'}
+              _expanded={{
+                background: '#F8FAFB',
+                border: `1px solid #36ADEF`
+              }}
+              _hover={{
+                background: '#F8FAFB',
+                border: `1px solid #36ADEF`
+              }}
+              borderRadius={'2px'}>{LIST_TYPE[selectType + 1].title}
+              {/* <Img src={arrow_icon.src} transition={'all'} _expanded={
+                {
+                  transform: 'rotate(-180deg)'
+                }
+              }></Img> */}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent p={'6px'}
+            boxSizing='border-box'
+            w={'110px'}
+            shadow={'0px 0px 1px 0px #798D9F40, 0px 2px 4px 0px #A1A7B340'}
+            border={'none'}
+          >
+            {LIST_TYPE.map((v, idx) =>
+              <Button
+                key={v.value}
+                color={v.value === selectType ? '#0884DD' : '#5A646E'}
+                h='30px'
+                fontFamily='PingFang SC'
+                fontSize='12px'
+                fontWeight='400'
+                lineHeight='18px'
+                p={'0'}
+                bg={v.value === selectType ? '#F4F6F8' : '#FDFDFE'}
+                onClick={() => {
+                  setType(v.value)
+                }}
+              >{v.title}
+              </Button>
+            )
+            }
+
+          </PopoverContent >
+        </Popover >
         </Flex>
+
         {/* <Text fontSize={'12px'}>计费周期</Text>
         <Box w={'104px'} h={'32px'} bg="#F4F6F8" mx={'16px'}></Box> */}
         <Flex align={'center'} ml={'auto'} mb={'24px'}>
