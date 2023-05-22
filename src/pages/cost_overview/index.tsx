@@ -18,6 +18,7 @@ function CostOverview() {
     timer = setTimeout(() => {
       updateSource()
     }, 1000);
+    console.log('updateSource')
     return () => {
       clearTimeout(timer)
     }
@@ -34,7 +35,9 @@ function CostOverview() {
         <Flex
           w={'116px'}
           mb={'24px'}
-          justify="space-between" mr='24px'>
+          justify="space-between" mr='24px'
+          align={'center'}
+          >
           <Img src={bar_icon.src} w={'24px'} h={'24px'}></Img>
           <Heading size='lg'>成本总览</Heading>
         </Flex>

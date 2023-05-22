@@ -24,16 +24,18 @@ const Button = defineStyleConfig({
     switchPage: {
       width: '24px',
       height: '24px',
-      background: '#F1F4F6',
-      opacity: '0.5',
+      background: '#EDEFF1',
+      
+      // '#EDEFF1':'#F1F4F6'
       borderRadius: '9999px',
       color:'#262A32',
       flexGrow: '0',
       _hover:{
-        opacity:'1'
+        opacity:'0.7'
       },
       _disabled:{
-        color:'828289'
+        color:'828289',
+        background:'#F1F4F6'
       }
     }
   }

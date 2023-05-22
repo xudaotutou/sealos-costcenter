@@ -1,6 +1,7 @@
 // import { MockBillingData } from '@/mock/billing';
 import { BillingTable } from '../../components/billing/billingTable';
 import {
+  Box,
   Button,
   Flex,
   Heading,
@@ -24,7 +25,7 @@ import vectorAll_icon from '@/assert/VectorAll.svg'
 import arrow_icon from "@/assert/Vector.svg"
 import arrow_left_icon from "@/assert/toleft.svg"
 import magnifyingGlass_icon from "@/assert/magnifyingGlass.svg"
-import { useMutation} from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import request from '@/service/request';
 import { BillingData, BillingSpec, BillingItem } from '@/types/billing';
 import { LIST_TYPE } from '@/constants/billing';
@@ -135,10 +136,10 @@ export default function Billing() {
         type: -1,
         startTime:
           formatISO(startTime, { representation: 'complete' }),
-          // startTime,
+        // startTime,
         endTime:
           formatISO(endTime, { representation: 'complete' }),
-          // endTime,
+        // endTime,
         orderID: searchValue.trim()
       }
       return request<any, { data: BillingData }, { spec: BillingSpec }>('/api/billing', {
@@ -166,10 +167,10 @@ export default function Billing() {
     return () => {
       clearTimeout(timer)
     }
-  }, [startTime, endTime,searchValue])
+  }, [startTime, endTime, searchValue])
   return (
     <Flex flexDirection="column" w="100%" h="100%" bg={'white'} p='24px'>
-      <Flex w={'116px'} justify="space-between" mr='24px'>
+      <Flex w={'116px'} justify="space-between" mr='24px' align={'center'}>
         <Img src={receipt_icon.src} w={'24px'} h={'24px'} dropShadow={'#24282C'}></Img>
         <Heading size='lg'>账单明细</Heading>
       </Flex>
@@ -232,7 +233,9 @@ export default function Billing() {
         </Flex>
       </Flex>
       {mutationResult.isSuccess ? <>
-        <BillingTable data={tableResult.filter(x => !!searchValue || selectType === -1 || x.type === selectType)}></BillingTable>
+        <Box overflow={'auto'}>
+          <BillingTable data={tableResult.filter(x => !!searchValue || selectType === -1 || x.type === selectType)}></BillingTable>
+        </Box>
         <Flex w='370px' h='32px' ml='auto' align={'center'} mt={'20px'}>
           <Text>总数:</Text>
           <Flex w='40px'>{totalPage * pageSize}</Flex>
@@ -256,6 +259,7 @@ export default function Billing() {
             <Text >{currentPage}</Text>/
             <Text >{totalPage}</Text>
             <Button variant={'switchPage'} isDisabled={currentPage === totalPage}
+              bg={currentPage !== totalPage ? '#EDEFF1' : '#F1F4F6'}
               onClick={e => {
                 e.preventDefault()
                 setcurrentPage(currentPage + 1)
@@ -264,6 +268,7 @@ export default function Billing() {
               w='24px' h='24px'
             ><Img src={arrow_icon.src} transform={'rotate(90deg)'}></Img></Button>
             <Button variant={'switchPage'} isDisabled={currentPage === totalPage}
+              bg={currentPage !== totalPage ? '#EDEFF1' : '#F1F4F6'}
               w='24px' h='24px'
               onClick={e => {
                 e.preventDefault()

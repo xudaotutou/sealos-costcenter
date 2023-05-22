@@ -58,9 +58,9 @@ export default function SideBar() {
         return (
           <Flex
             key={item.value}
-            // mt={'37px'}
 
-            p={'16px'}
+            py={'10px'}
+            px={'20px'}
             alignItems={"center"}
             onClick={() => {
               router.push(item.url);
@@ -72,12 +72,12 @@ export default function SideBar() {
               alignItems={'center'}
             >
               <Img
-                src={router.route == item.url ? item.aicon.src : item.aicon.src}
-                width={3}
+                src={router.route == item.url ? item.aicon.src : item.icon.src}
+                width={'18px'}
                 alt="icon of module"
               />
             </Flex>
-            <Text color={router.route === item.url ? '#000000' : '#7B838B'} ml='10px' my='18px' display={[
+            <Text color={router.route === item.url ? '#000000' : '#7B838B'} ml='10px' my='9px' display={[
               'none',
               'none',
               'none',

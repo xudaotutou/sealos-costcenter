@@ -20,7 +20,7 @@ export function BillingTable({ data }: { data: BillingItem[] }) {
   
   return <TableContainer w="100%" mt="36px">
     <Table variant="simple">
-      <Thead>
+      <Thead bg={'#F1F4F6'}>
         <Tr>
           {TableHeaders?.map((item) => (
             <Th key={item}>{item} </Th>

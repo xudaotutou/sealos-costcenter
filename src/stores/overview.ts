@@ -5,9 +5,11 @@ import { END_TIME, NOW_MONTH, NOW_WEEK, NOW_YEAR, START_TIME } from '@/constants
 import request from '@/service/request';
 import { BillingData, BillingItem, BillingSpec } from '@/types/billing';
 import {
+  addDays,
   addMonths,
   addWeeks,
   differenceInDays,
+  format,
   formatISO,
   getDay,
   getTime,
@@ -15,8 +17,7 @@ import {
   isBefore,
   parseISO,
   subDays,
-  subMonths,
-  subWeeks
+  subSeconds,
 } from 'date-fns';
 import { INITAL_SOURCE } from '@/constants/billing';
 import { formatMoney } from '@/utils/format';
@@ -85,9 +86,9 @@ const useOverviewStore = create<OverviewState>()(
         //   pre = subWeeks(start, 1);
         // }
         const start = get().startTime;
-        const end = get().endTime;
+        const end = subSeconds(addDays(get().endTime,1),1);
         const delta = differenceInDays(end, start);
-        console.log(delta, start, end);
+        // console.log(delta, start, end);
         const pre = subDays(start, delta);
         // console.log(pre, start, end)
         const spec: BillingSpec = {
@@ -126,14 +127,15 @@ const useOverviewStore = create<OverviewState>()(
           state.source.push(
             ...data.status.item
               .filter((item) => item.type === 0 && isAfter(parseISO(item.time), start))
-              .map<[number, number, number, number, number]>((item) => [
-                getTime(parseISO(item.time)),
+              .map<[string, number, number, number, number]>((item) => [
+                format(parseISO(item.time),'yyyy-MM-dd'),
+                // getTime(parseISO(item.time)),
                 item.costs.cpu,
                 item.costs.memory,
                 item.costs.storage,
                 item.amount
               ])
-              .reduce<[number, number, number, number, number][]>((pre, cur) => {
+              .reduce<[string, number, number, number, number][]>((pre, cur) => {
                 if (pre.length !== 0) {
                   const precost = pre[pre.length - 1];
                   if (precost[0] === cur[0]) {

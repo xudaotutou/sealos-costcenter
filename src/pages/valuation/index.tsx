@@ -26,21 +26,21 @@ export default function Valuation() {
     // <KeepAlive cacheKey='VALUATION'>
     <Flex w="100%" h="100%" bg={'white'} flexDirection="column" alignItems="center" p={'24px'} overflowY={'auto'}>
 
-      <Flex w={'116px'} justify="space-between" mr='24px' alignSelf={'flex-start'} mb='80px'>
+      <Flex w={'116px'} justify="space-between" mr='24px' alignSelf={'flex-start'} mb='80px' align={'center'}>
         <Img src={letter_icon.src} w={'24px'} h={'24px'}></Img>
         <Heading size='lg'>计价标准</Heading>
       </Flex>
       <Flex gap={'24px'} flexWrap={'wrap'}>
         {data?.map((item) => <Flex direction={"column"} key={item.title} justify="space-evenly" align={"center"} boxSizing='border-box' width='240px' height='339px' background='#F1F4F6' borderWidth={'1px'} borderColor='#EFF0F1' borderRadius='4px'>
           {/* <Flex  direction={"column"}> */}
-          <Flex align={'center'}>
+          <Flex align={'center'} >
             <Box borderRadius='2px' bg={item.bg} w={'16px'} h={'16px'} mr={'8px'}></Box>
             <Text fontSize={'16px'}>{item.title}</Text>
           </Flex>
-          <Heading w='127px' h='63px' display={'flex'} justifyContent="center" alignContent={'center'}>￥{item.price[0]}</Heading>
+          <Heading w='127px' display={'flex'} justifyContent="center" alignContent={'center'}>￥{item.price[0]}</Heading>
           <Text ml="4px">{item.unit}/小时</Text>
           <Box>
-            {cycle.map((_item, idx) => <Flex key={idx} justify="space-between" w='192px' borderTop={"dashed 1px #DEE0E2"}>
+            {cycle.map((_item, idx) => <Flex key={idx} justify="space-between" w='192px' borderTop={"dashed 1px #DEE0E2"} py={'8px'}>
               <Box>{item.price[idx + 1]}</Box>
               <Box>{`￥${item.unit}/${_item}`}</Box>
             </Flex>)}

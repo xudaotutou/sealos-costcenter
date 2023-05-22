@@ -9,8 +9,8 @@ import { DateRange, SelectRangeEventHandler, DayPicker } from "react-day-picker"
 export default function SelectRange({ isDisabled }: { isDisabled: boolean | undefined }) {
   let {startTime, endTime} = useOverviewStore()
   // setSTartTime
-  // const setStartTime = useOverviewStore(state => state.setStartTime)
-  // const setEndTime = useOverviewStore(state => state.setEndTime)
+  const setStartTime = useOverviewStore(state => state.setStartTime)
+  const setEndTime = useOverviewStore(state => state.setEndTime)
   // const selectedRange = { from: startTime, to: endTime }
   // const initState = useMemo(()=>({ from: startTime, to: endTime }), [])
 
@@ -20,12 +20,12 @@ export default function SelectRange({ isDisabled }: { isDisabled: boolean | unde
   );
   const [fromValue, setFromValue] = useState<string>(format(initState.from,'y-MM-dd'));
   const [toValue, setToValue] = useState<string>(format(initState.to,'y-MM-dd'));
-  // useEffect(() => {
-  //   console.log(selectedRange)
-  //   selectedRange.from && setStartTime(selectedRange.from)
-  //   selectedRange.to && setEndTime(selectedRange.to)
-  //   console.log('set')
-  // }, [selectedRange])
+  useEffect(() => {
+    console.log(selectedRange)
+    selectedRange.from && setStartTime(selectedRange.from)
+    selectedRange.to && setEndTime(selectedRange.to)
+    console.log('set')
+  }, [selectedRange])
   const handleFromChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setFromValue(e.target.value);
     const date = parse(e.target.value, 'y-MM-dd', new Date());
@@ -72,7 +72,7 @@ export default function SelectRange({ isDisabled }: { isDisabled: boolean | unde
     }
 
   };
-  return <Flex w={'310px'} h={'32px'} bg="#F6F8F9" mr={'32px'} gap={'12px'} align={'center'} px={'6px'} justify={'space-between'}
+  return <Flex w={'280px'} h={'32px'} bg="#F6F8F9" mr={'32px'} gap={'12px'} align={'center'} px={'12px'} justify={'space-between'}
     border={'1px solid #DEE0E2'}
     borderRadius='2px'>
     <Input
