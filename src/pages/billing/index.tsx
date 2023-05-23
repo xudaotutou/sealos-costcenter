@@ -7,28 +7,21 @@ import {
   Heading,
   Img,
   Input,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Popover,
   PopoverContent,
   PopoverTrigger,
   Text,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { format, formatISO, isAfter, isBefore, isValid, parse, parseISO } from 'date-fns';
-import { DateRange, DayPicker, SelectRangeEventHandler } from 'react-day-picker';
-import clander_icon from '@/assert/clander.svg'
-import receipt_icon from '@/assert/receipt_long_black.png'
-import vectorAll_icon from '@/assert/VectorAll.svg'
+import { formatISO } from 'date-fns';
+import receipt_icon from '@/assert/receipt_long_black.svg'
 import arrow_icon from "@/assert/Vector.svg"
 import arrow_left_icon from "@/assert/toleft.svg"
 import magnifyingGlass_icon from "@/assert/magnifyingGlass.svg"
 import { useMutation } from '@tanstack/react-query';
 import request from '@/service/request';
 import { BillingData, BillingSpec, BillingItem } from '@/types/billing';
-import { LIST_TYPE} from '@/constants/billing';
+import { LIST_TYPE } from '@/constants/billing';
 import SelectRange from '@/components/billing/selectDateRange';
 import useOverviewStore from '@/stores/overview';
 // import useOverviewStore from '@/stores/overview';
@@ -128,6 +121,7 @@ export default function Billing() {
 
 
   const mutationResult = useMutation(
+    ['billing'],
     () => {
       let spec = {} as BillingSpec
       spec = {
@@ -176,11 +170,14 @@ export default function Billing() {
       </Flex>
       <Flex mt="24px" alignItems={'center'} flexWrap={'wrap'}>
         <Flex align={'center'} mb={'24px'}>
-          <Text fontSize={'12px'} mr={'12px'}>交易时间</Text>
+          <Text fontSize={'12px'} mr={'12px'}
+            width={['60px', '60px', 'auto', 'auto']}
+          >交易时间</Text>
           <SelectRange isDisabled={mutationResult.isLoading}></SelectRange>
         </Flex>
         <Flex align={'center'} mb={'24px'}>
-          <Text fontSize={'12px'} mr={'12px'}>类型</Text>
+          <Text fontSize={'12px'} mr={'12px'}
+            width={['60px', '60px', 'auto', 'auto']}>类型</Text>
           {/* <Menu >
             <MenuButton
               disabled={mutationResult.isLoading}
@@ -197,62 +194,62 @@ export default function Billing() {
               }}>{v.title}</MenuItem>)}
             </MenuList>
           </Menu> */}
-                  <Popover>
-          <PopoverTrigger>
-            <Button
-              w='110px'
-              h='32px'
-              fontStyle='normal'
-              fontWeight='400'
-              fontSize='12px'
-              lineHeight='140%'
-              // bgColor={'#F6F8F9'}
-              // shadow={'0px 0px 4px 0px #A8DBFF'}
-              border={'1px solid #DEE0E2'}
-              bg={'#F6F8F9'}
-              _expanded={{
-                background: '#F8FAFB',
-                border: `1px solid #36ADEF`
-              }}
-              _hover={{
-                background: '#F8FAFB',
-                border: `1px solid #36ADEF`
-              }}
-              borderRadius={'2px'}>{LIST_TYPE[selectType + 1].title}
-              {/* <Img src={arrow_icon.src} transition={'all'} _expanded={
+          <Popover>
+            <PopoverTrigger>
+              <Button
+                w='110px'
+                h='32px'
+                fontStyle='normal'
+                fontWeight='400'
+                fontSize='12px'
+                lineHeight='140%'
+                // bgColor={'#F6F8F9'}
+                // shadow={'0px 0px 4px 0px #A8DBFF'}
+                border={'1px solid #DEE0E2'}
+                bg={'#F6F8F9'}
+                _expanded={{
+                  background: '#F8FAFB',
+                  border: `1px solid #36ADEF`
+                }}
+                _hover={{
+                  background: '#F8FAFB',
+                  border: `1px solid #36ADEF`
+                }}
+                borderRadius={'2px'}>{LIST_TYPE[selectType + 1].title}
+                {/* <Img src={arrow_icon.src} transition={'all'} _expanded={
                 {
                   transform: 'rotate(-180deg)'
                 }
               }></Img> */}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent p={'6px'}
-            boxSizing='border-box'
-            w={'110px'}
-            shadow={'0px 0px 1px 0px #798D9F40, 0px 2px 4px 0px #A1A7B340'}
-            border={'none'}
-          >
-            {LIST_TYPE.map((v, idx) =>
-              <Button
-                key={v.value}
-                color={v.value === selectType ? '#0884DD' : '#5A646E'}
-                h='30px'
-                fontFamily='PingFang SC'
-                fontSize='12px'
-                fontWeight='400'
-                lineHeight='18px'
-                p={'0'}
-                bg={v.value === selectType ? '#F4F6F8' : '#FDFDFE'}
-                onClick={() => {
-                  setType(v.value)
-                }}
-              >{v.title}
               </Button>
-            )
-            }
+            </PopoverTrigger>
+            <PopoverContent p={'6px'}
+              boxSizing='border-box'
+              w={'110px'}
+              shadow={'0px 0px 1px 0px #798D9F40, 0px 2px 4px 0px #A1A7B340'}
+              border={'none'}
+            >
+              {LIST_TYPE.map((v, idx) =>
+                <Button
+                  key={v.value}
+                  color={v.value === selectType ? '#0884DD' : '#5A646E'}
+                  h='30px'
+                  fontFamily='PingFang SC'
+                  fontSize='12px'
+                  fontWeight='400'
+                  lineHeight='18px'
+                  p={'0'}
+                  bg={v.value === selectType ? '#F4F6F8' : '#FDFDFE'}
+                  onClick={() => {
+                    setType(v.value)
+                  }}
+                >{v.title}
+                </Button>
+              )
+              }
 
-          </PopoverContent >
-        </Popover >
+            </PopoverContent >
+          </Popover >
         </Flex>
 
         {/* <Text fontSize={'12px'}>计费周期</Text>
@@ -303,11 +300,10 @@ export default function Billing() {
                 setcurrentPage(1)
                 mutationResult.mutateAsync()
               }}
-              w='24px' h='24px'
             ><Img w='6px' h='6px' src={arrow_left_icon.src}
             ></Img></Button>
             <Button variant={'switchPage'} isDisabled={currentPage === 1}
-              w='24px' h='24px'
+
               onClick={e => {
                 e.preventDefault()
                 setcurrentPage(currentPage - 1)
@@ -322,11 +318,10 @@ export default function Billing() {
                 setcurrentPage(currentPage + 1)
                 mutationResult.mutateAsync()
               }}
-              w='24px' h='24px'
             ><Img src={arrow_icon.src} transform={'rotate(90deg)'}></Img></Button>
             <Button variant={'switchPage'} isDisabled={currentPage === totalPage}
               bg={currentPage !== totalPage ? '#EDEFF1' : '#F1F4F6'}
-              w='24px' h='24px'
+              mr={'10px'}
               onClick={e => {
                 e.preventDefault()
                 setcurrentPage(totalPage)

@@ -1,9 +1,8 @@
 import useOverviewStore from "@/stores/overview";
 import clander_icon from '@/assert/clander.svg'
-import vectorAll_icon from '@/assert/VectorAll.svg'
-import { Flex, Input, Popover, PopoverTrigger, Img, PopoverContent, Button } from "@chakra-ui/react";
+import { Flex, Input, Popover, PopoverTrigger, Img, PopoverContent, Button, Box } from "@chakra-ui/react";
 import { format, parse, isValid, isAfter, isBefore } from "date-fns";
-import { useState, ChangeEventHandler, useEffect, memo, useMemo } from "react";
+import { useState, ChangeEventHandler, useEffect, useMemo } from "react";
 import { DateRange, SelectRangeEventHandler, DayPicker } from "react-day-picker";
 
 export default function SelectRange({ isDisabled }: { isDisabled: boolean | undefined }) {
@@ -11,8 +10,6 @@ export default function SelectRange({ isDisabled }: { isDisabled: boolean | unde
   // setSTartTime
   const setStartTime = useOverviewStore(state => state.setStartTime)
   const setEndTime = useOverviewStore(state => state.setEndTime)
-  // const selectedRange = { from: startTime, to: endTime }
-  // const initState = useMemo(()=>({ from: startTime, to: endTime }), [])
 
   const initState = useMemo(()=>({ from: startTime, to: endTime }),[startTime, endTime])
   const [selectedRange, setSelectedRange] = useState<DateRange>(
@@ -21,11 +18,9 @@ export default function SelectRange({ isDisabled }: { isDisabled: boolean | unde
   const [fromValue, setFromValue] = useState<string>(format(initState.from,'y-MM-dd'));
   const [toValue, setToValue] = useState<string>(format(initState.to,'y-MM-dd'));
   useEffect(() => {
-    console.log(selectedRange)
     selectedRange.from && setStartTime(selectedRange.from)
     selectedRange.to && setEndTime(selectedRange.to)
-    console.log('set')
-  }, [selectedRange])
+  }, [selectedRange, setEndTime, setStartTime])
   const handleFromChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setFromValue(e.target.value);
     const date = parse(e.target.value, 'y-MM-dd', new Date());
@@ -78,21 +73,22 @@ export default function SelectRange({ isDisabled }: { isDisabled: boolean | unde
     <Input
       isDisabled={!!isDisabled}
       variant={'unstyled'}
+      flex={1}
       value={fromValue}
       onChange={handleFromChange}
     />
-    <span>-</span>
+    <Box>-</Box>
     <Input
       isDisabled={!!isDisabled}
       variant={'unstyled'}
       value={toValue}
+      flex={1}
       onChange={handleToChange}
     />
     <Popover >
       <PopoverTrigger>
-        <Button display={'flex'} variant={'unstyled'} w='24px' justifyContent={'space-between'} isDisabled={isDisabled}>
+        <Button display={'flex'} variant={'unstyled'}  isDisabled={isDisabled}>
           <Img src={clander_icon.src}></Img>
-          <Img src={vectorAll_icon.src}></Img>
         </Button>
       </PopoverTrigger>
       <PopoverContent zIndex={99}>

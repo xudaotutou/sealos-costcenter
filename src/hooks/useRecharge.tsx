@@ -1,8 +1,11 @@
 import request from '@/service/request';
+import useOverviewStore from '@/stores/overview';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Box,
   Button,
   Flex,
+  Img,
   Input,
   Modal,
   ModalCloseButton,
@@ -15,25 +18,26 @@ import {
 } from '@chakra-ui/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { QRCodeSVG } from 'qrcode.react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import wechat_icon from '@/assert/ic_baseline-wechat.svg';
 
-type RechargeModalProps = {
-  balance: string;
-};
-
+import all_arrow from '@/assert/VectorAll.svg';
+import { formatMoney } from '@/utils/format';
 function useRecharge() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const RechargeModal = (props: RechargeModalProps) => {
+  const RechargeModal = () => {
+    const { reCharge: isOpen, setRecharge: set_ } = useOverviewStore();
+
+    const balance = useOverviewStore(state => state.balance)
     const [amount, setAmount] = useState(1);
     const [paymentName, setPaymentName] = useState('');
     const toast = useToast();
-
+    const updatesource = useOverviewStore(state => state.updateSource)
     const createPaymentRes = useMutation(
       () => request.post('/api/account/payment', { amount: amount * 1000000 }),
       {
         onSuccess(data) {
-          setPaymentName(data?.data?.paymentName);
+          setPaymentName((data?.data?.paymentName as string).trim());
         },
         onError(err: any) {
           toast({
@@ -46,7 +50,7 @@ function useRecharge() {
       }
     );
 
-    const { data, isSuccess, isError} = useQuery(
+    const { data } = useQuery(
       ['query-charge-res'],
       () =>
         request('/api/account/payment/pay', {
@@ -59,13 +63,36 @@ function useRecharge() {
         enabled: paymentName !== ''
       }
     );
-    useEffect(()=>{
-      if(data?.data.status === 'SUCCESS'){
-        onClose()
-      }
-    },[data?.data.status])
+    const queryClient = useQueryClient()
+    const onClose = useCallback(() => {
+      set_(false)
+      createPaymentRes.reset()
+      queryClient.resetQueries({ queryKey: ['query-charge-res'], exact: true })
+    }, [createPaymentRes, queryClient, set_])
+    // useEffect(() => {
+    //   let timer: string | number | NodeJS.Timeout | undefined
+
+      useEffect(() => {
+        let timer: ReturnType<typeof setTimeout>
+        timer = setTimeout(() => {
+          if (data?.data?.status && data?.data?.status === 'SUCCESS') {
+            createPaymentRes.reset()
+            queryClient.resetQueries({ queryKey: ['query-charge-res'], exact: true })
+            onClose()
+            updatesource()
+            queryClient.invalidateQueries({ queryKey: ['getAccount'] })
+          }
+        }, 3000);
+    
+        return () => {
+          clearTimeout(timer)
+        }
+      }, [data?.data?.status])
+    //   return () => clearTimeout(timer)
+    // }, [data?.data?.status, onClose, queryClient, updatesource])
     const handleConfirm = () => {
       createPaymentRes.mutate();
+
     };
 
     return (
@@ -85,27 +112,43 @@ function useRecharge() {
               当前余额
             </Text>
             <Text mt="4px" color="#24282C" fontSize="24px" fontWeight={'medium'}>
-              ¥ {props?.balance}
+              ¥ {formatMoney(balance)}
             </Text>
             <Text color="#7B838B" mt="20px">
               充值金额
             </Text>
-            <Input
-              value={amount}
-              onChange={(e) => setAmount(parseInt(e?.target?.value))}
-              min={0}
-              type={'number'}
+            <Flex
               mt="8px"
               w="215px"
               h="42px"
-              isDisabled={!!data?.data?.codeURL|| createPaymentRes.isLoading}
-            />
+              boxSizing='border-box'
+              /* White/600 */
+              background='#F4F6F8'
+              px={'14px'}
+              /* Gray modern/100 */
+              border='1px solid #EFF0F1'
+              borderRadius='2px'
+              alignItems="center"
+            >
+
+              <Text mr='4px'>¥</Text>
+              <Input
+                value={amount}
+                variant={'unstyled'}
+                onChange={(e) => setAmount(parseInt(e?.target?.value))}
+                min={0}
+                type={'number'}
+                isDisabled={data?.data?.status || !!data?.data?.codeURL || createPaymentRes.isLoading}
+              />
+              <Img src={all_arrow.src}></Img>
+            </Flex>
+
             <Button
               size="primary"
               variant="primary"
               mt="12px"
               onClick={() => handleConfirm()}
-              isDisabled={!!data?.data?.codeURL|| createPaymentRes.isLoading}
+              isDisabled={data?.data?.status || !!data?.data?.codeURL || createPaymentRes.isLoading}
             >
               确定
             </Button>
@@ -115,7 +158,12 @@ function useRecharge() {
                   <Text color="#7B838B" mb="8px" textAlign="center">
                     微信扫码支付
                   </Text>
-                  <QRCodeSVG size={185} value={data?.data?.codeURL} style={{ margin: '0 auto' }} />
+                  <QRCodeSVG size={185} value={data?.data?.codeURL} style={{ margin: '0 auto' }} imageSettings={{ // 二维码中间的logo图片
+                    src: wechat_icon.src,
+                    height: 40,
+                    width: 40,
+                    excavate: true, // 中间图片所在的位置是否镂空
+                  }} />
                   <Box mt="8px">
                     <Text color="#717D8A" fontSize="12px" fontWeight="normal">
                       订单号： {data?.data?.tradeNO}
@@ -125,7 +173,8 @@ function useRecharge() {
                       支付结果：
                       {data?.data?.status && data?.data?.status === 'SUCCESS'
                         ? '支付成功!'
-                        : '支付中...'}
+                        : '支付中...'
+                      }
                     </Text>
                   </Box>
                 </>
@@ -138,8 +187,6 @@ function useRecharge() {
   };
 
   return {
-    isOpen,
-    onOpen,
     RechargeModal
   };
 }

@@ -11,6 +11,7 @@ import { CanvasRenderer, SVGRenderer } from 'echarts/renderers';
 import useOverviewStore from '@/stores/overview';
 import { formatMoney } from '@/utils/format';
 import { useMemo } from 'react';
+import { useBreakpointValue } from '@chakra-ui/react';
 
 echarts.use([
   TooltipComponent,
@@ -25,92 +26,160 @@ export default function CostChart() {
   const cpu = useOverviewStore(state => state.cpu)
   const memory = useOverviewStore(state => state.memory)
   const storage = useOverviewStore(state => state.storage)
+  const radius = useBreakpointValue(
+    {
+      xl: ['45%', '70%'],
+      lg: ['45%', '70%'],
+      md: ['30%', '50%'],
+      sm: ['45%', '70%'],
+    }
+  )
+  const aspectRatio = useBreakpointValue({
+    xl: '5/4',
+    lg: '5/3',
+    md: '6/2',
+    sm: '5/4',
+  })
   const source = useMemo(() => [
     ['name', 'cost'],
     ['cpu', formatMoney(cpu).toFixed(2)],
     ['memory', formatMoney(memory).toFixed(2)],
     ['storage', formatMoney(storage).toFixed(2)]
   ] as const, [cpu, memory, storage])
-  const amount = useMemo(()=>formatMoney(cpu + memory + storage), [cpu, memory, storage])
+  const amount = useMemo(() => formatMoney(cpu + memory + storage), [cpu, memory, storage])
+  const publicOption = {
+    name: 'Cost Form',
+    radius: radius || ['45%', '70%'],
+    avoidLabelOverlap: false,
+    center: ['50%', '60%'],
+    // selectedMode: 'single',
+
+    left: 'left',
+    emptyCircleStyle: {
+      borderCap: 'ronud'
+    },
+
+  }
   const option = {
-    // roseType: 'radius',
-    // legend: {
-    //   orient: 'vertical',
-    //   top: '30%',
-    //   right: 0,
-    //   bottom: 0,
-    //   icon: 'circle',
-    // },
+
     dataset: {
       dimensions: source[0],
       source,
     },
-    color: ['#7B838B', '#485058', '#24282C', '#BDC1C5'],
+    tooltip: {
+      trigger: 'item',
+
+    },
+    legend: {
+      top: '10%'
+    },
+    color: ['#24282C', '#485058', '#7B838B', '#BDC1C5'],
     series: [
       {
-      type: 'pie',
-      name: 'Cost Form',
-      radius: ['30%', '50%'],
-      avoidLabelOverlap: false,
-      // center: ['30%', '50%'],
-      // selectedMode: 'single',
-      
-      left: 'left',
-      emptyCircleStyle: {
-        borderCap: 'ronud'
+        type: 'pie',
+
+        // label: {
+        //   show:true,
+        //   formatter: '{b}\n￥{@cost}\n({d}%)',
+        //   lineHeight: 15,
+
+        // },
+        // label: {
+        //   show: false,
+        //   // position: 'center'
+        // },
+        emphasis: {
+          label: {
+            show: false,
+          }
+        },
+        label: {
+          show: false,
+          fontSize: 14
+        },
+
+        labelLine: {
+          show: false
+        },
+        // label: {
+        //   formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
+        //   backgroundColor: '#F6F8FC',
+        //   borderColor: '#8C8D8E',
+        //   borderWidth: 1,
+        //   borderRadius: 4,
+        //   rich: {
+        //     a: {
+        //       color: '#6E7079',
+        //       lineHeight: 22,
+        //       align: 'center'
+        //     },
+        //     hr: {
+        //       borderColor: '#8C8D8E',
+        //       width: '100%',
+        //       borderWidth: 1,
+        //       height: 0
+        //     },
+        //     b: {
+        //       color: '#4C5058',
+        //       fontSize: 14,
+        //       fontWeight: 'bold',
+        //       lineHeight: 33
+        //     },
+        //     per: {
+        //       color: '#fff',
+        //       backgroundColor: '#4C5058',
+        //       padding: [3, 4],
+        //       borderRadius: 4
+        //     }
+        //   }
+        // },
+        // emphasis: {
+        //   label:{
+        //     show:true
+        //   }
+        // },
+        encode: {
+          itemName: 'name',
+          value: 'cost',
+        },
+        itemStyle: {
+          borderWidth: 1,
+          borderColor: "#fff",
+          left: 0,
+        },
+        ...publicOption
       },
-      label: {
-        formatter: '{b}\n￥{@cost}({d}%)',
-        lineHeight: 15,
-      },
-      emphasis: {
-        label:{
-          show:false
-        }
-      },
-      encode: {
-        itemName: 'name',
-        value: 'cost',
-      },
-      itemStyle: {
-        borderWidth: 1,
-        borderColor: "#fff",
-        left: 0,
+      {
+        type: 'pie',
+        radius: [publicOption.radius[0], publicOption.radius[0]],
+        center: publicOption.center,
+        label: {
+          position: 'center',
+          show: true,
+          formatter: function (params: any) {
+            return '￥' + amount.toFixed(2) + '\n支出'
+          },
+          fontSize: 16,
+          textStyle: {
+            textBorderColor: 'rgba(0,0,0,0)'
+
+          }
+        },
+        emphasis: {
+          label: {
+            show: false
+          },
+          scale: 0
+        },
+        encode: {
+          itemName: 'name',
+          value: 'cost',
+        },
+        // itemStyle: {
+        //   borderWidth: 0,
+        // }
       }
-    },
-    {
-      type: 'pie',
-      name: 'Cost Form',
-      radius: ['30%', '50%'],
-      avoidLabelOverlap: false,
-      
-      left: 'left',
-      emptyCircleStyle: {
-        borderCap: 'ronud'
-      },
-      label: {
-        position:'center',
-        show:true,
-        formatter: function (params: any) {
-          return '￥' + amount.toFixed(2)+'\n支出'
-        }
-      },
-      emphasis: {
-        label:{
-          show:false
-        }
-      },
-      encode: {
-        itemName: 'name',
-        value: 'cost',
-      },
-      itemStyle: {
-        borderWidth: 1,
-        borderColor: "#fff",
-        left: 0,
-      }
-    }
-  ]
+    ]
     // ]
   };
   return <ReactEChartsCore
@@ -119,10 +188,10 @@ export default function CostChart() {
     notMerge={true}
     lazyUpdate={true}
     style={{
-      aspectRatio: '5/3',
+      aspectRatio,
       width: '100%',
       flex: 1,
-      pointerEvents: 'none'
+      // pointerEvents: 'none'
     }}
   />
 }

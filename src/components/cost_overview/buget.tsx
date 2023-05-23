@@ -1,9 +1,8 @@
 import { Flex, Box, Text, Heading, Img } from "@chakra-ui/react";
 import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
-import down_icon from '@/assert/ic_round-trending-down.png'
-import up_icon from '@/assert/ic_round-trending-up.png'
+import down_icon from '@/assert/ic_round-trending-down.svg'
+import up_icon from '@/assert/ic_round-trending-up.svg'
 import { useState } from "react";
-import { SelectMonth } from "./components/selectMonth";
 import useOverviewStore from "@/stores/overview";
 import { getTime, parseISO } from "date-fns";
 import { formatMoney } from "@/utils/format";
@@ -32,38 +31,27 @@ export function Buget() {
     }
     return pre
   }, [0, 0])
-  return <Flex direction={'column'}>
+  const list = [
+    {title:"扣费" ,src: down_icon.src, value:'￥'+ formatMoney(out)},
+    {title:"充值" ,src: up_icon.src,value:'￥'+ formatMoney(_in)},
+  ]
+  return <Flex direction={'column'} mb={'34px'}>
     <Flex alignItems={'center'} justify="space-between">
       <Heading size='sm'>收支</Heading>
       {/* <SelectMonth ></SelectMonth> */}
     </Flex>
-    <Flex mt="20px" justify={'space-evenly'}>
-      <Card variant='filled'>
+    <Flex mt="20px" 
+    justify={'space-evenly'} 
+    gap='6'>
+      {list.map(v=><Card variant='filled' bg={['#f1f4f6','#f1f4f6','#f1f4f6','white']} key={v.title}>
         <CardBody alignItems={'center'} flexDirection="column" justifyContent={'center'}>
-          <Flex bg={'#24282C'} w='31.75px' h='28.7px' justify={'center'} align="center"><Img src={down_icon.src}></Img></Flex>
-          <Text fontSize={'12px'}>扣费</Text>
-          <Text fontWeight='500' fontSize='16px' mt={'8px'}>¥ {formatMoney(out)}</Text>
-          {/* {
-            preIn > 0 ? <Text fontWeight='400' fontSize='10px' color='#5A646E' mt={'4px'}>据上月{preIn > _in ? `减少${((preIn - _in) / preIn * 100).toFixed(2)}%` : `增长${((_in - preIn) / preIn * 100).toFixed(2)}`}%</Text>
-              : 
-              <></>
-              // <Box h='14px'></Box>
-          } */}
+          <Flex bg={'#24282C'} w='31.75px' h='28.7px' justify={'center'} align="center"
+            borderRadius={'2px'}
+          ><Img src={v.src}></Img></Flex>
+          <Text fontSize={'12px'} mt={'6px'}>{v.title}</Text>
+          <Text fontWeight='500' fontSize='16px' mt={'8px'}>{v.value}</Text>
         </CardBody>
-      </Card>
-      <Card variant='filled'>
-        <CardBody alignItems={'center'} flexDirection="column" justifyContent={'center'}>
-          <Flex bg={'#24282C'} w='31.75px' h='28.7px' justify={'center'} align="center"><Img src={up_icon.src}></Img></Flex>
-          <Text fontSize={'12px'}>充值</Text>
-          <Text fontWeight='500' fontSize='16px' mt={'8px'}>¥ {formatMoney(_in)}</Text>
-          {/* {
-            preOut > 0 ? <Text fontWeight='400' fontSize='10px' color='#5A646E' mt={'4px'}>据上月{preOut > out ? `减少${((preOut - out) / preOut * 100).toFixed(2)}%` : `增长${((out - preOut) / preOut * 100).toFixed(2)}`}%</Text>
-              : 
-              <></>
-              // <Box h='14px'></Box>
-          } */}
-        </CardBody>
-      </Card>
+      </Card>)}
     </Flex>
   </Flex>
 }

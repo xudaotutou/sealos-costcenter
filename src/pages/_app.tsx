@@ -2,14 +2,14 @@ import Layout from '@/layout';
 import { theme } from '@/styles/chakraTheme';
 import '@/styles/globals.scss';
 import { ChakraProvider } from '@chakra-ui/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+import { QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import type { AppProps } from 'next/app';
 import Fonts from '@/styles/fonts';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import 'react-day-picker/dist/style.css';
-// import './selectDateRange.css'
 
 // import '@/utils/i18n';
 const queryClient = new QueryClient({

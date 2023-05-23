@@ -49,7 +49,6 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
     try {
       console.log('create!!!')
       await ApplyYaml(kc, yaml.dump(crdSchema));
-      console.log('--create--')
       await new Promise<void>((resolve) => setTimeout(() => resolve(), 1000));
     } finally {
       const { body } = await GetCRD(kc, meta, name);
@@ -57,13 +56,19 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
       if(!('item' in (body as BillingData).status)) {
         (body as BillingData).status.item = []
       }
+      if(!('deductionAmount' in (body as BillingData).status)) {
+        (body as BillingData).status.deductionAmount = {
+          cpu:0,
+          memory:0,
+          storage:0
+        }
+      }
       return jsonRes(resp, {
         code: 200,
         data: body
       });
     }
   } catch (error) {
-    console.log(error);
     jsonRes(resp, { code: 500, data: error });
   }
 }

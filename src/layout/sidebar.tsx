@@ -1,11 +1,11 @@
 import { Box, Flex, Text, Img } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import bar_a_icon from '@/assert/bar_chart_4_bars.png'
+import bar_a_icon from '@/assert/bar_chart_4_bars_black.svg'
 import bar_icon from '@/assert/bar_chart_4_bars.svg'
-import letter_icon from '@/assert/format_letter_spacing_standard.png'
-import letter_a_icon from '@/assert/format_letter_spacing_standard.svg'
-import receipt_icon from '@/assert/receipt_long.png'
-import receipt_a_icon from '@/assert/receipt_long_black.png'
+import letter_icon from '@/assert/format_letter_spacing_standard.svg'
+import letter_a_icon from '@/assert/format_letter_spacing_standard_black.svg'
+import receipt_icon from '@/assert/receipt_long.svg'
+import receipt_a_icon from '@/assert/receipt_long_black.svg'
 import type { StaticImageData } from 'next/image';
 
 type Menu = {
@@ -60,7 +60,7 @@ export default function SideBar() {
             key={item.value}
 
             py={'10px'}
-            px={'20px'}
+            px={['10px', '10px', '10px', '20px']}
             alignItems={"center"}
             onClick={() => {
               router.push(item.url);
@@ -81,7 +81,7 @@ export default function SideBar() {
               'none',
               'none',
               'none',
-              'flex'              
+              'flex'
             ]}>
               {item.value}
             </Text>

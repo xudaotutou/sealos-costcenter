@@ -2,8 +2,6 @@
 import { Heading, Box, Flex } from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
 import { memo } from 'react'
-import { SelectMonth } from './components/selectMonth'
-import SelectRange from '@/components/billing/selectDateRange'
 const LineChart = dynamic(
   () => import('./components/lineChart'),
   { ssr: false }

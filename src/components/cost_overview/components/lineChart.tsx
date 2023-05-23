@@ -30,7 +30,6 @@ export default function Trend() {
   const option = {
     xAxis: {
       type: 'time',
-      boundaryGap: true,
       // show: false,
       // boundaryGap: false,
       // minInterval: 1000 * 60 * 60,
@@ -51,12 +50,22 @@ export default function Trend() {
     },
 
     yAxis: {
-      name: '元', type: 'value', boundaryGap: false,
+      name: '元', 
+      type: 'value', 
+      boundaryGap: false,
+      nameTextStyle:{
+        color:'rgba(107, 112, 120, 1)'
+      },
       axisLine: {
         show: true,
         lineStyle: {
           color: 'rgba(177, 200, 222, 0.6)',
         },
+      },
+      splitLine:{
+        lineStyle:{
+          type:'dashed',
+        }
       },
       axisTick: {
         show: false
@@ -82,6 +91,11 @@ export default function Trend() {
       axisPointer: {
         type: 'line'
       },
+      // textStyle: {
+      //   shadowBlur: 0,
+      //   shadowColor: 'transparent'
+      // },
+      extraCssText: 'box-shadow: 0px 2px 4px rgba(161, 167, 179, 0.25), 0px 0px 1px rgba(121, 141, 159, 0.25);',
       backgroundColor: 'transparent',
       padding: '0px',
 
@@ -91,10 +105,10 @@ export default function Trend() {
         color: #5A646E;
         margin-bottom:8px;
         font-family: 'PingFang SC';
-font-style: normal;
-font-weight: 500;
-font-size: 12px;
-line-height: 150%;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 12px;
+        line-height: 150%;
         ">${params[0].data[0]}</p>
         
         <p 
@@ -108,14 +122,15 @@ line-height: 150%;
         resDom.innerHTML = res
         resDom.setAttribute('style', `
            
-        background: rgba(238, 241, 248, 0.9);
+        background: #FFFFFF;
         
         width: 162px;
         height: 79px;
         padding: 16px;
-        // backdrop-filter: blur(11.5px);
         border: 1px solid rgba(205, 213, 218, 1);
-        border-radius: 4px;`)
+        border-radius: 4px;
+        
+        `)
         return resDom;
       }
     },
@@ -201,7 +216,7 @@ line-height: 150%;
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             {
               offset: 0,
-              color: 'rgba(220, 227, 231, 0.42)'
+              color: 'rgba(220, 227, 231, 0.8)'
             },
             {
               offset: 1,
@@ -219,6 +234,6 @@ line-height: 150%;
     option={option}
     notMerge={true}
     lazyUpdate={true}
-    style={{ height: '280px', width: '100%', flex: 1 }}
+    style={{ height: '310px', width: '100%', flex: 1 }}
   />
 }

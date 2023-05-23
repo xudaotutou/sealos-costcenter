@@ -56,7 +56,7 @@ export default function Layout({ children }: any) {
       ) : (
         <Flex className={clsx(styles.backgroundWrap)} justify={'center'}>
           <SideBar />
-          <Box flexGrow={1} borderRadius="12px" overflow={'hidden'} w={0}>
+          <Box flexGrow={1} borderRadius="8px" overflow={'hidden'} w={0}>
             {children}
           </Box>
         </Flex>
