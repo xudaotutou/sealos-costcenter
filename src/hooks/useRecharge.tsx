@@ -69,8 +69,6 @@ function useRecharge() {
       createPaymentRes.reset()
       queryClient.resetQueries({ queryKey: ['query-charge-res'], exact: true })
     }, [createPaymentRes, queryClient, set_])
-    // useEffect(() => {
-    //   let timer: string | number | NodeJS.Timeout | undefined
 
       useEffect(() => {
         let timer: ReturnType<typeof setTimeout>

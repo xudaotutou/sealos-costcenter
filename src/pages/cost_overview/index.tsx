@@ -16,6 +16,7 @@ function CostOverview() {
   const startTime = useOverviewStore(state => state.startTime)
   const endTime = useOverviewStore(state => state.endTime)
   const { NotEnoughModal } = useNotEnough();
+
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>
     timer = setTimeout(() => {

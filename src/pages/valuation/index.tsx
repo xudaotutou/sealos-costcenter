@@ -9,9 +9,7 @@ import { ValuationData } from '@/types/valuation';
 import { valuationMap } from '@/constants/payment';
 import { useMemo } from 'react';
 export default function Valuation() {
-  const { data: _data } = useQuery(['valuation'], () => request<ValuationData>('/api/price'),{
-    cacheTime: 24 * 60 * 60 * 1000
-  });
+  const { data: _data } = useQuery(['valuation'], () => request<ValuationData>('/api/price'));
   const data = useMemo(() => _data?.data.status.billingRecords
     .filter(x => valuationMap.has(x.resourceType))
     .map(x => {
@@ -22,7 +20,7 @@ export default function Valuation() {
         unit: props.unit,
         bg: props.bg
       })
-    }), [_data])
+    }).sort(), [_data])
   const cycle = ['天', '周', '月', '年']
   return (
     // <KeepAlive cacheKey='VALUATION'>

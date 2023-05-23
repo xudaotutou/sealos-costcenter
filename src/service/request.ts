@@ -2,7 +2,6 @@
 import { ApiResp } from '@/types/api';
 import useSessionStore from '@/stores/session';
 import axios, { AxiosRequestConfig, AxiosResponse, RawAxiosRequestHeaders } from 'axios';
-import nprogress from "nprogress";
 const request = axios.create({
   baseURL: '/',
   withCredentials: true,
@@ -29,13 +28,13 @@ request.interceptors.request.use(
     }
 
     config.headers = _headers;
-    nprogress.start();
+    // nprogress.start();
     return config;
   },
   (error) => {
     error.data = {};
     error.data.message = 'error';
-    nprogress.done();
+    // nprogress.done();
     return Promise.resolve(error);
   }
 );
@@ -48,7 +47,7 @@ request.interceptors.response.use(
     if (!data.code || data.code < 200 || data.code > 300) {
       return Promise.reject(response.data);
     }
-    nprogress.done();
+    // nprogress.done();
     return response.data;
   },
   (error) => {
@@ -61,7 +60,7 @@ request.interceptors.response.use(
       error.data = {};
       error.data.message = 'error';
     }
-    nprogress.done();
+    // nprogress.done();
     return Promise.reject(error);
   }
 );
