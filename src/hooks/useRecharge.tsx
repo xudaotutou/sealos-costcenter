@@ -12,15 +12,19 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   Text,
-  useDisclosure,
   useToast
 } from '@chakra-ui/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { QRCodeSVG } from 'qrcode.react';
 import { useCallback, useEffect, useState } from 'react';
 import wechat_icon from '@/assert/ic_baseline-wechat.svg';
-
+import vector from '@/assert/Vector.svg'
 import all_arrow from '@/assert/VectorAll.svg';
 import { formatMoney } from '@/utils/format';
 function useRecharge() {
@@ -29,10 +33,10 @@ function useRecharge() {
     const { reCharge: isOpen, setRecharge: set_ } = useOverviewStore();
 
     const balance = useOverviewStore(state => state.balance)
+    const [step, setStep] = useState(1)
     const [amount, setAmount] = useState(1);
     const [paymentName, setPaymentName] = useState('');
     const toast = useToast();
-    const updatesource = useOverviewStore(state => state.updateSource)
     const createPaymentRes = useMutation(
       () => request.post('/api/account/payment', { amount: amount * 1000000 }),
       {
@@ -60,7 +64,18 @@ function useRecharge() {
         }),
       {
         refetchInterval: paymentName !== '' ? 1000 : false,
-        enabled: paymentName !== ''
+        enabled: paymentName !== '',
+        onSuccess(data) {
+          setTimeout(() => {
+            if (data?.data?.status === 'SUCCESS') {
+              createPaymentRes.reset()
+              queryClient.resetQueries({ queryKey: ['query-charge-res'], exact: true })
+              onClose()
+              queryClient.invalidateQueries({ queryKey: ['billing'], exact: false })
+              queryClient.invalidateQueries({ queryKey: ['getAccount'] })
+            }
+          }, 3000);
+        }
       }
     );
     const queryClient = useQueryClient()
@@ -70,29 +85,29 @@ function useRecharge() {
       queryClient.resetQueries({ queryKey: ['query-charge-res'], exact: true })
     }, [createPaymentRes, queryClient, set_])
 
-      useEffect(() => {
-        let timer: ReturnType<typeof setTimeout>
-        timer = setTimeout(() => {
-          if (data?.data?.status && data?.data?.status === 'SUCCESS') {
-            createPaymentRes.reset()
-            queryClient.resetQueries({ queryKey: ['query-charge-res'], exact: true })
-            onClose()
-            updatesource()
-            queryClient.invalidateQueries({ queryKey: ['getAccount'] })
-          }
-        }, 3000);
-    
-        return () => {
-          clearTimeout(timer)
-        }
-      }, [data?.data?.status])
+    // useEffect(() => {
+    //   let timer: ReturnType<typeof setTimeout>
+    //   timer = setTimeout(() => {
+    //     if (data?.data?.status && data?.data?.status === 'SUCCESS') {
+    //       createPaymentRes.reset()
+    //       queryClient.resetQueries({ queryKey: ['query-charge-res'], exact: true })
+    //       onClose()
+    //       queryClient.invalidateQueries({ queryKey: ['billing'], exact: false })
+    //       queryClient.invalidateQueries({ queryKey: ['getAccount'] })
+    //     }
+    //   }, 3000);
+
+    //   return () => {
+    //     clearTimeout(timer)
+    //   }
+    // }, [data?.data?.status])
     //   return () => clearTimeout(timer)
     // }, [data?.data?.status, onClose, queryClient, updatesource])
     const handleConfirm = () => {
       createPaymentRes.mutate();
 
     };
-
+    // const [id, setId] = useState(-1);
     return (
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -115,7 +130,10 @@ function useRecharge() {
             <Text color="#7B838B" mt="20px">
               充值金额
             </Text>
-            <Flex
+
+            <NumberInput defaultValue={15} clampValueOnBlur={false} min={0}
+            step={step}
+              isDisabled={data?.data?.status || !!data?.data?.codeURL || createPaymentRes.isLoading}
               mt="8px"
               w="215px"
               h="42px"
@@ -127,20 +145,31 @@ function useRecharge() {
               border='1px solid #EFF0F1'
               borderRadius='2px'
               alignItems="center"
+              display={'flex'}
+              value={amount}
+              variant={'unstyled'}
+              onChange={(str, v) => str.trim() ?setAmount(v) : setAmount(0)}
             >
-
-              <Text mr='4px'>¥</Text>
-              <Input
-                value={amount}
-                variant={'unstyled'}
-                onChange={(e) => setAmount(parseInt(e?.target?.value))}
-                min={0}
-                type={'number'}
-                isDisabled={data?.data?.status || !!data?.data?.codeURL || createPaymentRes.isLoading}
-              />
-              <Img src={all_arrow.src}></Img>
-            </Flex>
-
+              <Text mr={'4px'}>¥</Text>
+              <NumberInputField />
+              <NumberInputStepper 
+              // onMouseDown={
+              //   ()=> {
+              //     now = Date.now();
+              //     const intervalId = setInterval(() => {
+              //     count += step;
+              //     }, 100);
+              //   }
+              // }
+              >
+                <NumberIncrementStepper >
+                  <Img src={vector.src}></Img>
+                </NumberIncrementStepper>
+                <NumberDecrementStepper >
+                  <Img src={vector.src} transform={'rotate(180deg)'}></Img>
+                </NumberDecrementStepper>
+              </NumberInputStepper>
+            </NumberInput>
             <Button
               size="primary"
               variant="primary"

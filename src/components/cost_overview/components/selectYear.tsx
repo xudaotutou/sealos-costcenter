@@ -13,7 +13,6 @@ export const SelectYear = memo(function SelectYear() {
   return <Menu>{({ isOpen }) => <>
     <MenuButton as={Button} rightIcon={<Img src={arrow_icon.src} transition={'all'} transform={isOpen ? 'rotate(-180deg)' : 'rotate(0)'}></Img>}
       w='110px'
-      // shadow={'0px 0px 4px 0px #A8DBFF'}
       h='32px'
       bg={'#F6F8F9'}
       _expanded={{

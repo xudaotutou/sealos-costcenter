@@ -1,6 +1,4 @@
 import { Box, Flex, Heading, Text, Img } from '@chakra-ui/react';
-import styles from './index.module.scss';
-import { useTranslation } from 'react-i18next';
 import letter_icon from '@/assert/format_letter_spacing_standard.svg'
 
 import { useQuery } from '@tanstack/react-query';

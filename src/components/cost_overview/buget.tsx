@@ -1,28 +1,43 @@
-import { Flex, Box, Text, Heading, Img } from "@chakra-ui/react";
+import { Flex, Box, Text, Heading, Img, } from "@chakra-ui/react";
 import { Card, CardHeader, CardBody, CardFooter } from '@chakra-ui/react'
 import down_icon from '@/assert/ic_round-trending-down.svg'
 import up_icon from '@/assert/ic_round-trending-up.svg'
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import useOverviewStore from "@/stores/overview";
-import { getTime, parseISO } from "date-fns";
+import { addDays, differenceInDays, formatISO, getTime, parseISO, subSeconds } from "date-fns";
 import { formatMoney } from "@/utils/format";
+import request from "@/service/request";
+import { BillingSpec, BillingData } from "@/types/billing";
+import { useQuery } from "@tanstack/react-query";
 
 export function Buget() {
-  // const [_in, setIn] = useState(1200)
-  // const [out, setOut] = useState(1300)
-  const preItems = useOverviewStore(state => state.preItems)
-  const items = useOverviewStore(state => state.items)
-  const [preOut, preIn] = preItems
-    .reduce<[number, number]>((pre, cur) => {
-      if (cur.type === 0) {
-        pre[0] += cur.amount
-      }
-      else if (cur.type === 1) {
-        pre[1] += cur.amount
-      }
-      return pre
-    }, [0, 0])
-  const [out, _in] = items.reduce<[number, number]>((pre, cur) => {
+  const startTime = useOverviewStore(state => state.startTime)
+  const endTime = useOverviewStore(state => state.endTime)
+  const { data } = useQuery(
+    ['billing', { startTime, endTime }],
+    () => {
+      const start = startTime;
+      const end = subSeconds(addDays(endTime, 1), 1);
+      const delta = differenceInDays(end, start);
+      const spec: BillingSpec = {
+        startTime: formatISO(start, { representation: 'complete' }),
+        // pre,
+        endTime: formatISO(end, { representation: 'complete' }),
+        // start,
+        page: 1,
+        pageSize: (delta + 1) * 48,
+        type: -1,
+        orderID: ''
+      };
+      return request<any, { data: BillingData }, { spec: BillingSpec }>('/api/billing', {
+        method: 'POST',
+        data: {
+          spec
+        }
+      })
+    }
+  )
+  const [_out, _in] = useMemo(() => (data?.data.status.item || []).reduce<[number, number]>((pre, cur) => {
     if (cur.type === 0) {
       pre[0] += cur.amount
     }
@@ -30,20 +45,20 @@ export function Buget() {
       pre[1] += cur.amount
     }
     return pre
-  }, [0, 0])
+  }, [0, 0]), [data])
   const list = [
-    {title:"扣费" ,src: down_icon.src, value:'￥'+ formatMoney(out)},
-    {title:"充值" ,src: up_icon.src,value:'￥'+ formatMoney(_in)},
+    { title: "扣费", src: down_icon.src, value: '￥' + formatMoney(_out) },
+    { title: "充值", src: up_icon.src, value: '￥' + formatMoney(_in) },
   ]
   return <Flex direction={'column'} mb={'34px'}>
     <Flex alignItems={'center'} justify="space-between">
       <Heading size='sm'>收支</Heading>
       {/* <SelectMonth ></SelectMonth> */}
     </Flex>
-    <Flex mt="20px" 
-    justify={'space-evenly'} 
-    gap='6'>
-      {list.map(v=><Card variant='filled' bg={['#f1f4f6','#f1f4f6','#f1f4f6','white']} key={v.title}>
+    <Flex mt="20px"
+      justify={'space-evenly'}
+      gap='6'>
+      {list.map(v => <Card variant='filled' bg={['#f1f4f6', '#f1f4f6', '#f1f4f6', 'white']} key={v.title}>
         <CardBody alignItems={'center'} flexDirection="column" justifyContent={'center'}>
           <Flex bg={'#24282C'} w='31.75px' h='28.7px' justify={'center'} align="center"
             borderRadius={'2px'}

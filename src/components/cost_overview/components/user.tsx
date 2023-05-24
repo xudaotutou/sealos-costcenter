@@ -13,24 +13,24 @@ import useOverviewStore from '@/stores/overview';
 
 export default function UserCard() {
   const session = useSessionStore().getSession();
-  const balance = useOverviewStore(state=>state.balance)
-  const setBalance = useOverviewStore(state=>state.setBalance)
-  const setReccharge = useOverviewStore(state=>state.setRecharge)
+  const balance = useOverviewStore(state => state.balance)
+  const setBalance = useOverviewStore(state => state.setBalance)
+  const setReccharge = useOverviewStore(state => state.setRecharge)
   const rechargeOpen = () => setReccharge(true)
   const { RechargeModal } = useRecharge();
   const { data } = useQuery({
     queryKey: ['getAccount'],
     queryFn: () => request('/api/account/getAmount'),
+    onSuccess(data) {
+      let real_balance = data?.data?.balance || 0
+      if (data?.data?.deductionBalance) {
+        real_balance -= data?.data.deductionBalance
+      }
+      setBalance(real_balance)
+    }
   }
   );
 
-  useEffect(() => {
-    let real_balance = data?.data?.balance || 0
-    if(data?.data?.deductionBalance){
-      real_balance -= data?.data.deductionBalance
-    }
-    setBalance(real_balance)
-  }, [data]);
   return (
     <>
       <Flex className={styles.userCard} boxShadow={'0 4px #BCBFC3,0 8px #DFE2E6'} aspectRatio={'2/1'} mb={'34px'} shrink={[1, 1, 1, 0]}>

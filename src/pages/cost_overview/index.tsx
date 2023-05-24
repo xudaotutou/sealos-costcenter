@@ -1,33 +1,57 @@
 
-import { Box, Flex, Heading, Img, Text, useUpdateEffect, } from '@chakra-ui/react';
+import { Box, Flex, Heading, Img } from '@chakra-ui/react';
 import { BillingTable } from '@/components/billing/billingTable';
 import UserCard from '../../components/cost_overview/components/user';
 import bar_icon from '@/assert/bar_chart_4_bars_black.svg'
 import { Trend } from '../../components/cost_overview/trend';
 import { Buget } from '../../components/cost_overview/buget';
 import { Cost } from '../../components/cost_overview/cost';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import useOverviewStore from '@/stores/overview';
 import SelectRange from '@/components/billing/selectDateRange';
 import useNotEnough from '@/hooks/useNotEnough';
+import { useQuery } from '@tanstack/react-query';
+import { INITAL_SOURCE } from '@/constants/billing';
+import { BillingSpec, BillingData } from '@/types/billing';
+import { formatMoney } from '@/utils/format';
+import { subSeconds, addDays, differenceInDays, subDays, formatISO, set, isAfter, parseISO, format, isBefore } from 'date-fns';
+import request from '@/service/request';
 function CostOverview() {
-  const updateSource = useOverviewStore(state => state.updateSource)
-  const billingItems = useOverviewStore(state => state.items)
+  // const updateSource = useOverviewStore(state => state.updateSource)
+  // const billingItems = useOverviewStore(state => state.items)
   const startTime = useOverviewStore(state => state.startTime)
   const endTime = useOverviewStore(state => state.endTime)
   const { NotEnoughModal } = useNotEnough();
 
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>
-    timer = setTimeout(() => {
-      updateSource()
-    }, 3000);
-
-    return () => {
-      clearTimeout(timer)
+  const { data, isLoading, isSuccess, isError } = useQuery(
+    ['billing', { startTime, endTime }],
+    () => {
+      const start = startTime;
+      const end = subSeconds(addDays(endTime, 1), 1);
+      const delta = differenceInDays(end, start);
+      // console.log(delta, start, end);
+      const pre = subDays(start, delta);
+      // console.log(pre, start, end)
+      const spec: BillingSpec = {
+        startTime: formatISO(pre, { representation: 'complete' }),
+        // pre,
+        endTime: formatISO(end, { representation: 'complete' }),
+        // start,
+        page: 1,
+        pageSize: (delta + 1) * 48,
+        type: -1,
+        orderID: ''
+      };
+      return request<any, { data: BillingData }, { spec: BillingSpec }>('/api/billing', {
+        method: 'POST',
+        data: {
+          spec
+        }
+      })
     }
-  }, [startTime, endTime])
-  // const billingItems = useOverviewStore(state => state.items)
+  )
+  const billingItems = useMemo(() => data?.data.status.item.filter((v, i) => i < 3) || [], [data])
+
   return <><Flex h={'100%'}>
     <Flex bg='white' p="24px" borderRadius="8px" direction='column'
       flexGrow={'1'}
@@ -68,7 +92,6 @@ function CostOverview() {
           <Box overflowX={'auto'}>
             <BillingTable data={
               billingItems
-                .filter((v, i) => i < 3) || []
             }></BillingTable>
           </Box>
         </Flex>

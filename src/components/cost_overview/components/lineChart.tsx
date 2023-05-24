@@ -13,6 +13,12 @@ import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 import useOverviewStore from '@/stores/overview';
 import { INITAL_SOURCE } from '@/constants/billing';
+import { BillingSpec, BillingData } from '@/types/billing';
+import { useQuery } from '@tanstack/react-query';
+import { subSeconds, addDays, differenceInDays, subDays, formatISO, parseISO, format, isSameDay } from 'date-fns';
+import request from '@/service/request';
+import { formatMoney } from '@/utils/format';
+import { useMemo } from 'react';
 
 echarts.use([
   GridComponent,
@@ -26,7 +32,65 @@ echarts.use([
 ]);
 
 export default function Trend() {
-  const source = useOverviewStore(data => data.source)
+  const startTime = useOverviewStore(state => state.startTime)
+  const endTime = useOverviewStore(state => state.endTime)
+  const { data } = useQuery(
+    ['billing', { startTime, endTime }],
+    () => {
+      const start = startTime;
+      const end = subSeconds(addDays(endTime, 1), 1);
+      const delta = differenceInDays(end, start);
+      const spec: BillingSpec = {
+        startTime: formatISO(start, { representation: 'complete' }),
+        // pre,
+        endTime: formatISO(end, { representation: 'complete' }),
+        // start,
+        page: 1,
+        pageSize: (delta + 1) * 48,
+        type: -1,
+        orderID: ''
+      };
+      return request<any, { data: BillingData }, { spec: BillingSpec }>('/api/billing', {
+        method: 'POST',
+        data: {
+          spec
+        }
+      })
+    }
+  )
+  const source = useMemo(() => [...INITAL_SOURCE,
+  ...(data?.data.status.item
+    .filter((v) => v.type === 0)
+    .map<[Date, number, number, number, number]>((item) => [
+      parseISO(item.time),
+      item.costs.cpu,
+      item.costs.memory,
+      item.costs.storage,
+      item.amount
+    ])
+    .reduce<[Date, number, number, number, number][]>((pre, cur) => {
+      if (pre.length !== 0) {
+        const precost = pre[pre.length - 1];
+        if (isSameDay(precost[0], cur[0])) {
+          precost[1] += cur[1];
+          precost[2] += cur[2];
+          precost[3] += cur[3];
+          precost[4] += cur[4];
+          return pre;
+        }
+      }
+      pre.push(cur);
+
+      return pre;
+    }, [])
+    .map((x) => [
+      x[0],
+      formatMoney(x[1]),
+      formatMoney(x[2]),
+      formatMoney(x[3]),
+      formatMoney(x[4])
+    ]).reverse()) || []
+  ], [data])
   const option = {
     xAxis: {
       type: 'time',
@@ -50,11 +114,11 @@ export default function Trend() {
     },
 
     yAxis: {
-      name: '元', 
-      type: 'value', 
+      name: '元',
+      type: 'value',
       boundaryGap: false,
-      nameTextStyle:{
-        color:'rgba(107, 112, 120, 1)'
+      nameTextStyle: {
+        color: 'rgba(107, 112, 120, 1)'
       },
       axisLine: {
         show: true,
@@ -62,9 +126,9 @@ export default function Trend() {
           color: 'rgba(177, 200, 222, 0.6)',
         },
       },
-      splitLine:{
-        lineStyle:{
-          type:'dashed',
+      splitLine: {
+        lineStyle: {
+          type: 'dashed',
         }
       },
       axisTick: {
@@ -100,7 +164,6 @@ export default function Trend() {
       padding: '0px',
 
       formatter: function (params: any) {
-        console.log(params)
         var res = `<p style="
         color: #5A646E;
         margin-bottom:8px;
@@ -109,7 +172,7 @@ export default function Trend() {
         font-weight: 500;
         font-size: 12px;
         line-height: 150%;
-        ">${params[0].data[0]}</p>
+        ">${format(params[0].data[0], 'yyyy-MM-dd')}</p>
         
         <p 
         style="

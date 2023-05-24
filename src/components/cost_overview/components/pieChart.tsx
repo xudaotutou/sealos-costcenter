@@ -12,6 +12,10 @@ import useOverviewStore from '@/stores/overview';
 import { formatMoney } from '@/utils/format';
 import { useMemo } from 'react';
 import { useBreakpointValue } from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
+import request from '@/service/request';
+import { BillingSpec, BillingData } from '@/types/billing';
+import { subSeconds, addDays, differenceInDays, formatISO } from 'date-fns';
 
 echarts.use([
   TooltipComponent,
@@ -23,9 +27,35 @@ echarts.use([
 ]);
 
 export default function CostChart() {
-  const cpu = useOverviewStore(state => state.cpu)
-  const memory = useOverviewStore(state => state.memory)
-  const storage = useOverviewStore(state => state.storage)
+  const startTime = useOverviewStore(state => state.startTime)
+  const endTime = useOverviewStore(state => state.endTime)
+  const { data } = useQuery(
+    ['billing', { startTime, endTime }],
+    () => {
+      const start = startTime;
+      const end = subSeconds(addDays(endTime, 1), 1);
+      const delta = differenceInDays(end, start);
+      const spec: BillingSpec = {
+        startTime: formatISO(start, { representation: 'complete' }),
+        // pre,
+        endTime: formatISO(end, { representation: 'complete' }),
+        // start,
+        page: 1,
+        pageSize: (delta + 1) * 48,
+        type: -1,
+        orderID: ''
+      };
+      return request<any, { data: BillingData }, { spec: BillingSpec }>('/api/billing', {
+        method: 'POST',
+        data: {
+          spec
+        }
+      })
+    }
+  )
+  const cpu = useMemo(() => data?.data.status.deductionAmount.cpu || 0, [data])
+  const memory = useMemo(() => data?.data.status.deductionAmount.memory || 0, [data])
+  const storage = useMemo(() => data?.data.status.deductionAmount.storage || 0, [data])
   const radius = useBreakpointValue(
     {
       xl: ['45%', '70%'],
