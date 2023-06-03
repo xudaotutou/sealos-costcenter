@@ -7,12 +7,12 @@ export const MockValuationStandard: ValuationStandard[] = [
     price: '¥ 0.02'
   },
   {
-    name: '内存',
+    name: 'Memory',
     unit: 'G/小时',
     price: '¥ 0.02'
   },
   {
-    name: '本地硬盘',
+    name: 'Local Disk',
     unit: 'G/小时',
 
     price: '¥ 0.02'
