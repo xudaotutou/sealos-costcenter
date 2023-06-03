@@ -63,9 +63,9 @@ export default function Trend() {
     .filter((v) => v.type === 0)
     .map<[Date, number, number, number, number]>((item) => [
       parseISO(item.time),
-      item.costs.cpu,
-      item.costs.memory,
-      item.costs.storage,
+      item.costs.cpu || 0,
+      item.costs.memory || 0,
+      item.costs.storage || 0,
       item.amount
     ])
     .reduce<[Date, number, number, number, number][]>((pre, cur) => {
