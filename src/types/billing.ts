@@ -24,9 +24,9 @@ export type BillingSpec =
 export type BillingItem = {
   amount: number;
   costs: {
-    cpu: number;
-    memory: number;
-    storage: number;
+    cpu?: number;
+    memory?: number;
+    storage?: number;
   };
   order_id: string;
   owner: string;

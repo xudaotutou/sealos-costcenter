@@ -25,7 +25,7 @@ export function BillingTable({ data }: { data: BillingItem[] }) {
         >
           {TableHeaders?.map((item) => (
             <Th key={item}
-            bg={'#F1F4F6'}
+              bg={'#F1F4F6'}
               _before={
                 {
                   content: `""`,
@@ -54,9 +54,9 @@ export function BillingTable({ data }: { data: BillingItem[] }) {
                 </Flex>
               </Td>
 
-              <Td>{!item.type ? '￥' + formatMoney(item.costs.cpu) : '-'}</Td>
-              <Td>{!item.type ? '￥' + formatMoney(item.costs.memory) : '-'}</Td>
-              <Td>{!item.type ? '￥' + formatMoney(item.costs.storage) : '-'}</Td>
+              <Td>{!item.type ? '￥' + formatMoney(item.costs.cpu || 0) : '-'}</Td>
+              <Td>{!item.type ? '￥' + formatMoney(item.costs.memory || 0) : '-'}</Td>
+              <Td>{!item.type ? '￥' + formatMoney(item.costs.storage || 0) : '-'}</Td>
               <Td>{'￥' + formatMoney(item.amount)}</Td>
             </Tr>
           );

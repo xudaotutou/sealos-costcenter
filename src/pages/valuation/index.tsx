@@ -1,6 +1,5 @@
 import { Box, Flex, Heading, Text, Img } from '@chakra-ui/react';
-import letter_icon from '@/assert/format_letter_spacing_standard.svg'
-
+import letter_icon from '@/assert/format_letter_spacing_standard_black.svg'
 import { useQuery } from '@tanstack/react-query';
 import request from '@/service/request';
 import { ValuationData } from '@/types/valuation';
@@ -30,7 +29,7 @@ export default function Valuation() {
         <Heading size='lg'>计价标准</Heading>
       </Flex>
       {/* <Flex justify={'center'} align={'center'} alignSelf={'center'}> */}
-      <Flex gap={'24px'} flexWrap={'wrap'} justify={'center'}>
+      <Flex gap={'52px'} flexWrap={'wrap'} justify={'center'} mt={'24px'}>
         {data?.map((item) => <Flex direction={"column"} key={item.title} justify="space-evenly" align={"center"} boxSizing='border-box' width='240px' height='339px' background='#F1F4F6' borderWidth={'1px'} borderColor='#EFF0F1' borderRadius='4px'>
           <Flex align={'center'} >
             <Box borderRadius='2px' bg={item.bg} w={'16px'} h={'16px'} mr={'8px'}></Box>
