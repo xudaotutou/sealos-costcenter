@@ -23,7 +23,7 @@ import {
 } from '@chakra-ui/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { QRCodeSVG } from 'qrcode.react';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, use, useCallback, useEffect, useState } from 'react';
 import wechat_icon from '@/assert/ic_baseline-wechat.svg';
 import vector from '@/assert/Vector.svg';
 import { formatMoney } from '@/utils/format';
@@ -31,24 +31,31 @@ import { useTranslation } from 'next-i18next';
 import { getFavorable } from '@/utils/favorable';
 import { AMOUNT_LIST } from '@/constants/payment';
 import uil_info_circle from '@/assert/uil_info-circle.svg';
+import leftVector from '@/assert/material-symbols_arrow-back-ios-rounded.svg'
+import { ApiResp } from '@/types/api';
+import { Pay, Payment } from '@/types/payment';
 function useRecharge() {
   const { t } = useTranslation();
 
 
   const RechargeModal = () => {
+    // 全局开关
     const { reCharge: isOpen, setRecharge: set_ } = useOverviewStore();
     const balance = useOverviewStore((state) => state.balance);
     const [step, setStep] = useState(1);
-    const [amount, setAmount] = useState(1);
+    const [amount, setAmount] = useState(AMOUNT_LIST[0]);
+    // 整个流程跑通需要状态管理, 0 初始态， 1 创建支付单， 2 支付中, 3 支付成功
+    const [complete, setComplete] = useState<0 | 1 | 2 | 3>(0)
     const [paymentName, setPaymentName] = useState('');
     const [selectAmount, setSelectAmount] = useState(0);
 
     const toast = useToast();
     const createPaymentRes = useMutation(
-      () => request.post('/api/account/payment', { amount: amount * 1000000 }),
+      () => request.post<any, ApiResp<Payment>>('/api/account/payment', { amount: amount * 1000000 }),
       {
         onSuccess(data) {
           setPaymentName((data?.data?.paymentName as string).trim());
+          setComplete(2)
         },
         onError(err: any) {
           toast({
@@ -57,6 +64,7 @@ function useRecharge() {
             isClosable: true,
             position: 'top'
           });
+          setComplete(0)
         }
       }
     );
@@ -64,20 +72,22 @@ function useRecharge() {
     const { data } = useQuery(
       ['query-charge-res'],
       () =>
-        request('/api/account/payment/pay', {
+        request<any, ApiResp<Pay>>('/api/account/payment/pay', {
           params: {
             id: paymentName
           }
         }),
       {
-        refetchInterval: paymentName !== '' ? 1000 : false,
-        enabled: paymentName !== '',
+        refetchInterval: complete === 2 ? 1000 : false,
+        enabled: complete === 2,
         onSuccess(data) {
           setTimeout(() => {
             if (data?.data?.status === 'SUCCESS') {
               createPaymentRes.reset();
-              queryClient.resetQueries({ queryKey: ['query-charge-res'], exact: true });
+              setComplete(3)
+              queryClient.setQueriesData<ApiResp<Pay>>(['query-charge-res'], undefined);
               onClose();
+              setComplete(0)
               queryClient.invalidateQueries({ queryKey: ['billing'], exact: false });
               queryClient.invalidateQueries({ queryKey: ['getAccount'] });
             }
@@ -86,209 +96,227 @@ function useRecharge() {
       }
     );
     const queryClient = useQueryClient();
-    const onClose = useCallback(() => {
-      set_(false);
+    
+    const cancalPay = useCallback(() => {
       createPaymentRes.reset();
-      queryClient.resetQueries({ queryKey: ['query-charge-res'], exact: true });
-    }, [createPaymentRes, queryClient, set_]);
+      queryClient.setQueriesData<ApiResp<Pay>>(['query-charge-res'], undefined);
+      setComplete(0)
+    }, [createPaymentRes, queryClient])
+
+    const onClose = () => {
+      cancalPay()
+      set_(false);
+    }
+
 
     const handleConfirm = () => {
-      // createPaymentRes.mutate();
+      setComplete(1)
+      createPaymentRes.mutate();
     };
     return (
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent maxW="500px" height={'565px'} >
-          <ModalHeader>{t('Recharge Amount')}</ModalHeader>
-          <ModalCloseButton />
-          {/* <Flex > */}
-          <Flex
-            pt="4px"
-            mb={'24px'}
-            w="500px"
-            px={'24px'}
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Flex align={'center'} alignSelf={'flex-start'} mb={'26px'}>
-              <Text color="#7B838B" fontWeight={'normal'} mr={'24px'}>
-                {t('Balance')}
-              </Text>
-              <Text mt="4px" color="#24282C" fontSize="24px" fontWeight={'medium'}>
-                ¥ {formatMoney(balance)}
-              </Text>
-            </Flex>
-            <Flex direction={'column'}>
-              <Text color="#7B838B" fontWeight={'normal'} mb={'16px'}>
-                {t('Select Amount')}
-              </Text>
-              <Flex wrap={'wrap'} gap={'16px'}>
-                {
-                  AMOUNT_LIST.map((amount, index) => <Flex
-                    width='140px'
-                    height='92px'
-                    justify={'center'}
-                    align={'center'}
-                    key={index}
-                    {
-                    ...(selectAmount === index ? {
-                      color: '#36ADEF',
-                      border: '1.5px solid #36ADEF',
-                    } : {
-                      border: '1px solid #EFF0F1'
-                    })
-                    }
-                    bg={'#f4f6f8'}
-                    borderRadius='4px'
-                    position={'relative'}
-                    flexGrow='0'
-                    cursor={'pointer'}
-                    onClick={() => {
-                      setSelectAmount(index)
-                      setAmount(amount)
-                    }}
-                  >
-                    <Text
-                      position={'absolute'}
-                      display={'inline-block'}
-                      minW={'max-content'}
-                      left='78px'
-                      top='4px'
-                      px={'16px'}
-                      color={'#A558C9'}
-                      background='#EDDEF4'
-                      borderRadius='10px 10px 10px 0px'
-                      zIndex={'99'}
+        <ModalContent maxW="500px" height={'565px'}>
+          {complete === 0 ? <>
+            <ModalHeader p={'24px'}>
 
-                      fontStyle='normal'
-                      fontWeight='500'
-                      fontSize='12px'
-                    >
-
-                      {t('Bonus')}
-                      ￥{getFavorable(amount)}
-                    </Text>
-                    <Text fontStyle='normal'
-                      fontWeight='500'
-                      fontSize='24px'>￥{amount}</Text>
-                  </Flex>)
-                }
-
-              </Flex>
-            </Flex>
-            <Flex alignSelf={'flex-start'} align={'center'}>
-              <Text color="#7B838B" mr={'28px'}>
-                {t('Recharge Amount')}
-              </Text>
-              <NumberInput
-                defaultValue={15}
-                clampValueOnBlur={false}
-                min={0}
-                step={step}
-                isDisabled={data?.data?.status || !!data?.data?.codeURL || createPaymentRes.isLoading}
-                mt="8px"
-                w="215px"
-                h="42px"
-                boxSizing="border-box"
-                background="#F4F6F8"
-                px={'14px'}
-                border="1px solid #EFF0F1"
-                borderRadius="2px"
-                alignItems="center"
-                display={'flex'}
-                value={amount}
-                variant={'unstyled'}
-                onChange={(str, v) => (str.trim() ? setAmount(v) : setAmount(0))}
-              >
-                <Text mr={'4px'}>¥</Text>
-                <NumberInputField />
-                <NumberInputStepper
-                >
-                  <NumberIncrementStepper>
-                    <Img src={vector.src}></Img>
-                  </NumberIncrementStepper>
-                  <NumberDecrementStepper>
-                    <Img src={vector.src} transform={'rotate(180deg)'}></Img>
-                  </NumberDecrementStepper>
-                </NumberInputStepper>
-              </NumberInput>
-              <Text
-                py={'1px'}
-                px="7px"
-                ml={'10px'}
-                color={'#A558C9'}
-                background='#EDDEF4'
-                borderRadius='6px 6px 6px 0px;'
-                fontStyle='normal'
-                fontWeight='500'
-                fontSize='12px'
-              >
-                {t('Bonus')}
-              </Text>
-              <Text>￥{getFavorable(amount)}</Text>
-            </Flex>
-            <Flex alignSelf={'flex-start'} align={'center'} mt={'21px'}>
-              <Img src={uil_info_circle.src} w={'18px'} h='18px' mr={'5px'}></Img>
-              <Link
-                fontStyle='normal'
-                fontWeight='400'
-                fontSize='12px'
-                /* identical to box height, or 18px */
-                // textDecorationLine='underline'
-
-                color='#1D8CDC'
-
-              >
-                查看优惠规则
-              </Link>
-            </Flex>
-            <Button
-              size="primary"
-              variant="primary"
-              mt="28px"
-              onClick={() => handleConfirm()}
-              isDisabled={data?.data?.status || !!data?.data?.codeURL || createPaymentRes.isLoading}
+              {t('Recharge Amount')}</ModalHeader>
+            <ModalCloseButton top={'24px'} right={'24px'} />
+            <Flex
+              pointerEvents={complete === 0 ? 'auto' : 'none'}
+              pt="4px"
+              mb={'24px'}
+              w="500px"
+              px={'24px'}
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
             >
-              {t('Confirm')}
-            </Button>
-          </Flex>
-          {/* <Flex flexDirection="column" w="100%" mt="73px" px="37px" justify={'center'} align={'center'} mb={'135px'}>
-
-            <Box width={'267px'} height={'295px'}>
-              <Text color="#7B838B" mb="8px" textAlign="center">
-                {t('Scan with WeChat')}
-              </Text>
-              {!!data?.data?.codeURL &&
-                <QRCodeSVG
-                  size={185}
-                  value={data?.data?.codeURL}
-                  style={{ margin: '0 auto' }}
-                  imageSettings={{
-                    // 二维码中间的logo图片
-                    src: wechat_icon.src,
-                    height: 40,
-                    width: 40,
-                    excavate: true // 中间图片所在的位置是否镂空
-                  }}
-                />
-              }
-              <Box mt="8px">
-                <Text color="#717D8A" fontSize="12px" fontWeight="normal">
-                  {t('Order Number')}： {data?.data?.tradeNO}
+              <Flex align={'center'} alignSelf={'flex-start'} mb={'26px'}>
+                <Text color="#7B838B" fontWeight={'normal'} mr={'24px'}>
+                  {t('Balance')}
                 </Text>
-
-                <Text color="#717D8A" fontSize="12px">
-                  {t('Payment Result')}:
-                  {data?.data?.status && data?.data?.status === 'SUCCESS'
-                    ? t('Payment Successful')
-                    : t('In Payment')}
+                <Text mt="4px" color="#24282C" fontSize="24px" fontWeight={'medium'}>
+                  ¥ {formatMoney(balance)}
                 </Text>
-              </Box>
-            </Box>
+              </Flex>
+              <Flex direction={'column'}>
+                <Text color="#7B838B" fontWeight={'normal'} mb={'16px'}>
+                  {t('Select Amount')}
+                </Text>
+                <Flex wrap={'wrap'} gap={'16px'}>
+                  {
+                    AMOUNT_LIST.map((amount, index) => <Flex
+                      width='140px'
+                      height='92px'
+                      justify={'center'}
+                      align={'center'}
+                      key={index}
+                      {
+                      ...(selectAmount === index ? {
+                        color: '#36ADEF',
+                        border: '1.5px solid #36ADEF',
+                      } : {
+                        border: '1px solid #EFF0F1'
+                      })
+                      }
+                      bg={'#f4f6f8'}
+                      borderRadius='4px'
+                      position={'relative'}
+                      flexGrow='0'
+                      cursor={'pointer'}
+                      onClick={() => {
+                        setSelectAmount(index)
+                        setAmount(amount)
+                      }}
+                    >
+                      <Text
+                        position={'absolute'}
+                        display={'inline-block'}
+                        minW={'max-content'}
+                        left='78px'
+                        top='4px'
+                        px={'16px'}
+                        color={'#A558C9'}
+                        background='#EDDEF4'
+                        borderRadius='10px 10px 10px 0px'
+                        zIndex={'99'}
 
-          </Flex> */}
-          {/* </Flex> */}
+                        fontStyle='normal'
+                        fontWeight='500'
+                        fontSize='12px'
+                      >
+
+                        {t('Bonus')}
+                        ￥{getFavorable(amount)}
+                      </Text>
+                      <Text fontStyle='normal'
+                        fontWeight='500'
+                        fontSize='24px'>￥{amount}</Text>
+                    </Flex>)
+                  }
+
+                </Flex>
+              </Flex>
+              <Flex alignSelf={'flex-start'} align={'center'}>
+                <Text color="#7B838B" mr={'28px'}>
+                  {t('Recharge Amount')}
+                </Text>
+                <NumberInput
+                  defaultValue={15}
+                  clampValueOnBlur={false}
+                  min={0}
+                  step={step}
+                  mt="8px"
+                  w="215px"
+                  h="42px"
+                  boxSizing="border-box"
+                  background="#F4F6F8"
+                  px={'14px'}
+                  border="1px solid #EFF0F1"
+                  borderRadius="2px"
+                  alignItems="center"
+                  display={'flex'}
+                  value={amount}
+                  variant={'unstyled'}
+                  onChange={(str, v) => (str.trim() ? setAmount(v) : setAmount(0))}
+                >
+                  <Text mr={'4px'}>¥</Text>
+                  <NumberInputField />
+                  <NumberInputStepper
+                  >
+                    <NumberIncrementStepper>
+                      <Img src={vector.src}></Img>
+                    </NumberIncrementStepper>
+                    <NumberDecrementStepper>
+                      <Img src={vector.src} transform={'rotate(180deg)'}></Img>
+                    </NumberDecrementStepper>
+                  </NumberInputStepper>
+                </NumberInput>
+                <Text
+                  py={'1px'}
+                  px="7px"
+                  ml={'10px'}
+                  color={'#A558C9'}
+                  background='#EDDEF4'
+                  borderRadius='6px 6px 6px 0px;'
+                  fontStyle='normal'
+                  fontWeight='500'
+                  fontSize='12px'
+                >
+                  {t('Bonus')}
+                </Text>
+                <Text>￥{getFavorable(amount)}</Text>
+              </Flex>
+              <Flex alignSelf={'flex-start'} align={'center'} mt={'21px'}>
+                <Img src={uil_info_circle.src} w={'18px'} h='18px' mr={'5px'}></Img>
+                <Link
+                  fontStyle='normal'
+                  fontWeight='400'
+                  fontSize='12px'
+                  color='#1D8CDC'
+
+                >
+                  {t('View Discount Rules')}
+                </Link>
+              </Flex>
+              <Button
+                size="primary"
+                variant="primary"
+                mt="28px"
+                onClick={() => handleConfirm()}
+              >
+                {t('Confirm')}
+              </Button>
+            </Flex>
+          </> : <>
+
+            <ModalHeader m={'24px'} p={'0'} position={'absolute'} display={'flex'} alignItems={'center'} height={'33px'}>
+              <Img src={leftVector.src} w={'20px'} h={'20px'} mr={'16px'} display={'inline-block'} verticalAlign={'middle'} cursor={'pointer'} onClick={() => {
+                cancalPay()
+              }}></Img>
+              <Text>{t('Recharge Amount')}</Text>
+            </ModalHeader>
+            <ModalCloseButton top={'24px'} right={'24px'} />
+            <Flex flexDirection="column" px="37px" justify={'center'} align={'center'} mt={'135px'} display={'flex'} justifyContent={'center'} alignItems={'center'}
+              position={'relative'}
+            >
+              <Flex width={'267px'} height={'295px'} direction={'column'} align='center' justify={'space-between'}>
+                <Text color="#7B838B" mb="8px" textAlign="center">
+                  {t('Scan with WeChat')}
+                </Text>
+                {complete === 2 && !!data?.data?.codeURL ?
+                  <QRCodeSVG
+                    size={185}
+                    value={data?.data?.codeURL}
+                    style={{ margin: '0 auto' }}
+                    imageSettings={{
+                      // 二维码中间的logo图片
+                      src: wechat_icon.src,
+                      height: 40,
+                      width: 40,
+                      excavate: true // 中间图片所在的位置是否镂空
+                    }}
+                  /> : <Box>
+                    waiting...
+                  </Box>
+                }
+                <Box mt="8px">
+                  <Text color="#717D8A" fontSize="12px" fontWeight="normal">
+                    {t('Order Number')}： {data?.data?.tradeNO}
+                  </Text>
+
+                  <Text color="#717D8A" fontSize="12px">
+                    {t('Payment Result')}:
+                    {complete === 3
+                      ? t('Payment Successful')
+                      : t('In Payment')}
+                  </Text>
+                </Box>
+              </Flex>
+
+            </Flex>
+          </>}
         </ModalContent>
       </Modal >
     );

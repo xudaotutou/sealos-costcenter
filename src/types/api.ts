@@ -1,7 +1,7 @@
-export type ApiResp = {
+export type ApiResp<Tdata =any> = {
   code?: number
   message?: string
-  data?: any
+  data?: Tdata
   error?: any
 }
 
