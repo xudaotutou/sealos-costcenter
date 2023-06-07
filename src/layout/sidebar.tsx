@@ -46,7 +46,7 @@ export default function SideBar() {
   ];
   return (
     <Flex flexDirection="column">
-      <LangSelect />
+      {/* <LangSelect /> */}
       {menus.map((item) => {
         return (
           <Flex
