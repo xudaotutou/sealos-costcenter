@@ -1,33 +1,20 @@
-import { Box, Flex, Heading, Img } from '@chakra-ui/react';
-import { BillingTable } from '@/components/billing/billingTable';
-import UserCard from '../../components/cost_overview/components/user';
 import bar_icon from '@/assert/bar_chart_4_bars_black.svg';
-import { Trend } from '../../components/cost_overview/trend';
-import { Buget } from '../../components/cost_overview/buget';
-import { Cost } from '../../components/cost_overview/cost';
-import { useEffect, useMemo } from 'react';
-import useOverviewStore from '@/stores/overview';
+import { BillingTable } from '@/components/billing/billingTable';
 import SelectRange from '@/components/billing/selectDateRange';
 import useNotEnough from '@/hooks/useNotEnough';
-import { useQuery } from '@tanstack/react-query';
-import { INITAL_SOURCE } from '@/constants/billing';
-import { BillingSpec, BillingData } from '@/types/billing';
-import { formatMoney } from '@/utils/format';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import {
-  subSeconds,
-  addDays,
-  differenceInDays,
-  subDays,
-  formatISO,
-  set,
-  isAfter,
-  parseISO,
-  format,
-  isBefore
-} from 'date-fns';
 import request from '@/service/request';
+import useOverviewStore from '@/stores/overview';
+import { BillingData, BillingSpec } from '@/types/billing';
+import { Box, Flex, Heading, Img } from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
+import { addDays, differenceInDays, formatISO, subDays, subSeconds } from 'date-fns';
 import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useMemo } from 'react';
+import { Buget } from '../../components/cost_overview/buget';
+import UserCard from '../../components/cost_overview/components/user';
+import { Cost } from '../../components/cost_overview/cost';
+import { Trend } from '../../components/cost_overview/trend';
 
 function CostOverview() {
   const { t } = useTranslation();
@@ -131,10 +118,11 @@ function CostOverview() {
   );
 }
 
-export async function getStaticProps({ locale }: { locale: any }) {
+export async function getServerSideProps(content: any) {
+  const locale = content?.req?.cookies?.NEXT_LOCALE || 'en';
   return {
     props: {
-      ...(await serverSideTranslations(locale))
+      ...(await serverSideTranslations(locale, undefined, null, content.locales))
     }
   };
 }

@@ -98,10 +98,11 @@ export default function Valuation() {
     // </KeepAlive>
   );
 }
-export async function getStaticProps({ locale }: { locale: any }) {
+export async function getServerSideProps(content: any) {
+  const locale = content?.req?.cookies?.NEXT_LOCALE || 'en';
   return {
     props: {
-      ...(await serverSideTranslations(locale))
+      ...(await serverSideTranslations(locale, undefined, null, content.locales))
     }
   };
 }
