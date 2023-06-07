@@ -263,11 +263,7 @@ export async function getServerSideProps(content: any) {
   const locale = content?.req?.cookies?.NEXT_LOCALE || 'en';
   return {
     props: {
-<<<<<<< HEAD
       ...(await serverSideTranslations(locale, undefined, null, content.locales))
-=======
-      ...(await serverSideTranslations(locale || 'en'))
->>>>>>> e737983 (feat(frontend):add cost center provider)
     }
   };
 }
