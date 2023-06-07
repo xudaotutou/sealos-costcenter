@@ -1,0 +1,17 @@
+apiVersion: app.sealos.io/v1
+kind: App
+metadata:
+  name: costCenter
+  namespace: app-system
+spec:
+  data:
+    desc: sealos CLoud costCenter
+    url: "https://costCenter.{{ .cloudDomain }}"
+  icon: "https://costCenter.{{ .cloudDomain }}/logo.svg"
+  menuData:
+    helpDocs: https://www.sealos.io/docs/cloud/apps/costCenter/
+    helpDropDown: false
+    nameColor: text-black
+  name: costCenter
+  type: iframe
+  displayType: normal
