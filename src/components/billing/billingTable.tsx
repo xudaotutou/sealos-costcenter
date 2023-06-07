@@ -25,8 +25,10 @@ export function BillingTable({ data }: { data: BillingItem[] }) {
                   borderTopRightRadius: '10px',
                   background: '#F1F4F6'
                 }}
-              >
+                
+              > <Flex justify={'center'} align={'center'}>
                 {t(item)}
+                </Flex>
               </Th>
             ))}
           </Tr>
@@ -38,17 +40,20 @@ export function BillingTable({ data }: { data: BillingItem[] }) {
                 <Td>{item.order_id}</Td>
                 <Td>{format(parseISO(item.time), 'MM-dd HH:mm')}</Td>
                 <Td>
+                  <Flex align={'center'} justify={'center'} width={'full'} height={'full'}>
                   <Flex
-                    w={'66px'}
-                    h={'28px'}
+                    px={'4px'}
+                    py={'4px'}
+                    minW={'max-content'}
                     bg={!item.type ? '#EBF7FD' : '#E6F6F6'}
                     borderRadius="24px"
                     color={!item.type ? '#0884DD' : '#00A9A6'}
                     align={'center'}
                     justify={'space-evenly'}
                   >
-                    <Img src={!item.type ? lineDown.src : lineUp.src} w="13.14px"></Img>
+                    <Img src={!item.type ? lineDown.src : lineUp.src} w="13.14px" mr={'6px'}></Img>
                     <Text>{!item.type ? t('Deduction') : t('Charge')}</Text>
+                  </Flex>
                   </Flex>
                 </Td>
 

@@ -69,8 +69,8 @@ export default function Billing() {
 
   return (
     <Flex flexDirection="column" w="100%" h="100%" bg={'white'} p="24px">
-      <Flex w={'116px'} justify="space-between" mr="24px" align={'center'}>
-        <Img src={receipt_icon.src} w={'24px'} h={'24px'} dropShadow={'#24282C'}></Img>
+      <Flex  mr="24px" align={'center'}>
+        <Img src={receipt_icon.src} w={'24px'} h={'24px'} mr={'18px'} dropShadow={'#24282C'}></Img>
         <Heading size="lg">{t('SideBar.BillingDetails')}</Heading>
       </Flex>
       <Flex mt="24px" alignItems={'center'} flexWrap={'wrap'}>
@@ -263,11 +263,7 @@ export async function getServerSideProps(content: any) {
   const locale = content?.req?.cookies?.NEXT_LOCALE || 'en';
   return {
     props: {
-<<<<<<< HEAD
       ...(await serverSideTranslations(locale, undefined, null, content.locales))
-=======
-      ...(await serverSideTranslations(locale || 'en'))
->>>>>>> e737983 (feat(frontend):add cost center provider)
     }
   };
 }

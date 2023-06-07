@@ -57,3 +57,4 @@ export const valuationMap = new Map([
   ['storage', { unit: 'GiB', scale: 1024, bg: '#8172D8', idx:2 }]
   // ['disk', { unit: 'MiB' }]
 ]);
+export const AMOUNT_LIST = [299, 599, 1999, 4999, 19999]

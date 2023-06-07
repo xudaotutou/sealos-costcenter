@@ -66,8 +66,8 @@ function CostOverview() {
           overflowY={'auto'}
         >
           <Flex wrap={'wrap'}>
-            <Flex w={'116px'} mb={'24px'} justify="space-between" mr="24px" align={'center'}>
-              <Img src={bar_icon.src} w={'24px'} h={'24px'}></Img>
+            <Flex  mb={'24px'} mr="24px" align={'center'}>
+              <Img src={bar_icon.src} w={'24px'} h={'24px'} mr='18px'></Img>
               <Heading size="lg">{t('SideBar.CostOverview')} </Heading>
             </Flex>
             <Box mb={'24px'}>
@@ -122,11 +122,7 @@ export async function getServerSideProps(content: any) {
   const locale = content?.req?.cookies?.NEXT_LOCALE || 'en';
   return {
     props: {
-<<<<<<< HEAD
       ...(await serverSideTranslations(locale, undefined, null, content.locales))
-=======
-      ...(await serverSideTranslations(locale || 'en'))
->>>>>>> e737983 (feat(frontend):add cost center provider)
     }
   };
 }

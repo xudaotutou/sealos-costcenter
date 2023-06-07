@@ -29,7 +29,6 @@ export default function Valuation() {
   );
   const cycle = ['Day', 'Week', 'Month', 'Year'];
   return (
-    // <KeepAlive cacheKey='VALUATION'>
     <Flex
       w="100%"
       h="100%"
@@ -40,17 +39,13 @@ export default function Valuation() {
       overflowY={'auto'}
     >
       <Flex
-        w={'116px'}
-        justify="space-between"
-        mr="24px"
         alignSelf={'flex-start'}
         mb="80px"
         align={'center'}
       >
-        <Img src={letter_icon.src} w={'24px'} h={'24px'}></Img>
+        <Img src={letter_icon.src} w={'24px'} h={'24px'} mr={'18px'}></Img>
         <Heading size="lg">{t('Valuation.Standard')}</Heading>
       </Flex>
-      {/* <Flex justify={'center'} align={'center'} alignSelf={'center'}> */}
       <Flex gap={'52px'} flexWrap={'wrap'} justify={'center'} mt={'24px'}>
         {data?.map((item) => (
           <Flex
@@ -102,11 +97,7 @@ export async function getServerSideProps(content: any) {
   const locale = content?.req?.cookies?.NEXT_LOCALE || 'en';
   return {
     props: {
-<<<<<<< HEAD
       ...(await serverSideTranslations(locale, undefined, null, content.locales))
-=======
-      ...(await serverSideTranslations(locale || 'en'))
->>>>>>> e737983 (feat(frontend):add cost center provider)
     }
   };
 }

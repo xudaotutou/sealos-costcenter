@@ -31,6 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return jsonRes(res, { data: accountStatus });
     }
   } catch (error) {
-    jsonRes(res, { code: 500, data: error });
+    console.log(error);
+    jsonRes(res, { code: 500, error: 'get amount error' });
   }
 }

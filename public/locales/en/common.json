@@ -16,6 +16,8 @@
     "Unit": "Unit",
     "Price": "Price"
   },
+  "Bonus": "Bonus",
+  "Select Amount": "Select Amount",
   "Recent Transactions": "Recent Transactions",
   "Cost Trend": "Cost Trend",
   "Income And Expense": "Income And Expense",

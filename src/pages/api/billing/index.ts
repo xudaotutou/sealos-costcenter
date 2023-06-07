@@ -17,18 +17,10 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
     }
     const namespace = 'ns-' + user.name;
     const body = req.body
-    console.log(body)
     let spec: BillingSpec = body.spec
     if(!spec ) {
       return jsonRes(resp, {code: 400,error:'参数错误'})
     }
-    // const spec: BillingSpec = {
-    //   startTime: '2023-05-08T11:00:00Z',
-    //   endTime: '2023-05-15T11:00:00Z',
-    //   page: 1,
-    //   pageSize: 10,
-    //   type: 1,
-    // };
     const hash = crypto.createHash('sha256').update(JSON.stringify(spec));
     const name = hash.digest('hex');
     const crdSchema = {
@@ -47,7 +39,6 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
       plural: 'billingrecordqueries'
     };
     try {
-      console.log('create!!!')
       await ApplyYaml(kc, yaml.dump(crdSchema));
       await new Promise<void>((resolve) => setTimeout(() => resolve(), 1000));
     } finally {
@@ -69,6 +60,7 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
       });
     }
   } catch (error) {
-    jsonRes(resp, { code: 500, data: error });
+    console.log(error);
+    jsonRes(resp, { code: 500, error: 'get billing error'});
   }
 }

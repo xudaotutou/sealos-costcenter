@@ -33,6 +33,7 @@ export default async function handler(req: NextApiRequest, resp: NextApiResponse
       return jsonRes(resp, { data: paymentStatusResp });
     }
   } catch (error) {
-    jsonRes(resp, { code: 500, error });
+    console.log(error);
+    jsonRes(resp, { code: 500, message: "pay error" });
   }
 }

@@ -16,6 +16,7 @@
     "Unit": "单位",
     "Price": "价格"
   },
+  "Bonus":"赠",
   "Recent Transactions": "最近交易",
   "Cost Trend": "成本趋势",
   "Income And Expense": "收支",
@@ -23,6 +24,7 @@
   "Cost Distribution": "成本分布",
   "Expenditure": "支出",
   "Recharge Amount": "充值金额",
+  "Select Amount": "选择金额",
   "Confirm": "确定",
   "Balance Recharge": "余额充值",
   "Order Number": "订单号",

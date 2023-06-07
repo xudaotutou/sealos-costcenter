@@ -16,7 +16,7 @@ import { appWithTranslation } from 'next-i18next';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // refetchOnWindowFocus: false,
+      refetchOnWindowFocus: false,
       // retry: false,
       cacheTime: 1000 * 60
     }
